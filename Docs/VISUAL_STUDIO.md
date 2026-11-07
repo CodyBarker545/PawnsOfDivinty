@@ -48,3 +48,7 @@ Use Godot's editor to edit `Scenes/Battlefield.tscn`, not Visual Studio's debugg
 In Godot, choose **Editor → Editor Settings → Dotnet → Editor → External Editor → Visual Studio** if you want C# scripts to open there when double-clicked.
 
 Official references: [Godot C# and Visual Studio setup](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html#visual-studio-windows-only) and [Microsoft's .NET debug-profile settings](https://learn.microsoft.com/en-us/visualstudio/debugger/project-settings-for-csharp-debug-configurations-dotnetcore).
+
+## Character unit tests
+
+Run `dotnet test Tests/PawnsOfDivinity.Tests/PawnsOfDivinity.Tests.csproj` from the repository root. The xUnit project runs independently of a live Godot editor and is excluded from the runtime game assembly. See [repository layout](REPOSITORY_LAYOUT.md).

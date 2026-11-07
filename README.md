@@ -1,6 +1,6 @@
 # PawnsOfDivinity
 
-Godot 4.7.2 .NET / C# tactical-game prototype. **This repository root is the game project.** Open this folder in VS Code, `PawnsOfDivinity.sln` in Visual Studio, or `project.godot` in Godot .NET. There is one active Godot project and no Python dependency.
+Godot 4.7.2 .NET / C# tactical-game prototype. **This repository root is the game project.** Open this folder in VS Code, `PawnsOfDivinity.sln` in Visual Studio, or `project.godot` in Godot .NET. There is one active Godot project. Python and Blender are optional asset-development tools; the game has no Python runtime dependency.
 
 ## Project layout
 
@@ -9,7 +9,9 @@ Game/
   project.godot             Godot project; main scene is Battlefield
   PawnsOfDivinity.sln          Visual Studio solution
   PawnsOfDivinity.csproj       C# game assembly
-  Scripts/                 Gameplay, units, camera and pathfinding
+  Scripts/Core/            Character definitions, stats, registry and factory
+  Scripts/Gameplay/        Battlefield, units and movement
+  Tests/                   Independent xUnit test project
   Scenes/                  Godot scenes and level layouts
   Assets/
     Characters/            Animated character models used by the game
@@ -17,7 +19,7 @@ Game/
   SourceAssets/            Editable Blender files, downloads and licences
   Properties/              Visual Studio run/check profiles
   .vscode/                 VS Code build/run/check profiles
-  tools/                   Asset export synchronization
+  tools/                   assets/, blender/, validation/ and archive/
   Docs/                    Editor and gameplay guides
   References/Terrain3D/    Preserved third-party demo, excluded from game imports
   artifacts/               Historical previews and verification logs
@@ -49,13 +51,15 @@ The starting level is Oathstone Crossing: a compact 16x16 map, opposing spawns, 
 
 ## Assets
 
-Edit models under `SourceAssets/`, export their GLBs there, then run this from the repository root:
+Keep editable work and its textures together under `SourceAssets/`. Production character GLBs live in each character's `exports/` folder. The explicit mapping in `tools/assets/asset-manifest.json` preserves the existing production choices. Run this from the repository root:
 
 ```powershell
-.\tools\Sync-GodotAssets.ps1
+.\tools\assets\Sync-GodotAssets.ps1
 ```
 
-This refreshes two character models and the environment GLBs in `Assets/`. Original licences remain with the source assets.
+This preflights seven character exports and the environment GLBs, then refreshes changed files in `Assets/`. Use `-ValidateOnly` to check inputs without writes or `-WhatIf` to preview copying. Original licences remain with the local source assets.
+
+See [development tools](tools/README.md) and [repository layout and asset exceptions](Docs/REPOSITORY_LAYOUT.md). All `SourceAssets/` files and large runtime assets remain local and ignored by Git. A fresh checkout needs these assets and Terrain3D native binaries restored separately.
 
 ## Build and verify
 
@@ -63,6 +67,8 @@ From this root folder:
 
 ```powershell
 dotnet build PawnsOfDivinity.sln
+dotnet test Tests/PawnsOfDivinity.Tests/PawnsOfDivinity.Tests.csproj
+python tools/validation/validate_repository.py
 & 'D:\Downloads\Godot_v4.7.2-stable_mono_win64\Godot_v4.7.2-stable_mono_win64\Godot_v4.7.2-stable_mono_win64_console.exe' --headless --path . -- --smoke-test
 ```
 

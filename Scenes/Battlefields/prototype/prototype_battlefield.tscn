@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cobufrymta5f1"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_krbhp"]
+size = Vector2(28, 28)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rujck"]
+albedo_color = Color(0.4, 0.45882353, 0.40784314, 1)
+roughness = 0.9
+
+[node name="PrototypeBattlefield" type="Node3D" unique_id=964089897]
+
+[node name="GridMap" type="GridMap" parent="." unique_id=1802633891]
+cell_size = Vector3(2, 1, 2)
+
+[node name="Ground" type="MeshInstance3D" parent="." unique_id=1384153715]
+transform = Transform3D(0.97577435, 0, 0, 0, 0.97577435, 0, 0, 0, 0.97577435, 0, 0, 0)
+mesh = SubResource("PlaneMesh_krbhp")
+surface_material_override/0 = SubResource("StandardMaterial3D_rujck")

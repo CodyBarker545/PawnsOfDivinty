@@ -10,15 +10,15 @@ The C# prototype contains a 16x16 Terrain3D battlefield with opposing spawns, hi
 
 ## Files
 
-- `Scripts/Battlefield.cs`: grid, click input, selection, camera and runtime checks.
-- `Scripts/TacticalUnit.cs`: character imports, animation and movement.
-- `Scripts/GridPathfinder.cs`: shortest grid paths.
+- `Scripts/Gameplay/Battlefield/Battlefield.cs`: grid, click input, selection, camera and runtime checks.
+- `Scripts/Gameplay/Units/TacticalUnit.cs`: character imports, animation and movement.
+- `Scripts/Gameplay/Movement/GridPathfinder.cs`: shortest grid paths.
 - `Scenes/Battlefield.tscn`: the native Godot level scene.
 - `Assets/Characters/`: the two animated runtime GLBs.
 - `Assets/Levels/`: foliage and stone GLBs.
 - `Properties/launchSettings.json`: Visual Studio game and headless-check profiles.
 
-Editable Blender sources and original licences live in `SourceAssets/` at the project root. Refresh runtime exports using `tools/Sync-GodotAssets.ps1` from the root. Godot's generated `.godot/` cache and Visual Studio's `.vs/` files are ignored by Git.
+Editable Blender sources and original licences live in `SourceAssets/` at the project root. Refresh runtime exports using `tools/assets/Sync-GodotAssets.ps1` from the root. Godot's generated `.godot/` cache and Visual Studio's `.vs/` files are ignored by Git.
 
 ## Levels
 
@@ -33,3 +33,7 @@ dotnet build PawnsOfDivinity.sln
 ```
 
 In Visual Studio, choose **PawnsOfDivinity Checks** and press F5 to run the headless checks. Choose **PawnsOfDivinity Game** to run the game. The earlier Python/Ursina implementation has been removed.
+
+## Character unit tests
+
+Run `dotnet test Tests/PawnsOfDivinity.Tests/PawnsOfDivinity.Tests.csproj` from the repository root. The xUnit project runs independently of a live Godot editor and is excluded from the runtime game assembly. See [repository layout](REPOSITORY_LAYOUT.md).

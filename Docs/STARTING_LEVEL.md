@@ -20,10 +20,10 @@ Move either character onto one of the four cells around the Oathstone to claim i
 - `Assets/Levels/OathstoneCrossing/TerrainAssets.tres`: editable Terrain3D texture palette.
 - `Assets/Levels/OathstoneCrossing/TerrainMaterial.tres`: terrain shader settings.
 - `Assets/Levels/OathstoneCrossing/Textures/`: copied existing CC0 demo textures and their licence.
-- `Scripts/TacticalMap.cs`: terrain heights, water/prop blocking, bridge surfaces, slope checks, click picking and path routes.
-- `Scripts/TacticalUnit.cs`: model scale, animation, selection and terrain-following movement.
-- `Scripts/Battlefield.cs`: selection, input, path/grid overlays, objective state and gameplay checks.
-- `tools/BuildStartingLevel.gd`: optional offline authoring generator. The game loads saved scenes/data; it does not regenerate terrain at startup.
+- `Scripts/Gameplay/Battlefield/TacticalMap.cs`: terrain heights, water/prop blocking, bridge surfaces, slope checks, click picking and path routes.
+- `Scripts/Gameplay/Units/TacticalUnit.cs`: model scale, animation, selection and terrain-following movement.
+- `Scripts/Gameplay/Battlefield/Battlefield.cs`: selection, input, path/grid overlays, objective state and gameplay checks.
+- `tools/assets/BuildStartingLevel.gd`: optional offline authoring generator. The game loads saved scenes/data; it does not regenerate terrain at startup.
 
 ## Editing
 
@@ -41,4 +41,4 @@ F5 runs the main game. Click a character, then a clear tile. WASD pans, the whee
 
 `dotnet build PawnsOfDivinity.sln` checks compilation. The **PawnsOfDivinity Checks** profile runs gameplay checks covering equal objective routes, both flank bridges, water/prop blocking, terrain and bridge picking, model animations, unit occupancy, height-following movement and objective claim/contest.
 
-For an optional baseline rebuild, run Godot with `--headless --path . --script tools/BuildStartingLevel.gd`. **This overwrites StartingLevel.tscn and its generated terrain resources**, so preserve manual level edits first. The generator is not needed to run or edit the saved level.
+For an optional baseline rebuild, run Godot with `--headless --path . --script tools/assets/BuildStartingLevel.gd`. **This overwrites StartingLevel.tscn and its generated terrain resources**, so preserve manual level edits first. The generator is not needed to run or edit the saved level.

@@ -21,3 +21,7 @@ Import the root `project.godot` in Godot .NET. Use Godot's 3D editor for `Scenes
 In Godot's Editor Settings, choose Dotnet → Editor → External Editor → Visual Studio Code to open C# files there.
 
 Official reference: [Godot C# editor and debugger setup](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html#visual-studio-code).
+
+## Character unit tests
+
+Run `dotnet test Tests/PawnsOfDivinity.Tests/PawnsOfDivinity.Tests.csproj` from the repository root. The xUnit project runs independently of a live Godot editor and is excluded from the runtime game assembly. See [repository layout](REPOSITORY_LAYOUT.md).
