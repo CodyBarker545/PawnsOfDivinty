@@ -75,3 +75,7 @@ python tools/validation/validate_repository.py
 Checks cover balanced objective routes, bridges, terrain/bridge picking, blocked water and trees, imported animations, occupancy, terrain-following movement and objective claim/contest. A failure exits with code 1.
 
 Click a character, then an empty tile to move. WASD pans, the wheel zooms, G toggles the grid, Home recenters and right-click deselects. Combat, turns, fog, scoring and online play remain future work. See [the game overview](Docs/GAME.md).
+
+## Repository archive
+
+See [publication notes](PUBLICATION.md) for the source inventory, configuration notes, and verification status of this upload.
