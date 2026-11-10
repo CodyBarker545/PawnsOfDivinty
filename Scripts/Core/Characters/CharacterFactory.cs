@@ -27,9 +27,8 @@ public static class CharacterFactory
 
         return new Character(
             id: instanceId,
-            name: definition.Name,
-            teamId: teamId,
-            baseStats: definition.BaseStats
+            definition: definition,
+            teamId: teamId
         );
     }
 }

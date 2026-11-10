@@ -89,7 +89,7 @@ public sealed class StatusTracker
 
     /// <summary>Decreases each timer by one and removes statuses that reach zero.</summary>
     /// <remarks>
-    /// The future round scheduler must call this once at round start, after Poison and delayed
+    /// TimedStatusBatchProcessor calls this once at round start, after Poison and delayed
     /// damage. A two-round status applied in R2 ticks to 1 at R3 start and expires at R4 start.
     /// This method does not advance the round or resolve either damage stage itself.
     /// </remarks>

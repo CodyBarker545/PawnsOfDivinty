@@ -11,6 +11,9 @@ namespace PawnsOfDivinity.Core.Turns;
 public sealed class RoundLifecycleManager
 {
     private bool _poisonBatchProcessed;
+    private bool _delayedAttacksProcessed;
+    private bool _timedStatusesProcessed;
+    private bool _preparationProcessed;
     public int CurrentRound { get; private set; }
     public RoundPhase CurrentPhase { get; private set; } = RoundPhase.Shop;
 
@@ -42,6 +45,9 @@ public sealed class RoundLifecycleManager
         CurrentRound = nextRound;
         CurrentPhase = RoundPhase.Shop;
         _poisonBatchProcessed = false;
+        _delayedAttacksProcessed = false;
+        _timedStatusesProcessed = false;
+        _preparationProcessed = false;
     }
 
     // The guard belongs to this round lifecycle, so replacing a batch processor cannot run it twice.
@@ -58,6 +64,58 @@ public sealed class RoundLifecycleManager
     {
         ValidatePoisonBatchExecution();
         _poisonBatchProcessed = true;
+    }
+
+    internal void ValidateDelayedAttackExecution()
+    {
+        if (CurrentPhase != RoundPhase.DelayedAttacks)
+            throw new InvalidOperationException("Delayed attacks can only resolve in the Delayed Attacks phase.");
+        if (!_poisonBatchProcessed)
+            throw new InvalidOperationException("Process the Poison batch before resolving delayed attacks.");
+        if (_delayedAttacksProcessed)
+            throw new InvalidOperationException("Delayed attacks have already been processed this round.");
+    }
+
+    internal void RecordDelayedAttackExecution()
+    {
+        ValidateDelayedAttackExecution();
+        _delayedAttacksProcessed = true;
+    }
+
+    internal void ValidateTimedStatusExecution()
+    {
+        if (CurrentPhase != RoundPhase.TimedStatusUpdate)
+            throw new InvalidOperationException("Timed statuses can only update during the Timed-Status phase.");
+        if (!_poisonBatchProcessed)
+            throw new InvalidOperationException("Process the Poison batch before updating timed statuses.");
+        if (!_delayedAttacksProcessed)
+            throw new InvalidOperationException("Process delayed attacks before updating timed statuses.");
+        if (_timedStatusesProcessed)
+            throw new InvalidOperationException("Timed statuses have already been processed this round.");
+    }
+
+    internal void RecordTimedStatusExecution()
+    {
+        ValidateTimedStatusExecution();
+        _timedStatusesProcessed = true;
+    }
+
+    internal void ValidatePreparationExecution()
+    {
+        if (CurrentPhase != RoundPhase.Preparation)
+            throw new InvalidOperationException("Round preparation can only run during the Preparation phase.");
+        if (!_poisonBatchProcessed || !_delayedAttacksProcessed || !_timedStatusesProcessed)
+            throw new InvalidOperationException("Complete Poison, delayed attacks and timed statuses before preparation.");
+        if (_preparationProcessed)
+            throw new InvalidOperationException("Preparation has already been processed this round.");
+        // Reaching Preparation acknowledges the preceding Other Triggers phase.
+        // That extension point currently has no gameplay effects to execute.
+    }
+
+    internal void RecordPreparationExecution()
+    {
+        ValidatePreparationExecution();
+        _preparationProcessed = true;
     }
 
     private RoundPhase GetNextPhase() => CurrentPhase switch

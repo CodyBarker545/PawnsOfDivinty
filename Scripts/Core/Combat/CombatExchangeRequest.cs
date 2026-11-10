@@ -12,6 +12,8 @@ namespace PawnsOfDivinity.Core.Combat;
 /// same attack without moving. Defender follow-ups use the supplied counter range and restrictions.
 /// Disarmed combatants need explicit unarmed fallback inputs unless their supplied attack is
 /// already unarmed. Unarmed Power and accuracy are caller configuration, not finalized balance.
+/// Evasion modifiers are resolved by the caller from confirmed effects such as Smoke Veil.
+/// They are percentage points subtracted by AccuracyCalculator, and default to zero.
 /// </remarks>
 public sealed record CombatExchangeRequest(
     Character Attacker,
@@ -31,4 +33,6 @@ public sealed record CombatExchangeRequest(
     bool CounterattacksSuppressed,
     bool IncomingAttackPermitsFollowUps = false,
     AttackConfiguration? AttackerUnarmedAttack = null,
-    AttackConfiguration? DefenderUnarmedAttack = null);
+    AttackConfiguration? DefenderUnarmedAttack = null,
+    int OpeningEvasionModifier = 0,
+    int CounterattackEvasionModifier = 0);

@@ -214,7 +214,7 @@ The six stat distributions in §2 are **CONFIRMED**. Unless flagged, ability mec
 
 - **Active — Healing Light:** heal ally within Manhattan 3 for `floor(WIS/2)+2` (base 11); diminishing returns apply; no cooldown.
 - **Active — Sanctuary Shield:** one allied recipient at a time receives **6 temporary HP**; transfer or refresh to 6; no cooldown.
-- **Passive — Gentle Blessing:** supportive action grants target **+2 DEF, +2 RES** through end of following round (**numeric values provisional**); applies to both supportive actives.
+- **Passive — Gentle Blessing (FINALIZED):** a successful qualifying Healing Light or Sanctuary Shield use grants its recipient **+2 DEF and +2 RES** through the end of Cleanup in the following round. Reapplication refreshes both modifier durations; bonuses never stack. Multiple Gentle Guardians refresh the same recipient's one active Gentle Blessing effect rather than summing their bonuses. Preview and rejected ability attempts do not trigger the passive. It consumes no additional action or cooldown.
 - **Unresolved:** Shield range, stacking with other shield sources; healing/buff rounding. Guardian death does not automatically erase a shield on another living ally.
 
 ## 12.3 Time Weaver / Ash Scholar — Elemental Mage
@@ -229,9 +229,14 @@ The six stat distributions in §2 are **CONFIRMED**. Unless flagged, ability mec
 **Equipment:** Basic Axe range 1, Power TBD; melee/ranged Axe upgrade paths. **Stats:** 52/20/11/3/8/4/13/4.
 
 - **Active — Provoking Roar:** Manhattan radius 2; affects enemies that have **not yet activated** in the current round; until round end, their choice is to attack Nigel if legally possible (after movement if needed) or end without another action; no forced movement toward Nigel; **reuse 3**.
-- **Active — Brutal Knockback:** single adjacent physical attack, pushes target up to 2 tiles directly away on hit. Initial damage **provisionally floor(50% of normal Axe damage), min 1**. Block at wall/map edge/unit causes **3 collision damage** to target; a second unit hit takes 3 too and does not get pushed; one collision event. Miss = no push/collision; **reuse 2**.
-- **Passive — Berserker's Fury:** +1 physical damage per complete 10% maximum HP missing: `floor(10 × (MaxHP−CurrentHP)/MaxHP)`; basic attacks, counters, follow-ups and applicable physical abilities. Provisional interaction with Brutal Knockback's initial damage reduction.
-- **Unresolved:** Taunt and action restriction details, collision/height effects, collision mitigation, legal counter resolution after knockback.
+- **Active — Brutal Knockback (FINALIZED core):** Main Action, range 1 adjacent enemy, physical Axe attack, **reuse 2**. On a successful hit, push a surviving target up to 2 tiles cardinally and directly away; an ordinary unobstructed flat-grid push travels 2 tiles. Designer-approved decisions:
+  1. **FINALIZED — Fury ordering:** opening damage is `max(1, floor((NormalAxeDamage + BerserkersFuryBonus) / 2))`. Calculate normal Axe damage using existing effective stats and weapon triangle, then add Fury once before halving. Use ordinary accuracy and hit rolls; a miss has no push or collision.
+  2. **FINALIZED — Damage first:** validate, roll, apply opening damage shields first, then attempt displacement for a surviving hit target and resolve any supported collision. Complete the effect before finalizing its Main Action and reuse interval 2. A valid miss still completes the use.
+  3. **FINALIZED — Lethal opening:** if opening damage defeats the target, stop displacement and collision, preserve the damage/defeat results, and finalize the ability normally.
+  4. **FINALIZED — Collision damage:** one event deals exactly **3 damage** to the pushed target and **3** to a second unit actually struck, if any. The second unit is not pushed. Current shields absorb first; no further DEF/RES reduction, Fury, triangle adjustment, follow-up scaling, or accuracy roll applies. Do not invent another participant or another event.
+  5. **FINALIZED — Counter suppression:** Brutal Knockback never permits a counterattack, even if the defender survives or remains adjacent. This overrides the ordinary single-target counter rule in §4.2.
+- **Passive — Berserker's Fury:** +1 physical damage per complete 10% maximum HP missing: `floor(10 × (MaxHP−CurrentHP)/MaxHP)`; basic attacks, counters, follow-ups and applicable physical abilities. For Brutal Knockback, add Fury before the opening reduction as finalized above.
+- **Unresolved:** Taunt/action restriction details; Brutal Knockback Speed-based follow-ups (the confirmed core executes without a speculative follow-up); stopping positions for blocked pushes, map-edge collision stopping behavior, elevation/falling and terrain-entry effects. Do not infer shortened pushes, diagonal rounding, pushing through units, wall destruction or elevation collision damage. Reject unsupported scenarios explicitly. Flat unobstructed two-tile displacement and the collision damage rule above are confirmed independently of these remaining movement questions.
 
 ## 12.5 Gravebound Colossus — Tank / Anti-Flanking
 **Equipment:** Basic Lance range 1 + shield, Power TBD; Lance reach upgrades. **Stats:** 64/15/22/3/9/5/7/3.

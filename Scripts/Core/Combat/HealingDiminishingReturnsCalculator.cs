@@ -16,18 +16,17 @@ public static class HealingDiminishingReturnsCalculator
     public static int Calculate(int baseHealing, int healOrdinal)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(baseHealing);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(healOrdinal);
-
-        int quarters = healOrdinal switch
-        {
-            1 => 4,
-            2 => 3,
-            3 => 2,
-            _ => 1
-        };
+        int percentage = GetEffectivenessPercentage(healOrdinal);
 
         // Multiply as long first so even int.MaxValue healing is safe. With nonnegative
         // inputs, integer division rounds down without floating-point arithmetic.
-        return (int)((long)baseHealing * quarters / 4);
+        return (int)((long)baseHealing * percentage / 100);
+    }
+
+    /// <summary>Exposes the same effectiveness rule for previews and logs without duplicating its thresholds.</summary>
+    public static int GetEffectivenessPercentage(int healOrdinal)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(healOrdinal);
+        return healOrdinal switch { 1 => 100, 2 => 75, 3 => 50, _ => 25 };
     }
 }

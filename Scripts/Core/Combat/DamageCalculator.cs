@@ -31,16 +31,19 @@ public static class DamageCalculator
     /// <param name="attacker">The attacker's base stats.</param>
     /// <param name="defender">The defender's base stats.</param>
     /// <param name="spellPower">Spell Power; zero is allowed, negative values are not.</param>
+    /// <param name="effectiveResistance">Optional runtime Resistance; omitted calls retain base-stat behavior.</param>
     /// <exception cref="ArgumentNullException">Attacker or defender stats were not supplied.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Spell Power is negative.</exception>
     /// <exception cref="OverflowException">The result is too large for an int.</exception>
-    public static int CalculateMagicalDamage(CharacterStats attacker, CharacterStats defender, int spellPower)
+    public static int CalculateMagicalDamage(CharacterStats attacker, CharacterStats defender, int spellPower,
+        int? effectiveResistance = null)
     {
         ArgumentNullException.ThrowIfNull(attacker);
         ArgumentNullException.ThrowIfNull(defender);
         ArgumentOutOfRangeException.ThrowIfNegative(spellPower);
+        if (effectiveResistance.HasValue) ArgumentOutOfRangeException.ThrowIfNegative(effectiveResistance.Value, nameof(effectiveResistance));
 
-        long damage = (long)attacker.Intelligence + spellPower - defender.Resistance;
+        long damage = (long)attacker.Intelligence + spellPower - (effectiveResistance ?? defender.Resistance);
         return checked((int)Math.Max(1L, damage));
     }
 }

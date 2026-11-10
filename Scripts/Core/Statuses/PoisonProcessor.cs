@@ -13,7 +13,7 @@ public static class PoisonProcessor
     /// PoisonBatchProcessor snapshots all living poisoned targets and their scheduled
     /// damage before applying the batch. Global death handling, drops and death-triggered
     /// effects must wait until the entire batch has received damage. This method runs none
-    /// of those actions; TakeDamage only clears local Poison and depleted shield ownership.
+    /// of those actions; TakeDamage clears local negative statuses on defeat and depleted shield ownership.
     /// </remarks>
     public static PoisonTickResult Process(Character character)
         => ApplyPrepared(Prepare(character));

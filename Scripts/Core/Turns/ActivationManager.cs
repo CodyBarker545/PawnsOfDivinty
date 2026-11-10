@@ -29,6 +29,11 @@ public sealed class ActivationManager
     public bool CanMove => ActiveCharacter?.CanAct == true && !MovementUsed;
     public bool CanUseUtilityAction => ActiveCharacter?.CanAct == true && !UtilityActionUsed;
     public bool CanUseMainAction => ActiveCharacter?.CanAct == true && !MainActionUsed;
+    internal bool IsAbilityPhase => _roundLifecycle is null
+        || _roundLifecycle.CurrentPhase == RoundPhase.AlternatingActivations;
+    // A counter may defeat the actor after a Main Action has already begun.
+    internal bool CanCompleteResolvedMainAction => ActiveCharacter is not null
+        && !ActiveCharacter.HasActedThisRound && !MainActionUsed;
 
     /// <summary>The team allowed to select next; null during an activation or when the round is complete.</summary>
     public int? NextTeamId => ActiveCharacter is null ? GetAvailableTeamId() : null;
@@ -37,8 +42,8 @@ public sealed class ActivationManager
     /// <summary>Snapshots two nonempty rosters with distinct team IDs, preserving existing runtime state.</summary>
     /// <remarks>
     /// There is no six-unit limit here. Match setup owns the standard 6v6 configuration.
-    /// An optional lifecycle supplies the shared round number only; phase readiness and
-    /// activation preparation are not automatically coordinated by this connection.
+    /// An optional lifecycle supplies the shared round number. RoundPreparationCoordinator
+    /// explicitly prepares connected managers; this connection performs no automatic resets.
     /// </remarks>
     public ActivationManager(IEnumerable<Character> firstTeam, IEnumerable<Character> secondTeam, int startingTeamId,
         RoundLifecycleManager? roundLifecycle = null)
@@ -109,6 +114,15 @@ public sealed class ActivationManager
         CompleteActivation();
     }
 
+    // Only successful-use finalization calls this after validating the action before its effect.
+    internal void CompleteResolvedMainAction()
+    {
+        if (!CanCompleteResolvedMainAction)
+            throw new InvalidOperationException("The resolved Main Action no longer owns an available activation.");
+        MainActionUsed = true;
+        CompleteActivation();
+    }
+
     private void ValidateActionRecording()
     {
         if (ActiveCharacter is null)
@@ -134,7 +148,7 @@ public sealed class ActivationManager
     /// Poison, delayed damage, status updates and scoring in their documented phases.
     /// Health, shields, statuses and healing history are not processed here.
     /// This legacy transition is available only in standalone mode. Connected managers
-    /// read the lifecycle's round and await a future explicit preparation integration.
+    /// read the lifecycle's round and use RoundPreparationCoordinator instead.
     /// </remarks>
     public void StartNextRound(int startingTeamId)
     {
@@ -144,8 +158,26 @@ public sealed class ActivationManager
         if (!IsRoundComplete)
             throw new InvalidOperationException("Complete all eligible activations before starting the next round.");
         int nextRound = checked(CurrentRound + 1);
-        foreach (var character in FirstTeam.Concat(SecondTeam)) character.ResetActivation();
+        ResetActivationReadiness(startingTeamId);
         _standaloneRound = nextRound;
+    }
+
+    // The coordinator checks these conditions before reserving preparation or changing any state.
+    internal void ValidateRoundPreparation(RoundLifecycleManager lifecycle, int startingTeamId)
+    {
+        if (!ReferenceEquals(_roundLifecycle, lifecycle))
+            throw new InvalidOperationException("Preparation requires an activation manager connected to this same lifecycle.");
+        ValidateStartingTeam(startingTeamId);
+        if (ActiveCharacter is not null)
+            throw new InvalidOperationException("Complete the active activation before round preparation.");
+    }
+
+    // Called only after the coordinator validates the full batch and reserves preparation.
+    internal void PrepareActivationReadiness(int startingTeamId) => ResetActivationReadiness(startingTeamId);
+
+    private void ResetActivationReadiness(int startingTeamId)
+    {
+        foreach (var character in FirstTeam.Concat(SecondTeam)) character.ResetActivation();
         _preferredTeamId = startingTeamId;
     }
 

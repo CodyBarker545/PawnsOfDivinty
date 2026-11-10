@@ -17,24 +17,30 @@ public sealed record DelayedAttack
     public DelayedAttack(string id, string sourceCharacterId, string targetCharacterId,
         int scheduledRound, int resolutionRound, StrikeResult strike)
     {
-        if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException("An attack ID is required.", nameof(id));
-        if (string.IsNullOrWhiteSpace(sourceCharacterId)) throw new ArgumentException("A source instance ID is required.", nameof(sourceCharacterId));
-        if (string.IsNullOrWhiteSpace(targetCharacterId)) throw new ArgumentException("A target instance ID is required.", nameof(targetCharacterId));
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(scheduledRound);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(resolutionRound);
-        if (resolutionRound < scheduledRound)
-            throw new ArgumentOutOfRangeException(nameof(resolutionRound), "Resolution cannot precede scheduling.");
-        ArgumentNullException.ThrowIfNull(strike);
-        ArgumentOutOfRangeException.ThrowIfNegative(strike.Damage, nameof(strike));
-        if (!strike.Hit && strike.Damage != 0)
-            throw new ArgumentException("A missed attack must store zero damage.", nameof(strike));
-
         Id = id;
         SourceCharacterId = sourceCharacterId;
         TargetCharacterId = targetCharacterId;
         ScheduledRound = scheduledRound;
         ResolutionRound = resolutionRound;
         Strike = strike;
+        Validate();
+    }
+
+    // Shared by construction, scheduling and batch prevalidation; no outcome is recalculated.
+    internal void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Id)) throw new ArgumentException("An attack ID is required.", "id");
+        if (string.IsNullOrWhiteSpace(SourceCharacterId)) throw new ArgumentException("A source instance ID is required.", "sourceCharacterId");
+        if (string.IsNullOrWhiteSpace(TargetCharacterId)) throw new ArgumentException("A target instance ID is required.", "targetCharacterId");
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ScheduledRound, "scheduledRound");
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ResolutionRound, "resolutionRound");
+        if (ResolutionRound < ScheduledRound)
+            throw new ArgumentOutOfRangeException("resolutionRound", "Resolution cannot precede scheduling.");
+        ArgumentNullException.ThrowIfNull(Strike, "strike");
+        ArgumentOutOfRangeException.ThrowIfNegative(Strike.Damage, "strike");
+        if (!Strike.Hit && Strike.Damage != 0)
+            throw new ArgumentException("A missed attack must store zero damage.", "strike");
+        ArgumentOutOfRangeException.ThrowIfNegative(InsertionSequence);
     }
 
     // Reuse the validated outcome when assigning order, without changing the caller's snapshot.

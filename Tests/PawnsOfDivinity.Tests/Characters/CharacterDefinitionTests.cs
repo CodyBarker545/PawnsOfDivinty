@@ -84,7 +84,7 @@ public class CharacterDefinitionTests
     {
         var properties = typeof(CharacterDefinition).GetProperties();
 
-        Assert.Equal(4, properties.Length);
+        Assert.Equal(5, properties.Length); // Identity, description, stats and the new read-only ability list.
         Assert.All(properties, property =>
         {
             Assert.True(property.CanRead);

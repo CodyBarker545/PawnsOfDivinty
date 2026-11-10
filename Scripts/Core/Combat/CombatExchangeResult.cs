@@ -4,6 +4,12 @@ namespace PawnsOfDivinity.Core.Combat;
 public sealed record CombatExchangeResult
 {
     public StrikeResult OpeningStrike { get; }
+    /// <summary>Ordinary opening damage before any ability bonus, even when the strike misses.</summary>
+    public int OpeningBaseDamage { get; }
+    public int OpeningDamageBonus { get; }
+    public int OpeningHealthLost { get; }
+    public int OpeningShieldAbsorbed { get; }
+    public bool OpeningDisarmApplied { get; }
     /// <summary>Total HP lost by the defender across this exchange.</summary>
     public int DefenderHealthLost { get; }
     public bool CounterattackOccurred => CounterStrike is not null;
@@ -16,6 +22,7 @@ public sealed record CombatExchangeResult
     public int FollowUpHealthLost { get; }
     public bool AttackerDefeated { get; }
     public bool DefenderDefeated { get; }
+    public bool CounterattacksSuppressed { get; }
 
     internal CombatExchangeResult(
         StrikeResult openingStrike,
@@ -26,9 +33,21 @@ public sealed record CombatExchangeResult
         bool defenderDefeated,
         FollowUpParticipant followUpBy = FollowUpParticipant.None,
         StrikeResult? followUpStrike = null,
-        int followUpHealthLost = 0)
+        int followUpHealthLost = 0,
+        int openingBaseDamage = 0,
+        int openingDamageBonus = 0,
+        int openingHealthLost = 0,
+        int openingShieldAbsorbed = 0,
+        bool openingDisarmApplied = false,
+        bool counterattacksSuppressed = false)
     {
         OpeningStrike = openingStrike;
+        OpeningBaseDamage = openingBaseDamage;
+        OpeningDamageBonus = openingDamageBonus;
+        OpeningHealthLost = openingHealthLost;
+        OpeningShieldAbsorbed = openingShieldAbsorbed;
+        OpeningDisarmApplied = openingDisarmApplied;
+        CounterattacksSuppressed = counterattacksSuppressed;
         DefenderHealthLost = defenderHealthLost;
         CounterStrike = counterStrike;
         AttackerHealthLost = attackerHealthLost;

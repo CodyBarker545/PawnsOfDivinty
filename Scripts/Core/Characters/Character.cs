@@ -1,5 +1,7 @@
 using System;
+using PawnsOfDivinity.Core.Abilities;
 using PawnsOfDivinity.Core.Statuses;
+using PawnsOfDivinity.Core.Equipment;
 
 namespace PawnsOfDivinity.Core.Characters;
 
@@ -10,13 +12,52 @@ public class Character
     public string Id {get; }
     public string Name {get; }
     public int TeamId {get; }
+    /// <summary>The immutable originating template, or null for legacy stats-only instances.</summary>
+    public CharacterDefinition? Definition { get; }
+    /// <summary>The core's authoritative tactical coordinate; null until placed. Godot presentation is not bound yet.</summary>
+    public GridPosition? TacticalPosition { get; private set; }
+
+    /// <summary>Stores a coordinate for setup or a validated gameplay operation; does not execute movement or validate terrain.</summary>
+    public void SetTacticalPosition(GridPosition position) => TacticalPosition = position;
 
     // Starting stats for a character.
     public CharacterStats BaseStats {get; }
     public StatusTracker Statuses { get; } = new();
+    /// <summary>Instance-owned deadlines retained through defeat and activation resets.</summary>
+    public AbilityCooldownTracker Cooldowns { get; } = new();
+    public SmokeRevealState SmokeReveal { get; } = new();
+    public TemporaryStatModifiers TemporaryModifiers { get; }
+    public TemporalAccumulationProgress TemporalAccumulation { get; } = new();
+    public ScrollDefinition? EquippedScroll { get; private set; }
+
+    /// <summary>Initial assignment of immutable scroll data. Does not authorize a gameplay action or inventory transfer.</summary>
+    /// <remarks>Future Shop/ability coordinators own phase, item ownership and category-permission checks.</remarks>
+    public void EquipScroll(ScrollDefinition scroll)
+    {
+        ArgumentNullException.ThrowIfNull(scroll);
+        if (EquippedScroll is not null)
+            throw new InvalidOperationException("A scroll is already equipped. Use validated replacement instead.");
+        EquippedScroll = scroll;
+    }
+
+    public ScrollReplacementResult ValidateScrollReplacement(ScrollDefinition? proposed)
+        => ScrollReplacementValidation.Validate(EquippedScroll, proposed);
+
+    /// <summary>Permanently changes the reference after fresh compatibility validation; does not execute Transmutation or its attack.</summary>
+    public ScrollReplacementResult ReplaceScroll(ScrollDefinition? proposed)
+    {
+        var validation = ValidateScrollReplacement(proposed);
+        if (!validation.IsCompatible) return validation;
+        var previous = EquippedScroll;
+        EquippedScroll = proposed;
+        return new(previous, proposed, ScrollReplacementRejectionReason.None, wasApplied: true);
+    }
 
     /// <summary>Defense used in combat. Burn removes 3, with a prototype floor of zero.</summary>
-    public int EffectiveDefense => Math.Max(0, BaseStats.Defense - (Statuses.HasStatus(StatusType.Burn) ? 3 : 0));
+    public int EffectiveDefense => Math.Max(0, checked(BaseStats.Defense + TemporaryModifiers.GetBonus(TemporaryStat.Defense))
+        - (Statuses.HasStatus(StatusType.Burn) ? 3 : 0));
+
+    public int EffectiveResistance => checked(BaseStats.Resistance + TemporaryModifiers.GetBonus(TemporaryStat.Resistance));
 
     /// <summary>Movement allowance after Frostbite's -2 MOV penalty, with a prototype floor of zero.</summary>
     public int EffectiveMovement => Math.Max(0, BaseStats.Movement - (Statuses.HasStatus(StatusType.Frostbite) ? 2 : 0));
@@ -78,6 +119,14 @@ public class Character
         TeamId = teamId;
         BaseStats = baseStats;
         CurrentHealth = baseStats.MaxHealth;
+        TemporaryModifiers = new(this);
+    }
+
+    /// <summary>Creates a runtime instance that retains authoritative ability ownership metadata.</summary>
+    public Character(string id, CharacterDefinition definition, int teamId)
+        : this(id, (definition ?? throw new ArgumentNullException(nameof(definition))).Name, teamId, definition.BaseStats)
+    {
+        Definition = definition;
     }
 
     /// <summary>Replaces unowned shield HP. Source-owned shields must be changed through their manager.</summary>
@@ -111,6 +160,7 @@ public class Character
     }
 
     /// <summary>Uses shield HP first, then health, and returns only the actual health lost.</summary>
+    /// <remarks>Defeat removes personal negative statuses through the existing tracker.</remarks>
     public int TakeDamage(int damage)
     {
         if (damage < 0)
@@ -123,7 +173,12 @@ public class Character
         // Each subtraction stays within range, even when all values are int.MaxValue.
         int damageTaken = Math.Min(damage - absorbed, CurrentHealth);
         CurrentHealth -= damageTaken;
-        if (IsDefeated) Statuses.ClearPoison();
+        // Spec v0.2 section 10: personal negative statuses end on death, not on a later timer tick.
+        if (IsDefeated)
+        {
+            Statuses.RemoveAllNegativeStatuses();
+            TemporaryModifiers.ClearOnDefeat();
+        }
 
         return damageTaken;
     }

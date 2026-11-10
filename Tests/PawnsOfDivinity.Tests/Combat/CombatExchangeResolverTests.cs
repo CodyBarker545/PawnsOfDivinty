@@ -25,9 +25,9 @@ public class CombatExchangeResolverTests
         Assert.True(result.CounterStrike.Hit);
         Assert.Equal(80, result.CounterStrike.HitChance);
         Assert.Equal(WeaponTriangleOutcome.Disadvantage, result.CounterStrike.TriangleOutcome);
-        Assert.Equal(10, result.CounterStrike.Damage);
-        Assert.Equal(10, result.AttackerHealthLost);
-        Assert.Equal(28, request.Attacker.CurrentHealth);
+        Assert.Equal(12, result.CounterStrike.Damage); // Nigel lost 13/52 HP: Fury adds 2 before his counter.
+        Assert.Equal(12, result.AttackerHealthLost);
+        Assert.Equal(26, request.Attacker.CurrentHealth);
         Assert.False(result.AttackerDefeated);
         Assert.False(result.DefenderDefeated);
         Assert.Equal(2, provider.CallCount);
@@ -99,7 +99,7 @@ public class CombatExchangeResolverTests
         var result = Resolver(provider).Resolve(request);
 
         Assert.NotNull(result.CounterStrike);
-        Assert.Equal(10, result.CounterStrike.Damage);
+        Assert.Equal(12, result.CounterStrike.Damage); // Includes Nigel's current +2 Fury.
         Assert.Equal(8, result.AttackerHealthLost);
         Assert.Equal(0, request.Attacker.CurrentHealth);
         Assert.True(result.AttackerDefeated);
@@ -575,7 +575,7 @@ public class CombatExchangeResolverTests
         Assert.NotNull(result.FollowUpStrike);
         Assert.Equal(9, result.FollowUpStrike.Damage);
         Assert.Equal(30, request.Defender.CurrentHealth);
-        Assert.Equal(28, request.Attacker.CurrentHealth);
+        Assert.Equal(26, request.Attacker.CurrentHealth); // Nigel's counter includes +2 Fury.
         Assert.Equal(attackerStats, request.Attacker.BaseStats);
         Assert.Equal(defenderStats, request.Defender.BaseStats);
         Assert.Equal(attackerActed, request.Attacker.HasActedThisRound);
@@ -623,10 +623,10 @@ public class CombatExchangeResolverTests
         Assert.Equal(13, result.OpeningStrike.Damage);
         Assert.Equal(7, result.DefenderHealthLost);
         Assert.NotNull(result.CounterStrike);
-        Assert.Equal(10, result.CounterStrike.Damage);
-        Assert.Equal(4, result.AttackerHealthLost);
+        Assert.Equal(11, result.CounterStrike.Damage); // Only 7 HP passed the shield: Fury adds 1.
+        Assert.Equal(5, result.AttackerHealthLost);
         Assert.Equal(45, request.Defender.CurrentHealth);
-        Assert.Equal(34, request.Attacker.CurrentHealth);
+        Assert.Equal(33, request.Attacker.CurrentHealth);
         Assert.Equal(0, request.Defender.ShieldHP);
         Assert.Equal(0, request.Attacker.ShieldHP);
         Assert.Equal(2, provider.CallCount);
