@@ -1,0 +1,454 @@
+PAWNS OF DIVINITY — DEVELOPMENT STUDIO
+Architecture and Phased Implementation Roadmap
+Version 1.0 | 2026-11-09
+Status: Planning baseline; implementation has not begun.
+
+======================================================================
+1. PURPOSE AND SCOPE
+======================================================================
+Build a local, browser-based hybrid development workbench for Pawns of
+Divinity. It combines a 3D battlefield editor, unit/scenario placement,
+a playable tactical sandbox, ability testing, map-flow diagnostics,
+analytics, automated simulations, and eventual Godot integration.
+
+The workbench is NOT a second independently implemented game. Godot
+remains the shipping game client and C# is the authoritative source of
+combat and simulation rules.
+
+Primary goals:
+- Rapidly create and iterate on 14x14 tactical maps.
+- Place units, terrain, obstacles, elevations, spawn areas, and three
+  neutral objectives to examine movement and confrontation patterns.
+- Reproduce combat scenarios and test rules without launching Godot.
+- Collect reliable evidence on map fairness and game balance.
+- Keep the existing Godot project and xUnit tests functional throughout.
+
+Explicit non-goals for the first release:
+- Rebuilding all gameplay in JavaScript.
+- A multiplayer production server or online account system.
+- Final character animations, asset pipeline, or polished visuals.
+- Full game economy, inventory-slot design, or autonomous balance AI.
+- Automatically turning a Three.js scene into Godot scene nodes.
+
+======================================================================
+2. EXISTING GAME ASSUMPTIONS TO VERIFY IN STAGE 0
+======================================================================
+Known design direction (verify against repository before editing):
+- Godot 4.7 .NET, C#, and xUnit tests.
+- A 14x14 tactical grid with elevation and terrain.
+- 5v5 baseline play, with six available character archetypes.
+- Three neutral objectives; alternating activations.
+- Combat stats: MaxHealth, Strength, Defense, Intelligence,
+  Resistance, Wisdom, Speed, Movement.
+- Existing character IDs: hooded_assassin, gentle_guardian,
+  time_weaver, nigel, gravebound_colossus,
+  beothuk_spirit_guardian.
+- Current game entry scene historically Scenes/Battlefield.tscn;
+  repository may have evolved.
+- Recent rules work includes damage, hit accuracy, RNG, and weapon
+  matchup calculations, plus a substantial xUnit suite.
+
+Do not assume the current source tree matches the proposed tree below.
+Do not claim unimplemented rules or abilities are already operational.
+
+======================================================================
+3. TECHNOLOGY AND OWNERSHIP DECISIONS
+======================================================================
+Frontend:
+- React + TypeScript + Vite.
+- Three.js via React Three Fiber for the 3D battlefield.
+- Zustand for editor-only state, selection, tools, and undo/redo.
+- Plain CSS/CSS modules initially; add a component library only if needed.
+- Vitest for pure TypeScript logic; component tests where useful.
+
+Backend:
+- ASP.NET Core minimal API, locally hosted during development.
+- Existing PawnsOfDivinity C# domain logic as authoritative rules.
+- xUnit for domain, API, simulation, data-validation tests.
+- JSON maps and scenarios on disk initially; no database required.
+
+Runtime ownership:
+- Browser: editor UI, rendering, view controls, selection, overlays,
+  transient editor history, requests to the simulator.
+- C# rules/core: validation of legal gameplay actions, movement,
+  attacks, damage, statuses, objectives, deterministic simulation.
+- Godot: shipped gameplay presentation, character visuals, physics,
+  animations, input, and scene lifecycle.
+- Adapter/importer: map/scenario schema translation into Godot.
+
+Critical constraint: do not copy damage, accuracy, movement, or ability
+rules into the browser. UI may calculate provisional visual previews,
+but the C# core must validate any authoritative result.
+
+Version policy: pin compatible versions in lock files / project files
+at implementation time, after validating against current project setup.
+
+======================================================================
+4. TARGET REPOSITORY STRUCTURE (PROPOSAL; NO BLIND MOVES)
+======================================================================
+PawnsOfDivinity/
+  Game/                            # Godot runtime, after safe migration
+    project.godot
+    Scenes/
+    Scripts/
+    Assets/
+  Core/                            # Godot-independent C# rules library
+    Characters/
+    Combat/
+    Movement/
+    Abilities/
+    Battlefield/
+    Simulation/
+  DevelopmentStudio/
+    client/
+      src/
+        app/                        # routes/shell/layout
+        components/                 # shared UI controls
+        features/
+          map-editor/
+          scenario-editor/
+          battle-sandbox/
+          character-lab/
+          flow-analysis/
+          analytics/
+          test-lab/
+        scene/                      # R3F 3D presentation
+        stores/                     # editor state, history
+        services/                   # typed API client
+        contracts/                  # generated/validated DTO types
+      public/
+    server/
+      Endpoints/
+      Services/
+      Persistence/
+      Contracts/
+  Tests/
+    Core.Tests/
+    Simulation.Tests/
+    Studio.Api.Tests/
+  Data/
+    Maps/
+    Scenarios/
+    Presets/
+    Reports/                        # generated; ignore when appropriate
+  Docs/
+    DevelopmentStudio/
+      architecture.md
+      schemas.md
+      decisions.md
+      roadmap.md
+
+Preserve existing projects, names, .uid files, solution references,
+Godot imports, and Git history unless a migration is independently
+justified and validated. Keep canonical C# namespace PawnsOfDivinity.
+Existing Git remote/repository name need not change.
+
+======================================================================
+5. CORE DATA CONTRACTS
+======================================================================
+Use separate, versioned, validated data documents:
+
+A. MapDefinition (persistent battlefield design)
+  schemaVersion, id, name, gridWidth=14, gridHeight=14, tileScale,
+  tiles[x,y] with terrainId, elevation, passability, cover, LOS flags;
+  static obstacle descriptors; objective locations/types; spawn zones;
+  metadata and optional design notes.
+
+B. ScenarioDefinition (specific starting situation)
+  schemaVersion, id, mapId/mapRevision, teams, unit instances with
+  unique IDs, character-definition IDs, positions, facing/initial HP,
+  optional statuses and gameplay state, configured initial turn/seed,
+  scenario-specific temporary terrain, optional expected outcomes.
+
+C. Command / SimulationResult (backend API boundary)
+  scenarioId or snapshot, expected revision, actor, action and targets;
+  result with validated action, state changes, emitted events,
+  errors/rejection reasons, RNG seed/sequence, and next state version.
+
+D. Report / Replay
+  scenario/map references and revisions; ruleset version; AI policy
+  version; seed; action/event log; final outcome; summary statistics.
+
+Schema rules:
+- Canonical grid coordinates, axis orientation, height units, and
+  topology must be documented and tested for both Three.js and Godot.
+- Validate bounds, uniqueness, illegal overlaps, unsupported terrain,
+  objective count (for standard mode), spawn validity, and data versions.
+- Keep terrain data-driven; avoid one subclass for every tile type.
+- Prefer explicit schema upgrades over silently accepting corrupted
+  older files.
+- Persist files atomically (write temporary + rename) and sanitize
+  paths/IDs to prevent traversal or overwriting unrelated files.
+- Separate permanent map obstacles from temporary gameplay effects.
+- Gameplay state snapshots are distinct from editable definitions.
+
+Example scenario excerpt:
+{
+  "schemaVersion": 1,
+  "id": "assassin_smoke_test",
+  "mapId": "central_crossing",
+  "units": [
+    {"id":"unit_001", "characterId":"hooded_assassin", "team":"blue", "position":{"x":3,"y":5}},
+    {"id":"unit_002", "characterId":"nigel", "team":"red", "position":{"x":6,"y":5}}
+  ]
+}
+
+======================================================================
+6. EDITOR INTERACTION SPECIFICATION
+======================================================================
+Main layout:
+- Top bar: project/map/scenario name, Save, Undo, Redo, Run, export.
+- Left palette: Select, Terrain, Elevation, Obstacles, Objectives,
+  Spawns, Units, Measure, Analysis.
+- Center: 3D board with orbit/pan/zoom and optional top-down camera.
+- Right inspector: selected tile/unit/obstacle/objective properties.
+- Bottom: status, validation errors, event log / test results.
+
+Controls and behaviors:
+- Left-click select/place; drag paint with brush mode.
+- Camera orbit and pan must not accidentally paint tiles.
+- Keyboard shortcuts documented; editable fields preserve text input.
+- Grid snapping, selection highlight, elevation visualization,
+  multi-select if justified, rotate/facing control for units.
+- Undo/redo uses semantic commands; cap history and mark dirty state.
+- Save/Load/Duplicate/Rename/Delete with confirmation for destructive
+  actions; autosave/recovery can come after core persistence works.
+- Show all validation failures precisely rather than silently fixing.
+- Keep a 2D/top-down fallback if 3D occlusion hinders editing.
+
+======================================================================
+7. IMPLEMENTATION ROADMAP
+======================================================================
+Every stage has a scope, deliverables, tests, and acceptance gate.
+Only start a new stage after tests and a manual demonstration pass.
+
+STAGE 0 — REPOSITORY AUDIT AND APPLICATION FOUNDATION
+Purpose: establish the workbench without modifying game behavior.
+Tasks:
+  0.1 Read-only inventory of solution, .csproj dependencies, Godot
+      scene structure, tests, C# references to Godot, and assets.
+  0.2 Produce migration design identifying rules reusable outside Godot.
+  0.3 Define coordinate/elevation conventions and initial JSON schemas.
+  0.4 Scaffold React/TypeScript/Vite and R3F scene shell.
+  0.5 Scaffold local ASP.NET Core API with health/version endpoint.
+  0.6 Configure local development commands, CORS restriction, lint,
+      formatter, build, and test runners.
+  0.7 Add a blank 14x14 grid and documented project setup.
+Tests: frontend smoke/build, API smoke, all existing xUnit tests.
+Gate: dashboard opens, 3D grid visible, backend reachable, Godot and
+     existing tests remain working; baseline committed.
+
+STAGE 1 — 3D BATTLEFIELD EDITOR (FIRST PRACTICAL RELEASE)
+Purpose: create and save custom tactical maps.
+Tasks:
+  1.1 Grid rendering, tile picking, camera orbit/pan/zoom, top view.
+  1.2 Terrain palette and paint/erase tools.
+  1.3 Elevation brush; visual steep edges and blocked routes.
+  1.4 Obstacles, walls, bushes, and walkability/LOS flags.
+  1.5 Standard objectives and team spawn zones.
+  1.6 Tile inspector, coordinates, highlights, measurement tool.
+  1.7 Semantic undo/redo and dirty-state tracking.
+  1.8 Map validation, Save/Load/Duplicate/Rename.
+Tests: tile indexing, coordinate conversion, brush actions, undo/redo,
+       map schema validation, persistence round-trip.
+Gate: build, save, close, reload, and edit a complete 14x14 map with
+     identical terrain/elevation/objective layout.
+
+STAGE 2 — CHARACTER PALETTE AND SCENARIO BUILDER
+Purpose: create repeatable battle setups.
+Tasks:
+  2.1 Load actual registered character definitions from C# DTO/API;
+      avoid maintaining a second canonical hardcoded roster.
+  2.2 Place/move/remove units; assign teams and initial positions.
+  2.3 Show stats, roles, and permissible starting-state overrides.
+  2.4 Validate placement conflicts, unwalkable tiles, invalid IDs,
+      and team/spawn constraints.
+  2.5 Save/load scenarios separately from maps; scenario presets.
+  2.6 Use simple tokens first; optional model previews come later.
+Tests: unit uniqueness, bounds, overlapping positions, scenario
+       serialization, starting-state validation.
+Gate: save and reload valid 5v5 and focused 1v1/2v3 test scenarios.
+
+STAGE 3 — SHARED C# TACTICAL SIMULATOR
+Purpose: interactive gameplay in the browser using one rules engine.
+Prerequisite: identify and extract Godot-independent domain logic as
+small, tested changes; do NOT start a second JS combat implementation.
+Tasks:
+  3.1 Build a simulation state machine and legal action contract.
+  3.2 Expose legal moves/pathfinding/LOS through ASP.NET Core.
+  3.3 Select active unit, show move/attack targets and explanations.
+  3.4 Resolve movement, hit checks, damage, follow-up attacks,
+      deaths, statuses and turn/activation changes as supported.
+  3.5 Add seeded RNG, events, action history and scenario reset.
+  3.6 Add objective scoring and match-end checks once domain rules
+      are implemented and tested.
+Tests: action legality, reproducibility, invalid action rejection,
+       expected snapshots, API/core consistency.
+Gate: play a small scenario end-to-end with matching C# results and
+     no duplicated JavaScript rules.
+
+STAGE 4 — CHARACTER AND ABILITY LABORATORY
+Purpose: test individual mechanics quickly.
+Tasks:
+  4.1 Unit inspector: stats, health, resistances, status, equipment
+      fields only where canonical rules already define them.
+  4.2 Temporary overrides for experiments; Restore Defaults button.
+  4.3 Ability panel with targeting previews and clear cooldowns.
+  4.4 Save named edge-case scenarios and expected outcomes.
+  4.5 Test Hooded Assassin smoke/teleport/visibility, Guardian
+      healing/buffs, Time Weaver, Nigel, Colossus, Beothuk ice as
+      each ability becomes truly implemented in domain logic.
+Tests: ability invariants, statuses, targeting, overrides vs defaults,
+       regression cases for every completed ability.
+Gate: repeat a single ability test with alternate terrain, targets,
+     seeds, and stats without rewriting code.
+
+STAGE 5 — FLOW AND MAP-FAIRNESS ANALYTICS
+Purpose: discover poor routes and structural team advantages.
+Tasks:
+  5.1 Reachability overlays by movement allowance / activation count.
+  5.2 Shortest paths, obstructions, cover, line of sight, attack zones.
+  5.3 Objective travel costs and neutral-camp accessibility.
+  5.4 Spawn symmetry / asymmetry and contested high-ground access.
+  5.5 Chokepoint analysis and map comparison reports.
+  5.6 Export visual/report snapshots alongside map revision.
+Tests: overlay results against validated C# path/LOS behavior,
+       symmetric-map fixtures and asymmetric control examples.
+Gate: generate reproducible map reports highlighting potentially
+     unfair objective access or movement bottlenecks.
+
+STAGE 6 — AUTOMATED SCENARIO RUNNER AND BATCH SIMULATION
+Purpose: turn playtesting into reproducible evidence.
+Tasks:
+  6.1 Scenario assertions and test fixture import/export.
+  6.2 Replay log, stepping, seed, state snapshots and failure reports.
+  6.3 First baseline AI policy for legal actions (simple, documented).
+  6.4 Headless batch simulation with rule version and policy version.
+  6.5 Metrics: winner, VP, objectives, damage, HP, gold, deaths,
+      activation count and match duration.
+  6.6 Charts, scenario comparisons, CSV/JSON reports.
+Tests: replay determinism, batch consistency, stable fixtures,
+       AI legal-action invariants, report provenance.
+Gate: reproduce an exact run by seed and export multiple-run report.
+Caution: win rates for one AI policy do not prove human PvP balance.
+
+STAGE 7 — GODOT INTEROPERABILITY AND WORKFLOW
+Purpose: transfer validated content into playable game scenes.
+Tasks:
+  7.1 Build Godot-side importer/adapter for versioned map/scenario DTOs.
+  7.2 Convert grid dimensions, axes, elevations, terrain IDs and
+      spawn/objective placements into runtime Godot representation.
+  7.3 Validate both directions for saved/imported board state; add
+      preview of available GLB models when useful.
+  7.4 Launch/reload specific scenarios in Godot through documented
+      local development workflow (no fragile editor automation).
+  7.5 Compare domain results across browser and Godot.
+Tests: fixture parity, coordinate translation, missing asset fallback,
+       Godot startup/load smoke, gameplay state equivalence.
+Gate: create a map/scenario in browser, import to Godot and verify
+     terrain, units, goals and gameplay validity.
+
+OPTIONAL LATER STAGES (NOT MVP BLOCKERS)
+- Live Godot scene preview/telemetry bridge.
+- More capable tactical AI, AI-vs-AI tournaments and parameter sweeps.
+- Batch procedural map generation and fairness filters.
+- Rule version comparison and balance diff reports.
+- Replay visualization with timeline and timeline bookmarks.
+- Asset browser, animation review, collision visualizations.
+- Remote collaboration, multiple designers, database persistence.
+
+======================================================================
+8. CROSS-CUTTING QUALITY BAR
+======================================================================
+For each increment:
+- Small changes with named scope; no unrelated redesign.
+- Existing Godot scene starts and existing C# tests pass.
+- New pure rules have C# xUnit tests; editor actions have Vitest tests.
+- Save/load formats have round-trip and invalid-input tests.
+- APIs return meaningful errors and validate all external inputs.
+- UI visibly distinguishes valid targets from hypothetical previews.
+- Determinism: log seed, game version, scenario version and commands.
+- Performance: responsive 14x14 editing; avoid unnecessary rerenders;
+  large batch simulations run on the C# server, not in the UI thread.
+- Usability: keyboard shortcuts, selection state, camera reset,
+  contrast, error feedback and safe recovery from failed saves.
+- Security: localhost by default; restricted origins, safe file paths,
+  no arbitrary filesystem access or remote code execution endpoints.
+- Documentation: record decisions, operation instructions,
+  limitations, and tested completion evidence.
+
+======================================================================
+9. CODING ORDER AND CODEX WORKFLOW
+======================================================================
+Recommended order: 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7.
+Do not implement unfinalized gameplay rules solely to satisfy the UI.
+
+At the beginning of each stage, Codex should:
+  (1) Inspect relevant files and summarize the exact current state.
+  (2) Propose only the required modifications with file list.
+  (3) Implement one bounded subtask at a time.
+  (4) Explain each class, property, function, and important design
+      choice so the developer can learn the codebase.
+  (5) Run relevant tests, build frontend, and verify no regressions.
+  (6) Report changed files, test results, limitations, and next task.
+
+Do not grant blanket authority to move all existing C# files or rename
+projects. First inspect how code is currently referenced by Godot;
+extract reusable pure C# logic through safe incremental changes.
+
+======================================================================
+10. FIRST CODEX PROMPT — READ-ONLY STAGE 0 AUDIT
+======================================================================
+You are helping develop Pawns of Divinity, a Godot 4.7 .NET tactical
+PvP project written in C# with xUnit tests. We plan to add a React +
+TypeScript + React Three Fiber browser-based Development Studio and a
+local ASP.NET Core API. The C# rules must remain authoritative.
+
+For this first task, INSPECT ONLY. Do not modify, rename, delete,
+regenerate, or relocate any files.
+
+1. Map the current solution, Godot project, C# projects, namespaces,
+   source folders, test projects, build commands, and Git status.
+2. Identify which character/combat/map/turn rules are already pure C#,
+   which depend on Godot runtime APIs, and which planned rules do not
+   appear to be implemented yet.
+3. Identify existing map coordinates, terrain metadata, elevation,
+   spawn and objective representation, and persistence patterns.
+4. Recommend the safest incremental way to introduce a reusable C#
+   core, local API, and DevelopmentStudio/client without breaking the
+   game, xUnit tests, project references, or Godot resource UIDs.
+5. Propose the precise Stage 0 folder/project plan, including any
+   dependencies or blockers. Do not assume the suggested target layout
+   already exists.
+6. Report the current test baseline; if tools allow, execute the
+   existing build/tests without changing files.
+7. Explain findings and tradeoffs in approachable teaching language.
+
+Return: current repository inventory, dependency diagram, risks,
+recommended minimal Stage 0 changes, exact validation commands, and
+an ordered plan for the first implementation commit. Stop there.
+
+======================================================================
+11. DEFINITION OF SUCCESS
+======================================================================
+MVP / first useful version:
+[ ] Local Development Studio launches.
+[ ] Interactive 14x14 board and camera work.
+[ ] Terrain, elevations, obstacles, objectives, and spawns can be edited.
+[ ] Undo/redo plus robust map save/load work.
+[ ] Existing Godot game and tests remain functional.
+
+Hybrid simulator milestone:
+[ ] Existing roster can be placed into versioned scenarios.
+[ ] C# core evaluates browser actions authoritatively.
+[ ] Valid combat turns can be played and replayed.
+[ ] Focused ability tests can be saved and repeated.
+
+Long-term milestone:
+[ ] Map flow/fairness overlays are accurate and reproducible.
+[ ] Seeded automated simulation produces traceable reports.
+[ ] Maps and scenarios transfer reliably from browser to Godot.
+[ ] The same game logic drives both experiences.
+
+NEXT ACTION: Run the read-only Codex prompt in Section 10, review the
+actual dependency inventory, and only then begin Stage 0 scaffolding.

@@ -11,8 +11,15 @@ public static class AbilityEligibility
     public static AbilityEligibilityResult Evaluate(Character character, string abilityId, ActivationManager activations)
         => Evaluate(character, abilityId, activations, completingResolvedMainAction: false);
 
+    public static AbilityEligibilityResult Evaluate(Character character, string abilityId, ActivationManager activations,
+        AttackIntent intent)
+    {
+        ArgumentNullException.ThrowIfNull(intent);
+        return Evaluate(character, abilityId, activations, false, intent);
+    }
+
     internal static AbilityEligibilityResult Evaluate(Character character, string abilityId, ActivationManager activations,
-        bool completingResolvedMainAction)
+        bool completingResolvedMainAction, AttackIntent? intent = null)
     {
         ArgumentNullException.ThrowIfNull(character);
         ArgumentNullException.ThrowIfNull(activations);
@@ -43,6 +50,30 @@ public static class AbilityEligibility
         }
         else if (!SilenceEligibility.CanUseAbility(character, ability.IsSpellTagged.Value))
             return Result(AbilityRejectionReason.BlockedBySilence);
+        if (!completingResolvedMainAction && intent is not null && ability.RequiredAction == AbilityActionType.MainAction)
+        {
+            if (!ReferenceEquals(intent.Character, character) || !ReferenceEquals(intent.Activations, activations)
+                || intent.ActionId != abilityId) return Result(AbilityRejectionReason.UseContextChanged);
+            var targeting = AttackIntentValidation.Evaluate(intent, ability);
+            var reason = targeting.Outcome switch
+            {
+                AttackIntentOutcome.Allowed => AbilityRejectionReason.None,
+                AttackIntentOutcome.ContextChanged => AbilityRejectionReason.UseContextChanged,
+                AttackIntentOutcome.TargetRejected => AbilityRejectionReason.InvalidTarget,
+                AttackIntentOutcome.TauntRejected => AbilityRejectionReason.ActionRestricted,
+                _ => AbilityRejectionReason.ActionRestrictionUnresolved
+            };
+            return new(character.Id, abilityId, reason, targeting);
+        }
+        // Utility is permitted under taunt but remains subject to all ordinary checks above.
+        // An untargeted Main Action remains blocked unless its source is definitively invalid.
+        if (!completingResolvedMainAction && ability.RequiredAction == AbilityActionType.MainAction
+            && activations.ActionRestrictions.GetActive(character.Id) is not null)
+        {
+            var policy = activations.EvaluateMainAction(character);
+            return policy.IsAllowed ? new(character.Id, abilityId, AbilityRejectionReason.None, actionApproval: policy)
+                : Result(AbilityRejectionReason.ActionRestrictionUnresolved);
+        }
         return Result(AbilityRejectionReason.None);
 
         AbilityEligibilityResult Result(AbilityRejectionReason reason) => new(character.Id, abilityId, reason);

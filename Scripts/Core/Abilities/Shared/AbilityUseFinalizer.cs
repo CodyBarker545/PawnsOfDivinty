@@ -1,4 +1,5 @@
 using System;
+using PawnsOfDivinity.Core.Characters;
 
 namespace PawnsOfDivinity.Core.Abilities;
 
@@ -14,22 +15,33 @@ public static class AbilityUseFinalizer
     /// </remarks>
     public static AbilityUseResult FinalizeSuccessfulUse(AbilityUse use)
     {
-        var validation = ValidateSuccessfulUse(use);
+        var validation = ValidateSuccessfulUse(use, preparingExecution: true);
         return validation.Succeeded ? Commit(use, validation, completingResolvedMainAction: false) : validation;
     }
 
     /// <summary>Checks bookkeeping, including deadline arithmetic, before an effect can mutate combat state.</summary>
-    internal static AbilityUseResult ValidateSuccessfulUse(AbilityUse use)
+    internal static AbilityUseResult ValidateSuccessfulUse(AbilityUse use, Character? actualTarget = null, bool? isAttack = null,
+        bool preparingExecution = false)
     {
         ArgumentNullException.ThrowIfNull(use);
         if (use.IsFinalized) return Rejected(AbilityRejectionReason.AlreadyFinalized);
         if (use.RoundNumber != use.Activations.CurrentRound) return Rejected(AbilityRejectionReason.UseContextChanged);
-        var eligibility = AbilityEligibility.Evaluate(use.Character, use.AbilityId, use.Activations);
+        AttackIntent? intent = null;
+        if (actualTarget is not null && isAttack.HasValue && use.AttackIntent is not null)
+        {
+            if (!ReferenceEquals(actualTarget, use.AttackIntent.Target) || use.AttackIntent.IsAttack != isAttack.Value)
+                return Rejected(AbilityRejectionReason.UseContextChanged);
+            intent = use.AttackIntent;
+        }
+        var eligibility = AbilityEligibility.Evaluate(use.Character, use.AbilityId, use.Activations, false, intent);
         if (!eligibility.IsAllowed) return new AbilityUseResult(eligibility, use.RoundNumber, null);
 
         var ability = AbilityEligibility.FindOwnedAbility(use.Character, use.AbilityId)!;
         var deadline = new AbilityCooldown(use.RoundNumber, ability.ReuseInterval!.Value);
-        return new AbilityUseResult(eligibility, use.RoundNumber, deadline.ReadyRound);
+        if (preparingExecution && eligibility.ActionApproval is { } actionApproval
+            && !use.Activations.BeginApprovedMainAction(use.Character, actionApproval).IsAllowed)
+            return Rejected(AbilityRejectionReason.UseContextChanged);
+        return new AbilityUseResult(eligibility, use.RoundNumber, deadline.ReadyRound, use);
 
         AbilityUseResult Rejected(AbilityRejectionReason reason)
             => new(new AbilityEligibilityResult(use.CharacterId, use.AbilityId, reason), use.RoundNumber, null);
@@ -39,12 +51,15 @@ public static class AbilityUseFinalizer
     // permits finishing an already-started action after a lethal counter, not starting one dead.
     internal static AbilityUseResult FinalizeResolvedMainAction(AbilityUse use, AbilityUseResult approval)
     {
-        if (!approval.Succeeded || approval.Eligibility.CharacterId != use.CharacterId
+        if (!approval.Succeeded || !ReferenceEquals(approval.ApprovedUse, use) || approval.Eligibility.CharacterId != use.CharacterId
             || approval.Eligibility.AbilityId != use.AbilityId || approval.RoundNumber != use.RoundNumber)
             throw new ArgumentException("Approval must describe this ability use.", nameof(approval));
         if (use.IsFinalized)
             return Rejected(AbilityRejectionReason.AlreadyFinalized);
         if (use.RoundNumber != use.Activations.CurrentRound)
+            return Rejected(AbilityRejectionReason.UseContextChanged);
+        var actionApproval = approval.Eligibility.ActionApproval;
+        if (actionApproval is not null && !use.Activations.ValidateApprovedMainAction(use.Character, actionApproval).IsAllowed)
             return Rejected(AbilityRejectionReason.UseContextChanged);
         var eligibility = AbilityEligibility.Evaluate(use.Character, use.AbilityId, use.Activations,
             completingResolvedMainAction: true);
@@ -52,7 +67,9 @@ public static class AbilityUseFinalizer
         var ability = AbilityEligibility.FindOwnedAbility(use.Character, use.AbilityId)!;
         if (ability.RequiredAction != AbilityActionType.MainAction)
             throw new InvalidOperationException("Resolved combat completion requires a Main Action.");
-        return Commit(use, new(eligibility, use.RoundNumber, approval.ReadyRound), completingResolvedMainAction: true);
+        var completion = new AbilityEligibilityResult(use.CharacterId, use.AbilityId, eligibility.RejectionReason,
+            approval.Eligibility.AttackIntent, approval.Eligibility.ActionApproval);
+        return Commit(use, new(completion, use.RoundNumber, approval.ReadyRound, use), completingResolvedMainAction: true);
 
         AbilityUseResult Rejected(AbilityRejectionReason reason)
             => new(new(use.CharacterId, use.AbilityId, reason), use.RoundNumber, null);
@@ -62,7 +79,9 @@ public static class AbilityUseFinalizer
     {
         var ability = AbilityEligibility.FindOwnedAbility(use.Character, use.AbilityId)!;
         use.Character.Cooldowns.RecordUse(ability.Id, use.RoundNumber, ability.ReuseInterval!.Value);
-        if (completingResolvedMainAction) use.Activations.CompleteResolvedMainAction();
+        if (validation.Eligibility.ActionApproval is { } approval)
+            use.Activations.CompleteApprovedMainAction(use.Character, approval);
+        else if (completingResolvedMainAction) use.Activations.CompleteResolvedMainAction();
         else if (ability.RequiredAction == AbilityActionType.MainAction) use.Activations.CompleteMainAction();
         else use.Activations.RecordUtilityAction();
         use.MarkFinalized();

@@ -1,0 +1,4981 @@
+[
+  {
+    "Definition": {
+      "Id": "nigel_colossus",
+      "Mode": 1,
+      "Participants": [
+        {
+          "InstanceId": "a",
+          "DefinitionId": "nigel",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "b",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        }
+      ],
+      "Assumptions": [
+        "TEST FIXTURE VALUES; flat visible map, no flying or smoke; supplied accuracy and equipment; no balance conclusion."
+      ],
+      "Accuracy": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "StatusRolls": [],
+      "Selection": [],
+      "Actions": [
+        {
+          "Id": "opening",
+          "Kind": 0,
+          "ActorId": "a",
+          "TargetId": "b",
+          "AbilityId": null,
+          "RequiredAttack": null,
+          "ArrowContext": null,
+          "Tiles": null,
+          "Direction": null,
+          "ReactionLimit": null,
+          "ConfirmedLegal": null
+        }
+      ],
+      "Rounds": [],
+      "IsolatedAttacks": [],
+      "InitialRound": 1,
+      "ActiveCharacterId": "a",
+      "TargetingLegal": true
+    },
+    "Status": 0,
+    "Before": {
+      "Round": 1,
+      "Phase": 6,
+      "ActiveCharacterId": "a",
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": false,
+      "Characters": {
+        "a": {
+          "Id": "a",
+          "DefinitionId": "nigel",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 52,
+            "Strength": 20,
+            "Defense": 11,
+            "Intelligence": 3,
+            "Resistance": 8,
+            "Wisdom": 4,
+            "Speed": 13,
+            "Movement": 4
+          },
+          "CurrentHealth": 52,
+          "MaxHealth": 52,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 8,
+          "EffectiveSpeed": 13,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "b": {
+          "Id": "b",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 64,
+            "Strength": 15,
+            "Defense": 22,
+            "Intelligence": 3,
+            "Resistance": 9,
+            "Wisdom": 5,
+            "Speed": 7,
+            "Movement": 3
+          },
+          "CurrentHealth": 64,
+          "MaxHealth": 64,
+          "ShieldHP": 0,
+          "EffectiveDefense": 22,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 7,
+          "EffectiveMovement": 3,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "After": {
+      "Round": 1,
+      "Phase": 6,
+      "ActiveCharacterId": null,
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": true,
+      "Characters": {
+        "a": {
+          "Id": "a",
+          "DefinitionId": "nigel",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 52,
+            "Strength": 20,
+            "Defense": 11,
+            "Intelligence": 3,
+            "Resistance": 8,
+            "Wisdom": 4,
+            "Speed": 13,
+            "Movement": 4
+          },
+          "CurrentHealth": 47,
+          "MaxHealth": 52,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 8,
+          "EffectiveSpeed": 13,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "b": {
+          "Id": "b",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 64,
+            "Strength": 15,
+            "Defense": 22,
+            "Intelligence": 3,
+            "Resistance": 9,
+            "Wisdom": 5,
+            "Speed": 7,
+            "Movement": 3
+          },
+          "CurrentHealth": 57,
+          "MaxHealth": 64,
+          "ShieldHP": 0,
+          "EffectiveDefense": 22,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 7,
+          "EffectiveMovement": 3,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "Metrics": {
+      "ActionsAttempted": 1,
+      "CompletedActions": 1,
+      "CompletedMainActions": 1,
+      "AttacksAttempted": 1,
+      "CompletedRounds": 0,
+      "Hits": 3,
+      "Misses": 0,
+      "PhysicalCalculatedDamage": 12,
+      "MagicalCalculatedDamage": 0,
+      "ObservedHPDamage": 12,
+      "ObservedShieldLoss": 0,
+      "RecordedHealing": 0,
+      "Counterattacks": 1,
+      "FollowUps": 1,
+      "CompletedAbilities": 0,
+      "StrikeDataComplete": true
+    },
+    "Survivability": [
+      {
+        "InstanceId": "a",
+        "StartingHP": 52,
+        "FinalHP": 47,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 5,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 1
+      },
+      {
+        "InstanceId": "b",
+        "StartingHP": 64,
+        "FinalHP": 57,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 7,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 2
+      }
+    ],
+    "Strikes": [
+      {
+        "OperationId": "opening",
+        "ActorId": "a",
+        "TargetId": "b",
+        "Role": "Opening",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 4,
+        "HealthLost": 4,
+        "ShieldAbsorbed": 0,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "opening",
+        "ActorId": "b",
+        "TargetId": "a",
+        "Role": "Counter",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 5,
+        "HealthLost": 5,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "opening",
+        "ActorId": "a",
+        "TargetId": "b",
+        "Role": "FollowUp",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 3,
+        "HealthLost": 3,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      }
+    ],
+    "Blockers": [],
+    "Events": [
+      {
+        "Sequence": 1,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 2,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 3,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 2,
+        "Amount": 4,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 4,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 5,
+        "Amount": 4,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 5,
+        "ActorId": "b",
+        "TargetId": "a",
+        "Type": 2,
+        "Amount": 5,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 6,
+        "ActorId": "b",
+        "TargetId": "a",
+        "Type": 5,
+        "Amount": 5,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 7,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 2,
+        "Amount": 3,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 8,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 5,
+        "Amount": 3,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 9,
+        "ActorId": "a",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      }
+    ],
+    "RandomDraws": [
+      {
+        "Sequence": 1,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 2,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 3,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      }
+    ],
+    "Rounds": []
+  },
+  {
+    "Definition": {
+      "Id": "assassin_time_weaver",
+      "Mode": 1,
+      "Participants": [
+        {
+          "InstanceId": "a",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "b",
+          "DefinitionId": "time_weaver",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_fire",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        }
+      ],
+      "Assumptions": [
+        "TEST FIXTURE VALUES; flat visible map, no flying or smoke; supplied accuracy and equipment; no balance conclusion."
+      ],
+      "Accuracy": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "StatusRolls": [],
+      "Selection": [],
+      "Actions": [
+        {
+          "Id": "opening",
+          "Kind": 0,
+          "ActorId": "a",
+          "TargetId": "b",
+          "AbilityId": null,
+          "RequiredAttack": null,
+          "ArrowContext": null,
+          "Tiles": null,
+          "Direction": null,
+          "ReactionLimit": null,
+          "ConfirmedLegal": null
+        }
+      ],
+      "Rounds": [],
+      "IsolatedAttacks": [],
+      "InitialRound": 1,
+      "ActiveCharacterId": "a",
+      "TargetingLegal": true
+    },
+    "Status": 0,
+    "Before": {
+      "Round": 1,
+      "Phase": 6,
+      "ActiveCharacterId": "a",
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": false,
+      "Characters": {
+        "a": {
+          "Id": "a",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 17,
+            "Defense": 8,
+            "Intelligence": 5,
+            "Resistance": 9,
+            "Wisdom": 4,
+            "Speed": 24,
+            "Movement": 6
+          },
+          "CurrentHealth": 38,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 24,
+          "EffectiveMovement": 6,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "b": {
+          "Id": "b",
+          "DefinitionId": "time_weaver",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 6,
+            "Defense": 8,
+            "Intelligence": 17,
+            "Resistance": 13,
+            "Wisdom": 14,
+            "Speed": 17,
+            "Movement": 5
+          },
+          "CurrentHealth": 38,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 13,
+          "EffectiveSpeed": 17,
+          "EffectiveMovement": 5,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_fire",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "After": {
+      "Round": 1,
+      "Phase": 6,
+      "ActiveCharacterId": null,
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": true,
+      "Characters": {
+        "a": {
+          "Id": "a",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 17,
+            "Defense": 8,
+            "Intelligence": 5,
+            "Resistance": 9,
+            "Wisdom": 4,
+            "Speed": 24,
+            "Movement": 6
+          },
+          "CurrentHealth": 26,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 24,
+          "EffectiveMovement": 6,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "b": {
+          "Id": "b",
+          "DefinitionId": "time_weaver",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 6,
+            "Defense": 8,
+            "Intelligence": 17,
+            "Resistance": 13,
+            "Wisdom": 14,
+            "Speed": 17,
+            "Movement": 5
+          },
+          "CurrentHealth": 17,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 13,
+          "EffectiveSpeed": 17,
+          "EffectiveMovement": 5,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_fire",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "Metrics": {
+      "ActionsAttempted": 1,
+      "CompletedActions": 1,
+      "CompletedMainActions": 1,
+      "AttacksAttempted": 1,
+      "CompletedRounds": 0,
+      "Hits": 3,
+      "Misses": 0,
+      "PhysicalCalculatedDamage": 21,
+      "MagicalCalculatedDamage": 12,
+      "ObservedHPDamage": 33,
+      "ObservedShieldLoss": 0,
+      "RecordedHealing": 0,
+      "Counterattacks": 1,
+      "FollowUps": 1,
+      "CompletedAbilities": 0,
+      "StrikeDataComplete": true
+    },
+    "Survivability": [
+      {
+        "InstanceId": "a",
+        "StartingHP": 38,
+        "FinalHP": 26,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 12,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 1
+      },
+      {
+        "InstanceId": "b",
+        "StartingHP": 38,
+        "FinalHP": 17,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 21,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 2
+      }
+    ],
+    "Strikes": [
+      {
+        "OperationId": "opening",
+        "ActorId": "a",
+        "TargetId": "b",
+        "Role": "Opening",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 14,
+        "HealthLost": 14,
+        "ShieldAbsorbed": 0,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "opening",
+        "ActorId": "b",
+        "TargetId": "a",
+        "Role": "Counter",
+        "Type": 1,
+        "Hit": true,
+        "CalculatedDamage": 12,
+        "HealthLost": 12,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": null,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "opening",
+        "ActorId": "a",
+        "TargetId": "b",
+        "Role": "FollowUp",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 7,
+        "HealthLost": 7,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      }
+    ],
+    "Blockers": [],
+    "Events": [
+      {
+        "Sequence": 1,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 2,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 3,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 2,
+        "Amount": 14,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 4,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 5,
+        "Amount": 14,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 5,
+        "ActorId": "b",
+        "TargetId": "a",
+        "Type": 2,
+        "Amount": 12,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 6,
+        "ActorId": "b",
+        "TargetId": "a",
+        "Type": 5,
+        "Amount": 12,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 7,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 2,
+        "Amount": 7,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 8,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 5,
+        "Amount": 7,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 9,
+        "ActorId": "a",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      }
+    ],
+    "RandomDraws": [
+      {
+        "Sequence": 1,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 2,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 3,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      }
+    ],
+    "Rounds": []
+  },
+  {
+    "Definition": {
+      "Id": "spirit_nigel",
+      "Mode": 1,
+      "Participants": [
+        {
+          "InstanceId": "a",
+          "DefinitionId": "beothuk_spirit_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_bow",
+            "Configuration": {
+              "Type": 0,
+              "Category": 3,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 2,
+              "MaximumRange": 3
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "b",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 8,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        }
+      ],
+      "Assumptions": [
+        "TEST FIXTURE VALUES; flat visible map, no flying or smoke; supplied accuracy and equipment; no balance conclusion."
+      ],
+      "Accuracy": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "StatusRolls": [],
+      "Selection": [],
+      "Actions": [
+        {
+          "Id": "opening",
+          "Kind": 0,
+          "ActorId": "a",
+          "TargetId": "b",
+          "AbilityId": null,
+          "RequiredAttack": null,
+          "ArrowContext": null,
+          "Tiles": null,
+          "Direction": null,
+          "ReactionLimit": null,
+          "ConfirmedLegal": null
+        }
+      ],
+      "Rounds": [],
+      "IsolatedAttacks": [],
+      "InitialRound": 1,
+      "ActiveCharacterId": "a",
+      "TargetingLegal": true
+    },
+    "Status": 0,
+    "Before": {
+      "Round": 1,
+      "Phase": 6,
+      "ActiveCharacterId": "a",
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": false,
+      "Characters": {
+        "a": {
+          "Id": "a",
+          "DefinitionId": "beothuk_spirit_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 40,
+            "Strength": 16,
+            "Defense": 9,
+            "Intelligence": 6,
+            "Resistance": 12,
+            "Wisdom": 13,
+            "Speed": 18,
+            "Movement": 5
+          },
+          "CurrentHealth": 40,
+          "MaxHealth": 40,
+          "ShieldHP": 0,
+          "EffectiveDefense": 9,
+          "EffectiveResistance": 12,
+          "EffectiveSpeed": 18,
+          "EffectiveMovement": 5,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_bow",
+            "Configuration": {
+              "Type": 0,
+              "Category": 3,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 2,
+              "MaximumRange": 3
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "b": {
+          "Id": "b",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 8,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 52,
+            "Strength": 20,
+            "Defense": 11,
+            "Intelligence": 3,
+            "Resistance": 8,
+            "Wisdom": 4,
+            "Speed": 13,
+            "Movement": 4
+          },
+          "CurrentHealth": 52,
+          "MaxHealth": 52,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 8,
+          "EffectiveSpeed": 13,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "After": {
+      "Round": 1,
+      "Phase": 6,
+      "ActiveCharacterId": null,
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": true,
+      "Characters": {
+        "a": {
+          "Id": "a",
+          "DefinitionId": "beothuk_spirit_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 40,
+            "Strength": 16,
+            "Defense": 9,
+            "Intelligence": 6,
+            "Resistance": 12,
+            "Wisdom": 13,
+            "Speed": 18,
+            "Movement": 5
+          },
+          "CurrentHealth": 40,
+          "MaxHealth": 40,
+          "ShieldHP": 0,
+          "EffectiveDefense": 9,
+          "EffectiveResistance": 12,
+          "EffectiveSpeed": 18,
+          "EffectiveMovement": 5,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_bow",
+            "Configuration": {
+              "Type": 0,
+              "Category": 3,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 2,
+              "MaximumRange": 3
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "b": {
+          "Id": "b",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 8,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 52,
+            "Strength": 20,
+            "Defense": 11,
+            "Intelligence": 3,
+            "Resistance": 8,
+            "Wisdom": 4,
+            "Speed": 13,
+            "Movement": 4
+          },
+          "CurrentHealth": 39,
+          "MaxHealth": 52,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 8,
+          "EffectiveSpeed": 13,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "Metrics": {
+      "ActionsAttempted": 1,
+      "CompletedActions": 1,
+      "CompletedMainActions": 1,
+      "AttacksAttempted": 1,
+      "CompletedRounds": 0,
+      "Hits": 2,
+      "Misses": 0,
+      "PhysicalCalculatedDamage": 13,
+      "MagicalCalculatedDamage": 0,
+      "ObservedHPDamage": 13,
+      "ObservedShieldLoss": 0,
+      "RecordedHealing": 0,
+      "Counterattacks": 0,
+      "FollowUps": 1,
+      "CompletedAbilities": 0,
+      "StrikeDataComplete": true
+    },
+    "Survivability": [
+      {
+        "InstanceId": "a",
+        "StartingHP": 40,
+        "FinalHP": 40,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 0,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 0
+      },
+      {
+        "InstanceId": "b",
+        "StartingHP": 52,
+        "FinalHP": 39,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 13,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 2
+      }
+    ],
+    "Strikes": [
+      {
+        "OperationId": "opening",
+        "ActorId": "a",
+        "TargetId": "b",
+        "Role": "Opening",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 9,
+        "HealthLost": 9,
+        "ShieldAbsorbed": 0,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "opening",
+        "ActorId": "a",
+        "TargetId": "b",
+        "Role": "FollowUp",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 4,
+        "HealthLost": 4,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      }
+    ],
+    "Blockers": [],
+    "Events": [
+      {
+        "Sequence": 1,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 2,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 3,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 2,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 4,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 5,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 5,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 2,
+        "Amount": 4,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 6,
+        "ActorId": "a",
+        "TargetId": "b",
+        "Type": 5,
+        "Amount": 4,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 7,
+        "ActorId": "a",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      }
+    ],
+    "RandomDraws": [
+      {
+        "Sequence": 1,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 2,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      }
+    ],
+    "Rounds": []
+  },
+  {
+    "Definition": {
+      "Id": "defensive_2v2",
+      "Mode": 1,
+      "Participants": [
+        {
+          "InstanceId": "guardian",
+          "DefinitionId": "gentle_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_light",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 6,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "tank",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 1,
+          "Position": {
+            "X": 4,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": 63,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "nigel",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "assassin",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 2,
+          "Position": {
+            "X": 4,
+            "Y": 6
+          },
+          "Equipment": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        }
+      ],
+      "Assumptions": [
+        "TEST FIXTURE VALUES; flat visible map, no flying or smoke; supplied accuracy and equipment; no balance conclusion."
+      ],
+      "Accuracy": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "StatusRolls": [],
+      "Selection": [],
+      "Actions": [],
+      "Rounds": [
+        {
+          "Round": 1,
+          "StartingTeamId": 1,
+          "Activations": [
+            {
+              "ActorId": "guardian",
+              "Actions": [
+                {
+                  "Id": "heal",
+                  "Kind": 1,
+                  "ActorId": "guardian",
+                  "TargetId": "tank",
+                  "AbilityId": "healing_light",
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            },
+            {
+              "ActorId": "nigel",
+              "Actions": [
+                {
+                  "Id": "axe",
+                  "Kind": 0,
+                  "ActorId": "nigel",
+                  "TargetId": "guardian",
+                  "AbilityId": null,
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            },
+            {
+              "ActorId": "tank",
+              "Actions": [
+                {
+                  "Id": "tankEnd",
+                  "Kind": 3,
+                  "ActorId": "tank",
+                  "TargetId": null,
+                  "AbilityId": null,
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            },
+            {
+              "ActorId": "assassin",
+              "Actions": [
+                {
+                  "Id": "daggers",
+                  "Kind": 0,
+                  "ActorId": "assassin",
+                  "TargetId": "tank",
+                  "AbilityId": null,
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "IsolatedAttacks": [],
+      "InitialRound": 1,
+      "ActiveCharacterId": null,
+      "TargetingLegal": true
+    },
+    "Status": 0,
+    "Before": {
+      "Round": 1,
+      "Phase": 0,
+      "ActiveCharacterId": null,
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": false,
+      "Characters": {
+        "guardian": {
+          "Id": "guardian",
+          "DefinitionId": "gentle_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 44,
+            "Strength": 7,
+            "Defense": 11,
+            "Intelligence": 12,
+            "Resistance": 15,
+            "Wisdom": 18,
+            "Speed": 14,
+            "Movement": 4
+          },
+          "CurrentHealth": 44,
+          "MaxHealth": 44,
+          "ShieldHP": 6,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 15,
+          "EffectiveSpeed": 14,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_light",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "tank": {
+          "Id": "tank",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 1,
+          "Position": {
+            "X": 4,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 64,
+            "Strength": 15,
+            "Defense": 22,
+            "Intelligence": 3,
+            "Resistance": 9,
+            "Wisdom": 5,
+            "Speed": 7,
+            "Movement": 3
+          },
+          "CurrentHealth": 63,
+          "MaxHealth": 64,
+          "ShieldHP": 0,
+          "EffectiveDefense": 22,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 7,
+          "EffectiveMovement": 3,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "nigel": {
+          "Id": "nigel",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 52,
+            "Strength": 20,
+            "Defense": 11,
+            "Intelligence": 3,
+            "Resistance": 8,
+            "Wisdom": 4,
+            "Speed": 13,
+            "Movement": 4
+          },
+          "CurrentHealth": 52,
+          "MaxHealth": 52,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 8,
+          "EffectiveSpeed": 13,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "assassin": {
+          "Id": "assassin",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 2,
+          "Position": {
+            "X": 4,
+            "Y": 6
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 17,
+            "Defense": 8,
+            "Intelligence": 5,
+            "Resistance": 9,
+            "Wisdom": 4,
+            "Speed": 24,
+            "Movement": 6
+          },
+          "CurrentHealth": 38,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 24,
+          "EffectiveMovement": 6,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "After": {
+      "Round": 1,
+      "Phase": 8,
+      "ActiveCharacterId": null,
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": true,
+      "Characters": {
+        "guardian": {
+          "Id": "guardian",
+          "DefinitionId": "gentle_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 44,
+            "Strength": 7,
+            "Defense": 11,
+            "Intelligence": 12,
+            "Resistance": 15,
+            "Wisdom": 18,
+            "Speed": 14,
+            "Movement": 4
+          },
+          "CurrentHealth": 40,
+          "MaxHealth": 44,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 15,
+          "EffectiveSpeed": 14,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_light",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Cooldowns": {
+            "healing_light": {
+              "RoundUsed": 1,
+              "ReuseInterval": 0,
+              "ReadyRound": 1
+            }
+          },
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "tank": {
+          "Id": "tank",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 1,
+          "Position": {
+            "X": 4,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 64,
+            "Strength": 15,
+            "Defense": 22,
+            "Intelligence": 3,
+            "Resistance": 9,
+            "Wisdom": 5,
+            "Speed": 7,
+            "Movement": 3
+          },
+          "CurrentHealth": 62,
+          "MaxHealth": 64,
+          "ShieldHP": 0,
+          "EffectiveDefense": 24,
+          "EffectiveResistance": 11,
+          "EffectiveSpeed": 7,
+          "EffectiveMovement": 3,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [
+            {
+              "Id": "gentle_blessing/tank/1/defense",
+              "SourceCharacterId": "guardian",
+              "RecipientCharacterId": "tank",
+              "Stat": 0,
+              "Value": 2,
+              "ApplicationRound": 1,
+              "ExpirationRound": 2,
+              "IsActive": true
+            },
+            {
+              "Id": "gentle_blessing/tank/1/resistance",
+              "SourceCharacterId": "guardian",
+              "RecipientCharacterId": "tank",
+              "Stat": 1,
+              "Value": 2,
+              "ApplicationRound": 1,
+              "ExpirationRound": 2,
+              "IsActive": true
+            }
+          ],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 1,
+          "UnresolvedFields": []
+        },
+        "nigel": {
+          "Id": "nigel",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 52,
+            "Strength": 20,
+            "Defense": 11,
+            "Intelligence": 3,
+            "Resistance": 8,
+            "Wisdom": 4,
+            "Speed": 13,
+            "Movement": 4
+          },
+          "CurrentHealth": 45,
+          "MaxHealth": 52,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 8,
+          "EffectiveSpeed": 13,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "assassin": {
+          "Id": "assassin",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 2,
+          "Position": {
+            "X": 4,
+            "Y": 6
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 17,
+            "Defense": 8,
+            "Intelligence": 5,
+            "Resistance": 9,
+            "Wisdom": 4,
+            "Speed": 24,
+            "Movement": 6
+          },
+          "CurrentHealth": 26,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 24,
+          "EffectiveMovement": 6,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "Metrics": {
+      "ActionsAttempted": 8,
+      "CompletedActions": 8,
+      "CompletedMainActions": 3,
+      "AttacksAttempted": 2,
+      "CompletedRounds": 1,
+      "Hits": 5,
+      "Misses": 0,
+      "PhysicalCalculatedDamage": 24,
+      "MagicalCalculatedDamage": 7,
+      "ObservedHPDamage": 25,
+      "ObservedShieldLoss": 6,
+      "RecordedHealing": 1,
+      "Counterattacks": 2,
+      "FollowUps": 1,
+      "CompletedAbilities": 1,
+      "StrikeDataComplete": true
+    },
+    "Survivability": [
+      {
+        "InstanceId": "guardian",
+        "StartingHP": 44,
+        "FinalHP": 40,
+        "StartingShields": 6,
+        "FinalShields": 0,
+        "ObservedHPLoss": 4,
+        "ObservedShieldLoss": 6,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 1
+      },
+      {
+        "InstanceId": "tank",
+        "StartingHP": 63,
+        "FinalHP": 62,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 2,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 1,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 2
+      },
+      {
+        "InstanceId": "nigel",
+        "StartingHP": 52,
+        "FinalHP": 45,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 7,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 1
+      },
+      {
+        "InstanceId": "assassin",
+        "StartingHP": 38,
+        "FinalHP": 26,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 12,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 1
+      }
+    ],
+    "Strikes": [
+      {
+        "OperationId": "axe",
+        "ActorId": "nigel",
+        "TargetId": "guardian",
+        "Role": "Opening",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 10,
+        "HealthLost": 4,
+        "ShieldAbsorbed": 6,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "axe",
+        "ActorId": "guardian",
+        "TargetId": "nigel",
+        "Role": "Counter",
+        "Type": 1,
+        "Hit": true,
+        "CalculatedDamage": 7,
+        "HealthLost": 7,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": null,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "daggers",
+        "ActorId": "assassin",
+        "TargetId": "tank",
+        "Role": "Opening",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 1,
+        "HealthLost": 1,
+        "ShieldAbsorbed": 0,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "daggers",
+        "ActorId": "tank",
+        "TargetId": "assassin",
+        "Role": "Counter",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 12,
+        "HealthLost": 12,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "daggers",
+        "ActorId": "assassin",
+        "TargetId": "tank",
+        "Role": "FollowUp",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 1,
+        "HealthLost": 1,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      }
+    ],
+    "Blockers": [],
+    "Events": [
+      {
+        "Sequence": 1,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 18,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 0
+      },
+      {
+        "Sequence": 2,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 20,
+        "Amount": null,
+        "Detail": "No production gameplay executed for this phase",
+        "Round": 1,
+        "Phase": 0
+      },
+      {
+        "Sequence": 3,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 1
+      },
+      {
+        "Sequence": 4,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 2
+      },
+      {
+        "Sequence": 5,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 3
+      },
+      {
+        "Sequence": 6,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 4
+      },
+      {
+        "Sequence": 7,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 20,
+        "Amount": null,
+        "Detail": "No production gameplay executed for this phase",
+        "Round": 1,
+        "Phase": 4
+      },
+      {
+        "Sequence": 8,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 5
+      },
+      {
+        "Sequence": 9,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 10,
+        "ActorId": "guardian",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 11,
+        "ActorId": "guardian",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 12,
+        "ActorId": "guardian",
+        "TargetId": "tank",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 13,
+        "ActorId": "guardian",
+        "TargetId": "tank",
+        "Type": 9,
+        "Amount": 1,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 14,
+        "ActorId": "guardian",
+        "TargetId": "tank",
+        "Type": 10,
+        "Amount": 1,
+        "Detail": "healing_light",
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 15,
+        "ActorId": "guardian",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 16,
+        "ActorId": "nigel",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 17,
+        "ActorId": "nigel",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 18,
+        "ActorId": "nigel",
+        "TargetId": "guardian",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 19,
+        "ActorId": "nigel",
+        "TargetId": "guardian",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 20,
+        "ActorId": "nigel",
+        "TargetId": "guardian",
+        "Type": 2,
+        "Amount": 10,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 21,
+        "ActorId": "nigel",
+        "TargetId": "guardian",
+        "Type": 4,
+        "Amount": 6,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 22,
+        "ActorId": "nigel",
+        "TargetId": "guardian",
+        "Type": 5,
+        "Amount": 4,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 23,
+        "ActorId": "guardian",
+        "TargetId": "nigel",
+        "Type": 2,
+        "Amount": 7,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 24,
+        "ActorId": "guardian",
+        "TargetId": "nigel",
+        "Type": 5,
+        "Amount": 7,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 25,
+        "ActorId": "nigel",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 26,
+        "ActorId": "tank",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 27,
+        "ActorId": "tank",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 28,
+        "ActorId": "tank",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 29,
+        "ActorId": "tank",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 30,
+        "ActorId": "assassin",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 31,
+        "ActorId": "assassin",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 32,
+        "ActorId": "assassin",
+        "TargetId": "tank",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 33,
+        "ActorId": "assassin",
+        "TargetId": "tank",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 34,
+        "ActorId": "assassin",
+        "TargetId": "tank",
+        "Type": 2,
+        "Amount": 1,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 35,
+        "ActorId": "assassin",
+        "TargetId": "tank",
+        "Type": 5,
+        "Amount": 1,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 36,
+        "ActorId": "tank",
+        "TargetId": "assassin",
+        "Type": 2,
+        "Amount": 12,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 37,
+        "ActorId": "tank",
+        "TargetId": "assassin",
+        "Type": 5,
+        "Amount": 12,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 38,
+        "ActorId": "assassin",
+        "TargetId": "tank",
+        "Type": 2,
+        "Amount": 1,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 39,
+        "ActorId": "assassin",
+        "TargetId": "tank",
+        "Type": 5,
+        "Amount": 1,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 40,
+        "ActorId": "assassin",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 41,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 7
+      },
+      {
+        "Sequence": 42,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 8
+      },
+      {
+        "Sequence": 43,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 20,
+        "Amount": null,
+        "Detail": "No production gameplay executed for this phase",
+        "Round": 1,
+        "Phase": 8
+      },
+      {
+        "Sequence": 44,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 29,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 8
+      }
+    ],
+    "RandomDraws": [
+      {
+        "Sequence": 1,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 2,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 3,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 4,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 5,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      }
+    ],
+    "Rounds": [
+      {
+        "Round": 1,
+        "Outcome": 1,
+        "Reason": ""
+      }
+    ]
+  },
+  {
+    "Definition": {
+      "Id": "roster_3v3",
+      "Mode": 1,
+      "Participants": [
+        {
+          "InstanceId": "assassin",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "guardian",
+          "DefinitionId": "gentle_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 6
+          },
+          "Equipment": {
+            "Id": "fixture_light",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "time",
+          "DefinitionId": "time_weaver",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 7
+          },
+          "Equipment": {
+            "Id": "fixture_fire",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "nigel",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "Equipment": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "tank",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 6
+          },
+          "Equipment": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        },
+        {
+          "InstanceId": "spirit",
+          "DefinitionId": "beothuk_spirit_guardian",
+          "TeamId": 2,
+          "Position": {
+            "X": 7,
+            "Y": 7
+          },
+          "Equipment": {
+            "Id": "fixture_bow",
+            "Configuration": {
+              "Type": 0,
+              "Category": 3,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 2,
+              "MaximumRange": 3
+            }
+          },
+          "Scroll": null,
+          "Health": null,
+          "Shield": 0,
+          "FixtureHealing": 0,
+          "Statuses": [],
+          "Modifiers": [],
+          "Cooldowns": []
+        }
+      ],
+      "Assumptions": [
+        "TEST FIXTURE VALUES; flat visible map, no flying or smoke; supplied accuracy and equipment; no balance conclusion."
+      ],
+      "Accuracy": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "StatusRolls": [],
+      "Selection": [],
+      "Actions": [],
+      "Rounds": [
+        {
+          "Round": 1,
+          "StartingTeamId": 1,
+          "Activations": [
+            {
+              "ActorId": "assassin",
+              "Actions": [
+                {
+                  "Id": "assassinHit",
+                  "Kind": 0,
+                  "ActorId": "assassin",
+                  "TargetId": "nigel",
+                  "AbilityId": null,
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            },
+            {
+              "ActorId": "nigel",
+              "Actions": [
+                {
+                  "Id": "nigelHit",
+                  "Kind": 0,
+                  "ActorId": "nigel",
+                  "TargetId": "assassin",
+                  "AbilityId": null,
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            },
+            {
+              "ActorId": "guardian",
+              "Actions": [
+                {
+                  "Id": "healing",
+                  "Kind": 1,
+                  "ActorId": "guardian",
+                  "TargetId": "assassin",
+                  "AbilityId": "healing_light",
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            },
+            {
+              "ActorId": "tank",
+              "Actions": [
+                {
+                  "Id": "tankEnd",
+                  "Kind": 3,
+                  "ActorId": "tank",
+                  "TargetId": null,
+                  "AbilityId": null,
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            },
+            {
+              "ActorId": "time",
+              "Actions": [
+                {
+                  "Id": "magic",
+                  "Kind": 0,
+                  "ActorId": "time",
+                  "TargetId": "spirit",
+                  "AbilityId": null,
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            },
+            {
+              "ActorId": "spirit",
+              "Actions": [
+                {
+                  "Id": "bow",
+                  "Kind": 0,
+                  "ActorId": "spirit",
+                  "TargetId": "time",
+                  "AbilityId": null,
+                  "RequiredAttack": null,
+                  "ArrowContext": null,
+                  "Tiles": null,
+                  "Direction": null,
+                  "ReactionLimit": null,
+                  "ConfirmedLegal": null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "IsolatedAttacks": [],
+      "InitialRound": 1,
+      "ActiveCharacterId": null,
+      "TargetingLegal": true
+    },
+    "Status": 0,
+    "Before": {
+      "Round": 1,
+      "Phase": 0,
+      "ActiveCharacterId": null,
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": false,
+      "Characters": {
+        "assassin": {
+          "Id": "assassin",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 17,
+            "Defense": 8,
+            "Intelligence": 5,
+            "Resistance": 9,
+            "Wisdom": 4,
+            "Speed": 24,
+            "Movement": 6
+          },
+          "CurrentHealth": 38,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 24,
+          "EffectiveMovement": 6,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "guardian": {
+          "Id": "guardian",
+          "DefinitionId": "gentle_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 6
+          },
+          "BaseStats": {
+            "MaxHealth": 44,
+            "Strength": 7,
+            "Defense": 11,
+            "Intelligence": 12,
+            "Resistance": 15,
+            "Wisdom": 18,
+            "Speed": 14,
+            "Movement": 4
+          },
+          "CurrentHealth": 44,
+          "MaxHealth": 44,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 15,
+          "EffectiveSpeed": 14,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_light",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "time": {
+          "Id": "time",
+          "DefinitionId": "time_weaver",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 7
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 6,
+            "Defense": 8,
+            "Intelligence": 17,
+            "Resistance": 13,
+            "Wisdom": 14,
+            "Speed": 17,
+            "Movement": 5
+          },
+          "CurrentHealth": 38,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 13,
+          "EffectiveSpeed": 17,
+          "EffectiveMovement": 5,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_fire",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "nigel": {
+          "Id": "nigel",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 52,
+            "Strength": 20,
+            "Defense": 11,
+            "Intelligence": 3,
+            "Resistance": 8,
+            "Wisdom": 4,
+            "Speed": 13,
+            "Movement": 4
+          },
+          "CurrentHealth": 52,
+          "MaxHealth": 52,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 8,
+          "EffectiveSpeed": 13,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "tank": {
+          "Id": "tank",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 6
+          },
+          "BaseStats": {
+            "MaxHealth": 64,
+            "Strength": 15,
+            "Defense": 22,
+            "Intelligence": 3,
+            "Resistance": 9,
+            "Wisdom": 5,
+            "Speed": 7,
+            "Movement": 3
+          },
+          "CurrentHealth": 64,
+          "MaxHealth": 64,
+          "ShieldHP": 0,
+          "EffectiveDefense": 22,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 7,
+          "EffectiveMovement": 3,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "spirit": {
+          "Id": "spirit",
+          "DefinitionId": "beothuk_spirit_guardian",
+          "TeamId": 2,
+          "Position": {
+            "X": 7,
+            "Y": 7
+          },
+          "BaseStats": {
+            "MaxHealth": 40,
+            "Strength": 16,
+            "Defense": 9,
+            "Intelligence": 6,
+            "Resistance": 12,
+            "Wisdom": 13,
+            "Speed": 18,
+            "Movement": 5
+          },
+          "CurrentHealth": 40,
+          "MaxHealth": 40,
+          "ShieldHP": 0,
+          "EffectiveDefense": 9,
+          "EffectiveResistance": 12,
+          "EffectiveSpeed": 18,
+          "EffectiveMovement": 5,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_bow",
+            "Configuration": {
+              "Type": 0,
+              "Category": 3,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 2,
+              "MaximumRange": 3
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": false,
+          "CanAct": true,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "After": {
+      "Round": 1,
+      "Phase": 8,
+      "ActiveCharacterId": null,
+      "MovementUsed": false,
+      "UtilityUsed": false,
+      "MainActionUsed": true,
+      "Characters": {
+        "assassin": {
+          "Id": "assassin",
+          "DefinitionId": "hooded_assassin",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 17,
+            "Defense": 8,
+            "Intelligence": 5,
+            "Resistance": 9,
+            "Wisdom": 4,
+            "Speed": 24,
+            "Movement": 6
+          },
+          "CurrentHealth": 15,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 10,
+          "EffectiveResistance": 11,
+          "EffectiveSpeed": 24,
+          "EffectiveMovement": 6,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_daggers",
+            "Configuration": {
+              "Type": 0,
+              "Category": 0,
+              "Power": 5,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [
+            {
+              "Id": "gentle_blessing/assassin/1/defense",
+              "SourceCharacterId": "guardian",
+              "RecipientCharacterId": "assassin",
+              "Stat": 0,
+              "Value": 2,
+              "ApplicationRound": 1,
+              "ExpirationRound": 2,
+              "IsActive": true
+            },
+            {
+              "Id": "gentle_blessing/assassin/1/resistance",
+              "SourceCharacterId": "guardian",
+              "RecipientCharacterId": "assassin",
+              "Stat": 1,
+              "Value": 2,
+              "ApplicationRound": 1,
+              "ExpirationRound": 2,
+              "IsActive": true
+            }
+          ],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 1,
+          "UnresolvedFields": []
+        },
+        "guardian": {
+          "Id": "guardian",
+          "DefinitionId": "gentle_guardian",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 6
+          },
+          "BaseStats": {
+            "MaxHealth": 44,
+            "Strength": 7,
+            "Defense": 11,
+            "Intelligence": 12,
+            "Resistance": 15,
+            "Wisdom": 18,
+            "Speed": 14,
+            "Movement": 4
+          },
+          "CurrentHealth": 44,
+          "MaxHealth": 44,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 15,
+          "EffectiveSpeed": 14,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_light",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Cooldowns": {
+            "healing_light": {
+              "RoundUsed": 1,
+              "ReuseInterval": 0,
+              "ReadyRound": 1
+            }
+          },
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "time": {
+          "Id": "time",
+          "DefinitionId": "time_weaver",
+          "TeamId": 1,
+          "Position": {
+            "X": 5,
+            "Y": 7
+          },
+          "BaseStats": {
+            "MaxHealth": 38,
+            "Strength": 6,
+            "Defense": 8,
+            "Intelligence": 17,
+            "Resistance": 13,
+            "Wisdom": 14,
+            "Speed": 17,
+            "Movement": 5
+          },
+          "CurrentHealth": 14,
+          "MaxHealth": 38,
+          "ShieldHP": 0,
+          "EffectiveDefense": 8,
+          "EffectiveResistance": 13,
+          "EffectiveSpeed": 17,
+          "EffectiveMovement": 5,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_fire",
+            "Configuration": {
+              "Type": 1,
+              "Category": 4,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 2
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "nigel": {
+          "Id": "nigel",
+          "DefinitionId": "nigel",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 5
+          },
+          "BaseStats": {
+            "MaxHealth": 52,
+            "Strength": 20,
+            "Defense": 11,
+            "Intelligence": 3,
+            "Resistance": 8,
+            "Wisdom": 4,
+            "Speed": 13,
+            "Movement": 4
+          },
+          "CurrentHealth": 8,
+          "MaxHealth": 52,
+          "ShieldHP": 0,
+          "EffectiveDefense": 11,
+          "EffectiveResistance": 8,
+          "EffectiveSpeed": 13,
+          "EffectiveMovement": 4,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_axe",
+            "Configuration": {
+              "Type": 0,
+              "Category": 1,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "tank": {
+          "Id": "tank",
+          "DefinitionId": "gravebound_colossus",
+          "TeamId": 2,
+          "Position": {
+            "X": 6,
+            "Y": 6
+          },
+          "BaseStats": {
+            "MaxHealth": 64,
+            "Strength": 15,
+            "Defense": 22,
+            "Intelligence": 3,
+            "Resistance": 9,
+            "Wisdom": 5,
+            "Speed": 7,
+            "Movement": 3
+          },
+          "CurrentHealth": 64,
+          "MaxHealth": 64,
+          "ShieldHP": 0,
+          "EffectiveDefense": 22,
+          "EffectiveResistance": 9,
+          "EffectiveSpeed": 7,
+          "EffectiveMovement": 3,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_lance",
+            "Configuration": {
+              "Type": 0,
+              "Category": 2,
+              "Power": 3,
+              "BaseAccuracy": 100,
+              "MinimumRange": 1,
+              "MaximumRange": 1
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        },
+        "spirit": {
+          "Id": "spirit",
+          "DefinitionId": "beothuk_spirit_guardian",
+          "TeamId": 2,
+          "Position": {
+            "X": 7,
+            "Y": 7
+          },
+          "BaseStats": {
+            "MaxHealth": 40,
+            "Strength": 16,
+            "Defense": 9,
+            "Intelligence": 6,
+            "Resistance": 12,
+            "Wisdom": 13,
+            "Speed": 18,
+            "Movement": 5
+          },
+          "CurrentHealth": 22,
+          "MaxHealth": 40,
+          "ShieldHP": 0,
+          "EffectiveDefense": 9,
+          "EffectiveResistance": 12,
+          "EffectiveSpeed": 18,
+          "EffectiveMovement": 5,
+          "TimedStatuses": {},
+          "PoisonActive": false,
+          "PoisonTicks": 0,
+          "EquippedScroll": null,
+          "AttackInput": {
+            "Id": "fixture_bow",
+            "Configuration": {
+              "Type": 0,
+              "Category": 3,
+              "Power": 4,
+              "BaseAccuracy": 100,
+              "MinimumRange": 2,
+              "MaximumRange": 3
+            }
+          },
+          "Cooldowns": {},
+          "Modifiers": [],
+          "HasActed": true,
+          "CanAct": false,
+          "HealsReceived": 0,
+          "UnresolvedFields": []
+        }
+      },
+      "ActiveTaunts": [],
+      "Walls": [],
+      "Ice": [],
+      "Smoke": [],
+      "DelayedAttacks": [],
+      "SentinelPreparations": []
+    },
+    "Metrics": {
+      "ActionsAttempted": 12,
+      "CompletedActions": 12,
+      "CompletedMainActions": 5,
+      "AttacksAttempted": 4,
+      "CompletedRounds": 1,
+      "Hits": 10,
+      "Misses": 0,
+      "PhysicalCalculatedDamage": 102,
+      "MagicalCalculatedDamage": 18,
+      "ObservedHPDamage": 120,
+      "ObservedShieldLoss": 0,
+      "RecordedHealing": 11,
+      "Counterattacks": 4,
+      "FollowUps": 2,
+      "CompletedAbilities": 1,
+      "StrikeDataComplete": true
+    },
+    "Survivability": [
+      {
+        "InstanceId": "assassin",
+        "StartingHP": 38,
+        "FinalHP": 15,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 34,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 11,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 2
+      },
+      {
+        "InstanceId": "guardian",
+        "StartingHP": 44,
+        "FinalHP": 44,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 0,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 0
+      },
+      {
+        "InstanceId": "time",
+        "StartingHP": 38,
+        "FinalHP": 14,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 24,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 2
+      },
+      {
+        "InstanceId": "nigel",
+        "StartingHP": 52,
+        "FinalHP": 8,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 44,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 4
+      },
+      {
+        "InstanceId": "tank",
+        "StartingHP": 64,
+        "FinalHP": 64,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 0,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 0
+      },
+      {
+        "InstanceId": "spirit",
+        "StartingHP": 40,
+        "FinalHP": 22,
+        "StartingShields": 0,
+        "FinalShields": 0,
+        "ObservedHPLoss": 18,
+        "ObservedShieldLoss": 0,
+        "RecordedHealing": 0,
+        "Defeated": false,
+        "DefeatRound": null,
+        "SupportedStrikesSurvived": 2
+      }
+    ],
+    "Strikes": [
+      {
+        "OperationId": "assassinHit",
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Role": "Opening",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 13,
+        "HealthLost": 13,
+        "ShieldAbsorbed": 0,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "assassinHit",
+        "ActorId": "nigel",
+        "TargetId": "assassin",
+        "Role": "Counter",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 16,
+        "HealthLost": 16,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "assassinHit",
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Role": "FollowUp",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 9,
+        "HealthLost": 9,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "nigelHit",
+        "ActorId": "nigel",
+        "TargetId": "assassin",
+        "Role": "Opening",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 18,
+        "HealthLost": 18,
+        "ShieldAbsorbed": 0,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "nigelHit",
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Role": "Counter",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 13,
+        "HealthLost": 13,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "nigelHit",
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Role": "FollowUp",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 9,
+        "HealthLost": 9,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "magic",
+        "ActorId": "time",
+        "TargetId": "spirit",
+        "Role": "Opening",
+        "Type": 1,
+        "Hit": true,
+        "CalculatedDamage": 9,
+        "HealthLost": 9,
+        "ShieldAbsorbed": 0,
+        "TargetSurvived": true,
+        "WinterHunterBonus": null,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "magic",
+        "ActorId": "spirit",
+        "TargetId": "time",
+        "Role": "Counter",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 12,
+        "HealthLost": 12,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "bow",
+        "ActorId": "spirit",
+        "TargetId": "time",
+        "Role": "Opening",
+        "Type": 0,
+        "Hit": true,
+        "CalculatedDamage": 12,
+        "HealthLost": 12,
+        "ShieldAbsorbed": 0,
+        "TargetSurvived": true,
+        "WinterHunterBonus": 0,
+        "BerserkersFuryBonus": null
+      },
+      {
+        "OperationId": "bow",
+        "ActorId": "time",
+        "TargetId": "spirit",
+        "Role": "Counter",
+        "Type": 1,
+        "Hit": true,
+        "CalculatedDamage": 9,
+        "HealthLost": 9,
+        "ShieldAbsorbed": null,
+        "TargetSurvived": true,
+        "WinterHunterBonus": null,
+        "BerserkersFuryBonus": null
+      }
+    ],
+    "Blockers": [],
+    "Events": [
+      {
+        "Sequence": 1,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 18,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 0
+      },
+      {
+        "Sequence": 2,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 20,
+        "Amount": null,
+        "Detail": "No production gameplay executed for this phase",
+        "Round": 1,
+        "Phase": 0
+      },
+      {
+        "Sequence": 3,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 1
+      },
+      {
+        "Sequence": 4,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 2
+      },
+      {
+        "Sequence": 5,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 3
+      },
+      {
+        "Sequence": 6,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 4
+      },
+      {
+        "Sequence": 7,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 20,
+        "Amount": null,
+        "Detail": "No production gameplay executed for this phase",
+        "Round": 1,
+        "Phase": 4
+      },
+      {
+        "Sequence": 8,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 5
+      },
+      {
+        "Sequence": 9,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 10,
+        "ActorId": "assassin",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 11,
+        "ActorId": "assassin",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 12,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 13,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 14,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 2,
+        "Amount": 13,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 15,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 5,
+        "Amount": 13,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 16,
+        "ActorId": "nigel",
+        "TargetId": "assassin",
+        "Type": 2,
+        "Amount": 16,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 17,
+        "ActorId": "nigel",
+        "TargetId": "assassin",
+        "Type": 5,
+        "Amount": 16,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 18,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 2,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 19,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 5,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 20,
+        "ActorId": "assassin",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 21,
+        "ActorId": "nigel",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 22,
+        "ActorId": "nigel",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 23,
+        "ActorId": "nigel",
+        "TargetId": "assassin",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 24,
+        "ActorId": "nigel",
+        "TargetId": "assassin",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 25,
+        "ActorId": "nigel",
+        "TargetId": "assassin",
+        "Type": 2,
+        "Amount": 18,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 26,
+        "ActorId": "nigel",
+        "TargetId": "assassin",
+        "Type": 5,
+        "Amount": 18,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 27,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 2,
+        "Amount": 13,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 28,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 5,
+        "Amount": 13,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 29,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 2,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 30,
+        "ActorId": "assassin",
+        "TargetId": "nigel",
+        "Type": 5,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 31,
+        "ActorId": "nigel",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 32,
+        "ActorId": "guardian",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 33,
+        "ActorId": "guardian",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 34,
+        "ActorId": "guardian",
+        "TargetId": "assassin",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 35,
+        "ActorId": "guardian",
+        "TargetId": "assassin",
+        "Type": 9,
+        "Amount": 11,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 36,
+        "ActorId": "guardian",
+        "TargetId": "assassin",
+        "Type": 10,
+        "Amount": 1,
+        "Detail": "healing_light",
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 37,
+        "ActorId": "guardian",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 38,
+        "ActorId": "tank",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 39,
+        "ActorId": "tank",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 40,
+        "ActorId": "tank",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 41,
+        "ActorId": "tank",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 42,
+        "ActorId": "time",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 43,
+        "ActorId": "time",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 44,
+        "ActorId": "time",
+        "TargetId": "spirit",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 45,
+        "ActorId": "time",
+        "TargetId": "spirit",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 46,
+        "ActorId": "time",
+        "TargetId": "spirit",
+        "Type": 2,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 47,
+        "ActorId": "time",
+        "TargetId": "spirit",
+        "Type": 5,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 48,
+        "ActorId": "spirit",
+        "TargetId": "time",
+        "Type": 2,
+        "Amount": 12,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 49,
+        "ActorId": "spirit",
+        "TargetId": "time",
+        "Type": 5,
+        "Amount": 12,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 50,
+        "ActorId": "time",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 51,
+        "ActorId": "spirit",
+        "TargetId": null,
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 52,
+        "ActorId": "spirit",
+        "TargetId": null,
+        "Type": 11,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 53,
+        "ActorId": "spirit",
+        "TargetId": "time",
+        "Type": 0,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 54,
+        "ActorId": "spirit",
+        "TargetId": "time",
+        "Type": 1,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 55,
+        "ActorId": "spirit",
+        "TargetId": "time",
+        "Type": 2,
+        "Amount": 12,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 56,
+        "ActorId": "spirit",
+        "TargetId": "time",
+        "Type": 5,
+        "Amount": 12,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 57,
+        "ActorId": "time",
+        "TargetId": "spirit",
+        "Type": 2,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 58,
+        "ActorId": "time",
+        "TargetId": "spirit",
+        "Type": 5,
+        "Amount": 9,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 59,
+        "ActorId": "spirit",
+        "TargetId": null,
+        "Type": 12,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 6
+      },
+      {
+        "Sequence": 60,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 7
+      },
+      {
+        "Sequence": 61,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 19,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 8
+      },
+      {
+        "Sequence": 62,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 20,
+        "Amount": null,
+        "Detail": "No production gameplay executed for this phase",
+        "Round": 1,
+        "Phase": 8
+      },
+      {
+        "Sequence": 63,
+        "ActorId": "",
+        "TargetId": null,
+        "Type": 29,
+        "Amount": null,
+        "Detail": null,
+        "Round": 1,
+        "Phase": 8
+      }
+    ],
+    "RandomDraws": [
+      {
+        "Sequence": 1,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 2,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 3,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 4,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 5,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 6,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 7,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 8,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 9,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      },
+      {
+        "Sequence": 10,
+        "Stream": "accuracy",
+        "Value": 0,
+        "ExclusiveMaximum": 100,
+        "Outcome": 0
+      }
+    ],
+    "Rounds": [
+      {
+        "Round": 1,
+        "Outcome": 1,
+        "Reason": ""
+      }
+    ]
+  }
+]

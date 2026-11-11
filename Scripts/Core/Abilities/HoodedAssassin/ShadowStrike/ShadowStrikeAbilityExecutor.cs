@@ -37,7 +37,7 @@ public sealed class ShadowStrikeAbilityExecutor
         if (!ReferenceEquals(use.Character, combat.Attacker))
             throw new ArgumentException("The combat attacker must be the character using the ability.", nameof(combat));
         ArgumentNullException.ThrowIfNull(combat.Defender);
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, combat.Defender, isAttack: true);
         if (!approval.Succeeded) return new(approval.Eligibility);
         if (use.AbilityId != HoodedAssassin.ShadowStrikeId)
             return new(new(use.CharacterId, use.AbilityId, AbilityRejectionReason.UnsupportedAbility));
@@ -48,6 +48,9 @@ public sealed class ShadowStrikeAbilityExecutor
             ability, target, targetingRules, mapTargetLegal: mapTargetLegal);
         if (!targeting.IsLegal) return new(approval.Eligibility, targeting);
         var strikeEligibility = _strikes.Evaluate(combat, openingVisibility, weaponMinimumRange, weaponMaximumRange);
+        if (strikeEligibility.IsAllowed)
+            CombatExchangeResolver.ValidateRequest(combat with { Sanctuary = SanctuaryDefenseContext.FromActivations(use.Activations),
+                IncomingAttackPermitsCounters = true, IncomingAttackPermitsFollowUps = true });
         return new(approval.Eligibility, targeting, strikeEligibility);
     }
 
@@ -60,9 +63,10 @@ public sealed class ShadowStrikeAbilityExecutor
         if (!preview.CanExecute) return preview;
         // Deadline overflow is checked before combat. There is no targeting callback or
         // player input between this approval, the exchange and finalization.
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, combat.Defender, isAttack: true, preparingExecution: true);
         if (!approval.Succeeded) return new(approval.Eligibility, preview.Targeting, preview.CombatEligibility);
-        var strike = _strikes.Resolve(combat, openingVisibility, weaponMinimumRange, weaponMaximumRange);
+        var strike = _strikes.Resolve(combat with { Sanctuary = SanctuaryDefenseContext.FromActivations(use.Activations) },
+            openingVisibility, weaponMinimumRange, weaponMaximumRange);
         if (!strike.Resolved) return new(preview.Eligibility, preview.Targeting, strike.Eligibility, strike);
         var finalization = AbilityUseFinalizer.FinalizeResolvedMainAction(use, approval);
         return new(preview.Eligibility, preview.Targeting, strike.Eligibility, strike, finalization);

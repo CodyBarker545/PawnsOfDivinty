@@ -6,6 +6,11 @@ using PawnsOfDivinity.Core.Abilities;
 namespace PawnsOfDivinity.Core.Combat;
 
 /// <summary>Runs an opening strike, an eligible counterattack, then at most one permitted follow-up.</summary>
+/// <remarks>
+/// This is low-level combat, not permission to perform a player action. Player attacks go through
+/// AttackActionExecutor or the applicable ability executor so activation, targeting and taunt
+/// approval are checked before effects. Non-player effects and combat tests may use this directly.
+/// </remarks>
 public sealed class CombatExchangeResolver
 {
     private readonly SingleStrikeResolver _strikeResolver;
@@ -62,9 +67,10 @@ public sealed class CombatExchangeResolver
             _ = request.Defender.EffectiveSpeed;
         }
         var opening = PrepareStrike(request.OpeningAttackType, request.Attacker, request.Defender, request.OpeningPower,
-            request.AttackerWeapon, request.DefenderWeapon, request.OpeningBaseAccuracy, request.OpeningEvasionModifier);
+            request.AttackerWeapon, request.DefenderWeapon, request.OpeningBaseAccuracy, request.OpeningEvasionModifier, request.Sanctuary);
         var counter = PrepareStrike(request.CounterattackType, request.Defender, request.Attacker, request.CounterattackPower,
-            request.DefenderWeapon, request.AttackerWeapon, request.CounterattackBaseAccuracy, request.CounterattackEvasionModifier);
+            request.DefenderWeapon, request.AttackerWeapon, request.CounterattackBaseAccuracy, request.CounterattackEvasionModifier,
+            CanCounter(request) ? request.Sanctuary : null);
         ValidateFutureFury(request, opening.CandidateDamage, counter.CandidateDamage);
     }
 
@@ -92,10 +98,12 @@ public sealed class CombatExchangeResolver
         int defenderSpeed = request.IncomingAttackPermitsFollowUps ? request.Defender.EffectiveSpeed : 0;
         var opening = PrepareStrike(request.OpeningAttackType,
             request.Attacker, request.Defender, request.OpeningPower,
-            request.AttackerWeapon, request.DefenderWeapon, request.OpeningBaseAccuracy, request.OpeningEvasionModifier);
+            request.AttackerWeapon, request.DefenderWeapon, request.OpeningBaseAccuracy, request.OpeningEvasionModifier,
+            request.Sanctuary, out var openingWinterHunter);
         var counter = PrepareStrike(request.CounterattackType,
             request.Defender, request.Attacker, request.CounterattackPower,
-            request.DefenderWeapon, request.AttackerWeapon, request.CounterattackBaseAccuracy, request.CounterattackEvasionModifier);
+            request.DefenderWeapon, request.AttackerWeapon, request.CounterattackBaseAccuracy, request.CounterattackEvasionModifier,
+            CanCounter(request) ? request.Sanctuary : null);
         ValidateFutureFury(request, opening.CandidateDamage, counter.CandidateDamage);
 
         // Check the on-hit unarmed configuration before rolling. A miss leaves the
@@ -110,16 +118,17 @@ public sealed class CombatExchangeResolver
             disarmedCounter = PrepareStrike(disarmedRequest.CounterattackType,
                 request.Defender, request.Attacker, disarmedRequest.CounterattackPower,
                 disarmedRequest.DefenderWeapon, request.AttackerWeapon,
-                disarmedRequest.CounterattackBaseAccuracy, request.CounterattackEvasionModifier);
+                disarmedRequest.CounterattackBaseAccuracy, request.CounterattackEvasionModifier,
+                CanCounter(disarmedRequest) ? request.Sanctuary : null);
             disarmedFollowUp = PrepareStrike(request.OpeningAttackType,
                 request.Attacker, request.Defender, request.OpeningPower,
                 request.AttackerWeapon, disarmedRequest.DefenderWeapon,
-                request.OpeningBaseAccuracy, request.OpeningEvasionModifier);
+                request.OpeningBaseAccuracy, request.OpeningEvasionModifier, request.Sanctuary);
             ValidateFutureFury(disarmedRequest, disarmedFollowUp.CandidateDamage, disarmedCounter.CandidateDamage);
         }
         int ordinaryOpeningDamage = opening.CandidateDamage;
         var boostedOpening = (opening.HitChance, CandidateDamage: checked(ordinaryOpeningDamage + openingBonus), opening.Outcome);
-        var openingResult = _strikeResolver.ResolvePreparedStrike(boostedOpening);
+        var openingResult = _strikeResolver.ResolvePreparedStrike(boostedOpening, openingWinterHunter);
         if (revealAttacker) request.Attacker.SmokeReveal.RecordAttack();
         int shieldBefore = request.Defender.ShieldHP;
         int openingHealthLost = StrikeDamageApplicator.Apply(openingResult, request.Defender);
@@ -141,8 +150,8 @@ public sealed class CombatExchangeResolver
             // Fury depends on HP now, after the opening strike, not at exchange start.
             counter = PrepareStrike(request.CounterattackType, request.Defender, request.Attacker,
                 request.CounterattackPower, request.DefenderWeapon, request.AttackerWeapon,
-                request.CounterattackBaseAccuracy, request.CounterattackEvasionModifier);
-            counterResult = _strikeResolver.ResolvePreparedStrike(counter);
+                request.CounterattackBaseAccuracy, request.CounterattackEvasionModifier, request.Sanctuary, out var counterWinterHunter);
+            counterResult = _strikeResolver.ResolvePreparedStrike(counter, counterWinterHunter);
             attackerHealthLost = StrikeDamageApplicator.Apply(counterResult, request.Attacker);
         }
 
@@ -156,8 +165,8 @@ public sealed class CombatExchangeResolver
             {
                 opening = PrepareStrike(request.OpeningAttackType, request.Attacker, request.Defender,
                     request.OpeningPower, request.AttackerWeapon, request.DefenderWeapon,
-                    request.OpeningBaseAccuracy, request.OpeningEvasionModifier);
-                followUpResult = ResolveFollowUp(opening, attackerSpeed, defenderSpeed);
+                    request.OpeningBaseAccuracy, request.OpeningEvasionModifier, request.Sanctuary, out var followUpWinterHunter);
+                followUpResult = ResolveFollowUp(opening, attackerSpeed, defenderSpeed, followUpWinterHunter);
                 followUpHealthLost = StrikeDamageApplicator.Apply(followUpResult, request.Defender);
                 defenderHealthLost += followUpHealthLost;
                 followUpBy = eligible;
@@ -166,8 +175,8 @@ public sealed class CombatExchangeResolver
             {
                 counter = PrepareStrike(request.CounterattackType, request.Defender, request.Attacker,
                     request.CounterattackPower, request.DefenderWeapon, request.AttackerWeapon,
-                    request.CounterattackBaseAccuracy, request.CounterattackEvasionModifier);
-                followUpResult = ResolveFollowUp(counter, defenderSpeed, attackerSpeed);
+                    request.CounterattackBaseAccuracy, request.CounterattackEvasionModifier, request.Sanctuary, out var followUpWinterHunter);
+                followUpResult = ResolveFollowUp(counter, defenderSpeed, attackerSpeed, followUpWinterHunter);
                 followUpHealthLost = StrikeDamageApplicator.Apply(followUpResult, request.Attacker);
                 attackerHealthLost += followUpHealthLost;
                 followUpBy = eligible;
@@ -183,12 +192,15 @@ public sealed class CombatExchangeResolver
     private StrikeResult ResolveFollowUp(
         (int HitChance, int CandidateDamage, WeaponTriangleOutcome Outcome) prepared,
         int fasterSpeed,
-        int slowerSpeed)
+        int slowerSpeed,
+        WinterHunterEvaluation? winterHunter)
     {
         // Roll the participant's own attack again, but only apply the reduced result.
-        var normalStrike = _strikeResolver.ResolvePreparedStrike(prepared);
+        // Flat bonuses, including Winter Hunter, are already present before the existing
+        // provisional percentage reduction. This does not finalize the universal modifier order.
+        var normalStrike = _strikeResolver.ResolvePreparedStrike(prepared, winterHunter);
         int reducedDamage = ProvisionalFollowUpDamageCalculator.Calculate(normalStrike.Damage, fasterSpeed, slowerSpeed);
-        return new StrikeResult(normalStrike.Hit, normalStrike.HitChance, reducedDamage, normalStrike.TriangleOutcome);
+        return new StrikeResult(normalStrike.Hit, normalStrike.HitChance, reducedDamage, normalStrike.TriangleOutcome, normalStrike.WinterHunter);
     }
 
     private static CombatExchangeRequest WithUnarmedDefender(CombatExchangeRequest request)
@@ -248,14 +260,26 @@ public sealed class CombatExchangeResolver
 
     private static (int HitChance, int CandidateDamage, WeaponTriangleOutcome Outcome) PrepareStrike(
         AttackType attackType, Character attacker, Character defender, int power,
-        WeaponCategory attackerWeapon, WeaponCategory defenderWeapon, int baseAccuracy, int evasionModifier) => attackType switch
+        WeaponCategory attackerWeapon, WeaponCategory defenderWeapon, int baseAccuracy, int evasionModifier,
+        SanctuaryDefenseContext? sanctuary)
+        => PrepareStrike(attackType, attacker, defender, power, attackerWeapon, defenderWeapon, baseAccuracy, evasionModifier, sanctuary, out _);
+
+    private static (int HitChance, int CandidateDamage, WeaponTriangleOutcome Outcome) PrepareStrike(
+        AttackType attackType, Character attacker, Character defender, int power,
+        WeaponCategory attackerWeapon, WeaponCategory defenderWeapon, int baseAccuracy, int evasionModifier,
+        SanctuaryDefenseContext? sanctuary, out WinterHunterEvaluation? winterHunter)
     {
-        AttackType.Physical => SingleStrikeResolver.PreparePhysicalStrike(
-            attacker.BaseStats, defender.BaseStats, power, attackerWeapon, defenderWeapon, baseAccuracy, defender.EffectiveDefense,
-            evasionModifier, BerserkersFury.GetPhysicalDamageBonus(attacker)),
-        AttackType.Magical => SingleStrikeResolver.PrepareMagicalStrike(
-            attacker.BaseStats, defender.BaseStats, power, attackerWeapon, defenderWeapon, baseAccuracy, evasionModifier,
-            defender.EffectiveResistance, TemporalAccumulation.GetMagicalDamageBonus(attacker)),
-        _ => throw new ArgumentOutOfRangeException(nameof(attackType), attackType, "Unsupported attack type.")
-    };
+        winterHunter = attackType == AttackType.Physical ? WinterHunter.Evaluate(attacker, defender) : null;
+        return attackType switch
+        {
+            AttackType.Physical => SingleStrikeResolver.PreparePhysicalStrike(
+                attacker.BaseStats, defender.BaseStats, power, attackerWeapon, defenderWeapon, baseAccuracy,
+                SanctuaryOfTheForgotten.DefenseForStrike(attacker, defender, sanctuary),
+                evasionModifier, checked(BerserkersFury.GetPhysicalDamageBonus(attacker) + winterHunter!.PhysicalDamageBonus)),
+            AttackType.Magical => SingleStrikeResolver.PrepareMagicalStrike(
+                attacker.BaseStats, defender.BaseStats, power, attackerWeapon, defenderWeapon, baseAccuracy, evasionModifier,
+                defender.EffectiveResistance, TemporalAccumulation.GetMagicalDamageBonus(attacker)),
+            _ => throw new ArgumentOutOfRangeException(nameof(attackType), attackType, "Unsupported attack type.")
+        };
+    }
 }

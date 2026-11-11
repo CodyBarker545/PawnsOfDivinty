@@ -123,7 +123,7 @@ public sealed class BrutalKnockbackResolver
     }
 
     public static BrutalKnockbackOpeningResult PrepareOpening(Character attacker, Character target,
-        AttackConfiguration? axe, WeaponCategory defenderWeapon, int evasionModifier = 0)
+        AttackConfiguration? axe, WeaponCategory defenderWeapon, int evasionModifier = 0, SanctuaryDefenseContext? sanctuary = null)
     {
         ArgumentNullException.ThrowIfNull(attacker);
         ArgumentNullException.ThrowIfNull(target);
@@ -144,7 +144,8 @@ public sealed class BrutalKnockbackResolver
         int fury = BerserkersFury.GetPhysicalDamageBonus(attacker);
         var effectiveDefenderWeapon = target.Statuses.HasStatus(StatusType.Disarm) ? WeaponCategory.Unarmed : defenderWeapon;
         var normal = SingleStrikeResolver.PreparePhysicalStrike(attacker.BaseStats, target.BaseStats,
-            axe.Power, axe.Category, effectiveDefenderWeapon, axe.BaseAccuracy, target.EffectiveDefense, evasionModifier);
+            axe.Power, axe.Category, effectiveDefenderWeapon, axe.BaseAccuracy,
+            SanctuaryOfTheForgotten.DefenseForStrike(attacker, target, sanctuary), evasionModifier);
         // Finalized in section 12.4: Fury is added exactly once, before halving.
         // Widen the addition so a valid reduced result is not lost to intermediate int overflow.
         int reduced = checked((int)Math.Max(1L, ((long)normal.CandidateDamage + fury) / 2));
@@ -161,9 +162,9 @@ public sealed class BrutalKnockbackResolver
     /// ability uses Resolve to apply damage before its validated displacement.
     /// </remarks>
     public BrutalKnockbackOpeningResult ResolveOpeningStrike(Character attacker, Character target,
-        AttackConfiguration? axe, WeaponCategory defenderWeapon, int evasionModifier = 0)
+        AttackConfiguration? axe, WeaponCategory defenderWeapon, int evasionModifier = 0, SanctuaryDefenseContext? sanctuary = null)
     {
-        var prepared = PrepareOpening(attacker, target, axe, defenderWeapon, evasionModifier);
+        var prepared = PrepareOpening(attacker, target, axe, defenderWeapon, evasionModifier, sanctuary);
         if (!prepared.IsPrepared) return prepared;
         var strike = _strikes.ResolvePreparedStrike((prepared.HitChance!.Value, prepared.ProvisionalDamage!.Value,
             prepared.TriangleOutcome!.Value));
@@ -172,9 +173,10 @@ public sealed class BrutalKnockbackResolver
     }
 
     public BrutalKnockbackEffectResult Preview(Character attacker, Character target, AttackConfiguration? axe,
-        WeaponCategory defenderWeapon, int? pushDistance, IForcedMovementMap? map, int evasionModifier = 0)
+        WeaponCategory defenderWeapon, int? pushDistance, IForcedMovementMap? map, int evasionModifier = 0,
+        SanctuaryDefenseContext? sanctuary = null)
     {
-        var opening = PrepareOpening(attacker, target, axe, defenderWeapon, evasionModifier);
+        var opening = PrepareOpening(attacker, target, axe, defenderWeapon, evasionModifier, sanctuary);
         if (!opening.IsPrepared) return new(opening, opening.RejectionReason);
         return PlanMovement(attacker, target, opening, pushDistance, map, allowLethalBypass: true);
     }
@@ -215,9 +217,10 @@ public sealed class BrutalKnockbackResolver
     /// random providers must not mutate match state. There is no rollback after combat begins.
     /// </remarks>
     public BrutalKnockbackResolution Resolve(Character attacker, Character target, AttackConfiguration? axe,
-        WeaponCategory defenderWeapon, int? pushDistance, IForcedMovementMap? map, int evasionModifier = 0)
+        WeaponCategory defenderWeapon, int? pushDistance, IForcedMovementMap? map, int evasionModifier = 0,
+        SanctuaryDefenseContext? sanctuary = null)
     {
-        var preparation = Preview(attacker, target, axe, defenderWeapon, pushDistance, map, evasionModifier);
+        var preparation = Preview(attacker, target, axe, defenderWeapon, pushDistance, map, evasionModifier, sanctuary);
         var source = attacker.TacticalPosition;
         var origin = target.TacticalPosition;
         if (!preparation.CanExecute) return new(preparation, target, source, origin, preparation.RejectionReason);

@@ -22,7 +22,8 @@ public class HoodedAssassinAbilityIntegrationTests
         var assassin = CharacterRegistry.GetCharacter("hooded_assassin")!;
         Assert.Equal(new[] { "smoke_bomb", "shadow_strike", "smoke_veil" }, assassin.Abilities.Select(a => a.Id));
         Assert.Equal(new[] { "Smoke Bomb", "Shadow Strike", "Smoke Veil" }, assassin.Abilities.Select(a => a.DisplayName));
-        Assert.All(roster.Where(c => c.Id is not ("hooded_assassin" or "gentle_guardian" or "time_weaver" or "nigel")), c => Assert.Empty(c.Abilities));
+        Assert.All(roster.Where(c => c.Id != "hooded_assassin"), c =>
+            Assert.DoesNotContain(c.Abilities, ability => ability.Id is "smoke_bomb" or "shadow_strike" or "smoke_veil"));
         Assert.DoesNotContain(roster.Single(c => c.Id == "gentle_guardian").Abilities,
             ability => ability.Id is "smoke_bomb" or "shadow_strike" or "smoke_veil");
         foreach (var definition in roster)

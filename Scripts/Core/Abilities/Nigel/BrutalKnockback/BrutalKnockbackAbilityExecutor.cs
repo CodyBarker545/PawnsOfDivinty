@@ -85,7 +85,7 @@ public sealed class BrutalKnockbackAbilityExecutor
         ArgumentNullException.ThrowIfNull(use);
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(targetingRules);
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, target, isAttack: true);
         if (!approval.Succeeded) return new(use, target, approval.Eligibility);
         if (use.AbilityId != Nigel.BrutalKnockbackId)
             return new(use, target, new(use.CharacterId, use.AbilityId, AbilityRejectionReason.UnsupportedAbility));
@@ -99,7 +99,8 @@ public sealed class BrutalKnockbackAbilityExecutor
             AbilityEligibility.FindOwnedAbility(use.Character, use.AbilityId)!,
             new(AbilityTargetType.Character, target.TacticalPosition, target), constraints, mapTargetLegal: mapTargetLegal);
         if (!targeting.IsLegal) return new(use, target, approval.Eligibility, targeting);
-        var effect = _resolver.Preview(use.Character, target, axe, defenderWeapon, pushDistance, map, evasionModifier);
+        var effect = _resolver.Preview(use.Character, target, axe, defenderWeapon, pushDistance, map, evasionModifier,
+            SanctuaryDefenseContext.FromActivations(use.Activations));
         return new(use, target, approval.Eligibility, targeting, effect);
     }
 
@@ -116,11 +117,12 @@ public sealed class BrutalKnockbackAbilityExecutor
     {
         var preview = Preview(use, target, axe, defenderWeapon, targetingRules, pushDistance, map, evasionModifier, mapTargetLegal);
         if (!preview.CanExecute) return preview;
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, target, isAttack: true, preparingExecution: true);
         if (!approval.Succeeded) return new(use, target, approval.Eligibility, preview.Targeting, preview.Effect);
-        var resolution = _resolver.Resolve(use.Character, target, axe, defenderWeapon, pushDistance, map, evasionModifier);
+        var resolution = _resolver.Resolve(use.Character, target, axe, defenderWeapon, pushDistance, map, evasionModifier,
+            SanctuaryDefenseContext.FromActivations(use.Activations));
         if (resolution.Combat is not null) use.MarkBrutalKnockbackStarted();
-        var finalization = resolution.Completed ? AbilityUseFinalizer.FinalizeSuccessfulUse(use) : null;
+        var finalization = resolution.Completed ? AbilityUseFinalizer.FinalizeResolvedMainAction(use, approval) : null;
         return new(use, target, preview.Eligibility, preview.Targeting, resolution.Preparation, resolution, finalization);
     }
 }

@@ -4,8 +4,9 @@ namespace PawnsOfDivinity.Core.Combat;
 public sealed record CombatExchangeResult
 {
     public StrikeResult OpeningStrike { get; }
-    /// <summary>Ordinary opening damage before any ability bonus, even when the strike misses.</summary>
+    /// <summary>Ordinary damage including runtime passives, before an opening-only ability bonus; retained on a miss.</summary>
     public int OpeningBaseDamage { get; }
+    /// <summary>An opening-only addition such as Shadow Strike, not the passives already included in ordinary damage.</summary>
     public int OpeningDamageBonus { get; }
     public int OpeningHealthLost { get; }
     public int OpeningShieldAbsorbed { get; }

@@ -16,5 +16,8 @@ public enum AbilityRejectionReason
     AlreadyFinalized = 10,
     UseContextChanged = 11,
     WrongPhase = 12,
-    UnsupportedAbility = 13
+    UnsupportedAbility = 13,
+    ActionRestrictionUnresolved = 14,
+    ActionRestricted = 15,
+    InvalidTarget = 16
 }

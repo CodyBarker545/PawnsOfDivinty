@@ -32,8 +32,9 @@ public static class Nigel
         {
             new AbilityDefinition(ProvokingRoarId, "Provoking Roar",
                 "Enemies within Manhattan radius 2 that have not activated must attack Nigel if legally possible " +
-                "(after movement if needed) or end without another action, until round end. No forced movement. Reuse 3. " +
-                "Taunt and action-restriction details remain unresolved.",
+                "(after player-controlled movement if needed) or end without another Main Action. Legal Utility Actions remain " +
+                "available. First active source retains priority without refresh. Invalid source releases taunt without refunds. " +
+                "Expires at application-round Cleanup; no forced movement. Reuse 3. Zero-new-recipient cast use remains unresolved.",
                 AbilityClassification.Active, requiredAction: AbilityActionType.MainAction,
                 range: new(AbilityRangeKind.ManhattanRadius, 0, 2), reuseInterval: 3),
             new AbilityDefinition(BrutalKnockbackId, "Brutal Knockback",

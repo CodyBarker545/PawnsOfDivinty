@@ -94,24 +94,24 @@ public class NigelAbilityTests
     }
 
     [Fact]
-    public void Roar_DoesNotApplyAnUnenforcedTauntOrSpendAnAction()
+    public void Roar_PreviewsWithoutMutationThenAppliesAndFinalizes()
     {
         var s = new Setup();
         var preview = s.Preview();
         var execution = s.Execute();
-        Assert.Equal(ProvokingRoarUseRejectionReason.ActionRestrictionIntegrationRequired, preview.RejectionReason);
+        Assert.Equal(ProvokingRoarUseRejectionReason.None, preview.RejectionReason);
         Assert.Equal(preview.RejectionReason, execution.RejectionReason);
         Assert.Equal(preview.Effect!.AffectedCharacterIds, execution.Effect!.AffectedCharacterIds);
-        Assert.False(preview.CanExecute);
-        Assert.False(execution.Succeeded);
-        Assert.Null(execution.Finalization);
-        Assert.True(s.Activations.CanUseMainAction);
-        Assert.False(s.Activations.MainActionUsed);
+        Assert.True(preview.CanExecute);
+        Assert.True(execution.Succeeded);
+        Assert.NotNull(execution.Finalization);
+        Assert.False(s.Activations.CanUseMainAction);
+        Assert.True(s.Activations.MainActionUsed);
         Assert.False(s.Activations.MovementUsed);
         Assert.False(s.Activations.UtilityActionUsed);
-        Assert.Same(s.Caster, s.Activations.ActiveCharacter);
-        Assert.Empty(s.Caster.Cooldowns.Cooldowns);
-        Assert.False(s.Caster.HasActedThisRound);
+        Assert.Null(s.Activations.ActiveCharacter);
+        Assert.Single(s.Caster.Cooldowns.Cooldowns);
+        Assert.True(s.Caster.HasActedThisRound);
         Assert.All(new[] { s.Near, s.Boundary }, c => Assert.Empty(c.Statuses.TimedStatuses));
     }
 
@@ -172,7 +172,8 @@ public class NigelAbilityTests
         Assert.False(s.Caster.Cooldowns.IsReady(Nigel.ProvokingRoarId, 4));
         Assert.True(s.Preview().Eligibility.IsAllowed);
         Assert.Equal(5, s.Caster.Cooldowns.Cooldowns[Nigel.ProvokingRoarId].ReadyRound);
-        Assert.False(s.Execute().Succeeded); // Readiness alone cannot resolve missing taunt rules.
+        Assert.True(s.Execute().Succeeded);
+        Assert.Equal(8, s.Caster.Cooldowns.Cooldowns[Nigel.ProvokingRoarId].ReadyRound);
     }
 
     [Fact]
@@ -247,7 +248,7 @@ public class NigelAbilityTests
             requiresMapValidation: true, requiresLineOfSight: false, requiresElevationRules: false), map);
         Assert.True(result.Effect!.IsAreaResolved);
         Assert.Equal(2, result.Effect.AffectedCharacterIds.Count);
-        Assert.False(result.CanExecute);
+        Assert.True(result.CanExecute);
     }
 
     [Fact]
@@ -326,7 +327,8 @@ public class NigelAbilityTests
         s.Activations.RecordUtilityAction();
         var stats = s.Roster.Select(c => c.BaseStats).ToArray();
         var positions = s.Roster.Select(c => c.TacticalPosition).ToArray();
-        for (int repeat = 0; repeat < 3; repeat++) Assert.False(s.Execute().Succeeded);
+        for (int repeat = 0; repeat < 3; repeat++) Assert.True(s.Preview().CanExecute);
+        Assert.True(s.Execute().Succeeded);
         Assert.Equal(45, s.Caster.CurrentHealth);
         Assert.Equal(5, s.Caster.ShieldHP);
         Assert.Equal(38, s.Near.CurrentHealth);
@@ -338,8 +340,8 @@ public class NigelAbilityTests
         Assert.Equal(positions, s.Roster.Select(c => c.TacticalPosition));
         Assert.True(s.Activations.MovementUsed);
         Assert.True(s.Activations.UtilityActionUsed);
-        Assert.False(s.Activations.MainActionUsed);
-        Assert.Empty(s.Caster.Cooldowns.Cooldowns);
+        Assert.True(s.Activations.MainActionUsed);
+        Assert.Single(s.Caster.Cooldowns.Cooldowns);
         Assert.Equal(52, other.CurrentHealth);
         Assert.Equal(0, other.ShieldHP);
         Assert.False(other.HasActedThisRound);

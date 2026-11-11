@@ -322,7 +322,7 @@ public class BerserkersFuryTests
     }
 
     [Fact]
-    public void RoarRemainsBlockedAndKnockbackFuryOrderingIsFinalized()
+    public void RoarPreviewAndKnockbackFuryOrderingRemainCompatible()
     {
         var nigel = CharacterFactory.Create("nigel", 1)!;
         var enemy = Fixture("enemy", 2);
@@ -333,8 +333,8 @@ public class BerserkersFuryTests
         nigel.TakeDamage(26);
         var rules = new AbilityTargetingConstraints(AbilityTargetType.Character, requiresMapValidation: false,
             requiresLineOfSight: false, requiresElevationRules: false);
-        var roar = new ProvokingRoarAbilityExecutor().Execute(new(nigel, Nigel.ProvokingRoarId, activations), rules);
-        Assert.Equal(ProvokingRoarUseRejectionReason.ActionRestrictionIntegrationRequired, roar.RejectionReason);
+        var roar = new ProvokingRoarAbilityExecutor().Preview(new(nigel, Nigel.ProvokingRoarId, activations), rules);
+        Assert.True(roar.CanExecute);
         var rolls = new Rolls();
         var resolver = new BrutalKnockbackResolver(new(new(rolls)), new ForcedMovementService());
         var axe = new AttackConfiguration(AttackType.Physical, WeaponCategory.Axe, 0, 90, 1, 1);

@@ -97,7 +97,7 @@ public sealed class ArcaneTransmutationAbilityExecutor
         ArgumentException.ThrowIfNullOrWhiteSpace(eventId);
         if (!ReferenceEquals(use.Character, combat.Attacker))
             throw new ArgumentException("The combat attacker must be the ability user.", nameof(combat));
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, combat.Defender, isAttack: true);
         if (!approval.Succeeded) return Result(approval.Eligibility);
         if (use.AbilityId != TimeWeaver.ArcaneTransmutationId)
             return Result(new(use.CharacterId, use.AbilityId, AbilityRejectionReason.UnsupportedAbility));
@@ -157,10 +157,11 @@ public sealed class ArcaneTransmutationAbilityExecutor
         {
             OpeningAttackType = attack.Type, OpeningPower = attack.Power, AttackerWeapon = attack.Category,
             OpeningBaseAccuracy = attack.BaseAccuracy, Distance = checked((int)targeting.Distance!.Value),
-            IncomingAttackPermitsCounters = true, IncomingAttackPermitsFollowUps = true
+            IncomingAttackPermitsCounters = true, IncomingAttackPermitsFollowUps = true,
+            Sanctuary = SanctuaryDefenseContext.FromActivations(use.Activations)
         };
         CombatExchangeResolver.ValidateRequest(resolved);
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, combat.Defender, isAttack: true, preparingExecution: true);
         if (!approval.Succeeded)
             return new(use, approval.Eligibility, targeting, targetId: combat.Defender.Id, replacement: selection);
         if (!ReferenceEquals(use.Character.EquippedScroll, selection.OriginalScroll))

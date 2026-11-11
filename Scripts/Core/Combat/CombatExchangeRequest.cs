@@ -1,4 +1,5 @@
 using PawnsOfDivinity.Core.Characters;
+using PawnsOfDivinity.Core.Abilities;
 
 namespace PawnsOfDivinity.Core.Combat;
 
@@ -14,6 +15,8 @@ namespace PawnsOfDivinity.Core.Combat;
 /// already unarmed. Unarmed Power and accuracy are caller configuration, not finalized balance.
 /// Evasion modifiers are resolved by the caller from confirmed effects such as Smoke Veil.
 /// They are percentage points subtracted by AccuracyCalculator, and default to zero.
+/// Sanctuary supplies the full match roster for live attack-dependent Defense. Player-action
+/// executors populate it; context-free low-level calls retain their existing two-character behavior.
 /// </remarks>
 public sealed record CombatExchangeRequest(
     Character Attacker,
@@ -35,4 +38,5 @@ public sealed record CombatExchangeRequest(
     AttackConfiguration? AttackerUnarmedAttack = null,
     AttackConfiguration? DefenderUnarmedAttack = null,
     int OpeningEvasionModifier = 0,
-    int CounterattackEvasionModifier = 0);
+    int CounterattackEvasionModifier = 0,
+    SanctuaryDefenseContext? Sanctuary = null);

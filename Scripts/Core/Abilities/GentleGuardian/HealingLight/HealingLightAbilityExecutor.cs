@@ -54,7 +54,7 @@ public sealed class HealingLightAbilityExecutor
     {
         var preview = Preview(use, target, targetingRules, mapTargetLegal);
         if (!preview.CanExecute) return preview;
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, preparingExecution: true);
         if (!approval.Succeeded)
             return new(use.CharacterId, target.Id, use.RoundNumber, approval.Eligibility,
                 target.CurrentHealth, target.CurrentHealth, preview.Targeting);

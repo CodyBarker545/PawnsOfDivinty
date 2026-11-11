@@ -1,5 +1,6 @@
 using System;
 using PawnsOfDivinity.Core.Characters;
+using PawnsOfDivinity.Core.Abilities;
 
 namespace PawnsOfDivinity.Core.Combat;
 
@@ -105,9 +106,10 @@ public sealed class SingleStrikeResolver
     }
 
     internal StrikeResult ResolvePreparedStrike(
-        (int HitChance, int CandidateDamage, WeaponTriangleOutcome Outcome) prepared)
+        (int HitChance, int CandidateDamage, WeaponTriangleOutcome Outcome) prepared,
+        WinterHunterEvaluation? winterHunter = null)
     {
         bool hit = _hitRoller.Roll(prepared.HitChance);
-        return new StrikeResult(hit, prepared.HitChance, hit ? prepared.CandidateDamage : 0, prepared.Outcome);
+        return new StrikeResult(hit, prepared.HitChance, hit ? prepared.CandidateDamage : 0, prepared.Outcome, winterHunter);
     }
 }

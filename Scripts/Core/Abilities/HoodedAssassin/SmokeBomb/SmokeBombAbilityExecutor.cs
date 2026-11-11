@@ -91,7 +91,7 @@ public sealed class SmokeBombAbilityExecutor
         var preview = Preview(use, effectId, canCoverTile, destination, map, participants, constraints);
         if (!preview.CanExecute) return preview;
         // All map queries are finished. Validate bookkeeping once more before the first mutation.
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, preparingExecution: true);
         if (!approval.Succeeded) return new(use, approval.Eligibility, targeting: preview.Targeting, placement: preview.Placement);
         var area = _smoke.PlaceValidated(preview.Placement!);
         var teleport = _teleports.CommitPrepared(preview.TeleportValidation!, preview.PreparedVisibility!);

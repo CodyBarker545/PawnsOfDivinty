@@ -151,7 +151,7 @@ public class AbilityDefinitionTests
         Assert.Equal(6, roster.Length);
         foreach (var definition in roster)
         {
-            Assert.Equal(definition.Id is "hooded_assassin" or "gentle_guardian" or "time_weaver" or "nigel" ? 3 : 0, definition.Abilities.Count);
+            Assert.Equal(3, definition.Abilities.Count);
             var character = CharacterFactory.Create(definition.Id, 1)!;
             Assert.Same(definition.BaseStats, character.BaseStats);
             Assert.Equal(definition.BaseStats.MaxHealth, character.CurrentHealth);

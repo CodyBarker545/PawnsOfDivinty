@@ -16,6 +16,15 @@ public sealed class RoundLifecycleManager
     private bool _preparationProcessed;
     public int CurrentRound { get; private set; }
     public RoundPhase CurrentPhase { get; private set; } = RoundPhase.Shop;
+    /// <summary>The single match-owned Cleanup boundary, when configured. Expiration does not advance phases.</summary>
+    public RoundCleanupCoordinator? CleanupCoordinator { get; private set; }
+
+    internal void RegisterCleanupCoordinator(RoundCleanupCoordinator coordinator)
+    {
+        if (CleanupCoordinator is not null)
+            throw new InvalidOperationException("This lifecycle already owns a Cleanup coordinator. Reuse that instance.");
+        CleanupCoordinator = coordinator;
+    }
 
     public RoundLifecycleManager(int initialRound = 1)
     {

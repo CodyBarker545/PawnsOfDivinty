@@ -260,7 +260,8 @@ public class SingleStrikeResolverTests
     {
         var properties = typeof(StrikeResult).GetProperties();
 
-        Assert.Equal(4, properties.Length);
+        Assert.Equal(5, properties.Length);
+        Assert.Contains(properties, property => property.Name == nameof(StrikeResult.WinterHunter));
         Assert.All(properties, property => Assert.Null(property.SetMethod));
     }
 

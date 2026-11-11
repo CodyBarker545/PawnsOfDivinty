@@ -41,10 +41,11 @@ public sealed record ProvokingRoarEffectResult
     public ProvokingRoarEffectRejectionReason RejectionReason { get; }
     public IReadOnlyList<ProvokingRoarRecipientResult> Recipients { get; }
     public IReadOnlyList<string> AffectedCharacterIds { get; }
+    public IReadOnlyList<string> EnemyIdsInsideRadius { get; }
     public bool IsAreaResolved => RejectionReason == ProvokingRoarEffectRejectionReason.None;
 
     internal ProvokingRoarEffectResult(Character caster, int round, ProvokingRoarEffectRejectionReason reason,
-        IEnumerable<ProvokingRoarRecipientResult>? recipients = null)
+        IEnumerable<ProvokingRoarRecipientResult>? recipients = null, IEnumerable<string>? insideRadius = null)
     {
         CasterId = caster.Id;
         Center = caster.TacticalPosition;
@@ -54,6 +55,7 @@ public sealed record ProvokingRoarEffectResult
         Recipients = Array.AsReadOnly(snapshot);
         AffectedCharacterIds = Array.AsReadOnly(snapshot.Where(r => r.Outcome == ProvokingRoarRecipientOutcome.Affected)
             .Select(r => r.CharacterId).ToArray());
+        EnemyIdsInsideRadius = Array.AsReadOnly(insideRadius?.ToArray() ?? Array.Empty<string>());
     }
 }
 
@@ -112,7 +114,9 @@ public static class ProvokingRoarEffect
             void Add(ProvokingRoarRecipientOutcome excluded) => results.Add(new(character, excluded));
         }
         return new(caster, round, unresolved ? ProvokingRoarEffectRejectionReason.TargetingInformationRequired
-            : ProvokingRoarEffectRejectionReason.None, results);
+            : ProvokingRoarEffectRejectionReason.None, results, roster.Where(c => c.TeamId != caster.TeamId
+                && c.TacticalPosition.HasValue && caster.TacticalPosition.Value.ManhattanDistanceTo(c.TacticalPosition.Value) <= 2)
+                .Select(c => c.Id));
 
         ProvokingRoarEffectResult Rejected(ProvokingRoarEffectRejectionReason reason) => new(caster, round, reason);
     }

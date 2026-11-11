@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PawnsOfDivinity.Core.Characters;
+using PawnsOfDivinity.Core.Turns.Restrictions;
 
 namespace PawnsOfDivinity.Core.Turns;
 
@@ -19,6 +20,7 @@ public sealed class ActivationManager
     /// <summary>Reads the lifecycle's round when connected; standalone callers retain their own legacy counter.</summary>
     public int CurrentRound => _roundLifecycle?.CurrentRound ?? _standaloneRound;
     public Character? ActiveCharacter { get; private set; }
+    public TauntRestrictionTracker ActionRestrictions { get; }
 
     // Keep the last activation's usage visible until a new selection succeeds.
     // Availability also requires a selected character that can still act.
@@ -31,6 +33,8 @@ public sealed class ActivationManager
     public bool CanUseMainAction => ActiveCharacter?.CanAct == true && !MainActionUsed;
     internal bool IsAbilityPhase => _roundLifecycle is null
         || _roundLifecycle.CurrentPhase == RoundPhase.AlternatingActivations;
+
+    internal bool UsesLifecycle(RoundLifecycleManager lifecycle) => ReferenceEquals(_roundLifecycle, lifecycle);
     // A counter may defeat the actor after a Main Action has already begun.
     internal bool CanCompleteResolvedMainAction => ActiveCharacter is not null
         && !ActiveCharacter.HasActedThisRound && !MainActionUsed;
@@ -63,6 +67,7 @@ public sealed class ActivationManager
         ValidateStartingTeam(startingTeamId);
         _preferredTeamId = startingTeamId;
         _roundLifecycle = roundLifecycle;
+        ActionRestrictions = new(FirstTeam.Concat(SecondTeam), () => CurrentRound, _roundLifecycle);
     }
 
     /// <summary>Selects one ready, living character from the team whose turn it is.</summary>
@@ -100,21 +105,127 @@ public sealed class ActivationManager
         UtilityActionUsed = true;
     }
 
+    /// <summary>Checks a proposed Main Action before its caller executes any effects.</summary>
+    /// <remarks>
+    /// CanUseMainAction remains a budget check. This method also enforces active ownership and
+    /// the target restriction. Supplied legal-attack information must be current and include
+    /// ordinary range, equipment, Silence/Disarm and targeting requirements where applicable.
+    /// It is not a substitute for those systems, nor permission to run an unresolved ability.
+    /// </remarks>
+    public TauntActionResult EvaluateMainAction(Character character, MainActionProposal? proposal = null)
+    {
+        ArgumentNullException.ThrowIfNull(character);
+        if (!IsAbilityPhase) return new(character, TauntActionOutcome.WrongPhase);
+        if (!ReferenceEquals(ActiveCharacter, character)) return new(character, TauntActionOutcome.WrongActiveCharacter);
+        if (character.IsDefeated) return new(character, TauntActionOutcome.CharacterDefeated);
+        if (!CanUseMainAction) return new(character, TauntActionOutcome.MainActionUnavailable);
+        var restriction = ActionRestrictions.GetActive(character.Id);
+        var evaluation = TauntActionPolicy.Evaluate(character, restriction,
+            restriction is null ? null : ActionRestrictions.FindSource(restriction.SourceCharacterId),
+            CurrentRound, MovementUsed, proposal);
+        return new(character, evaluation.Outcome, restriction, proposal?.TargetCharacterId, this, evaluation.ReleasesTaunt);
+    }
+
+    public TauntActionResult EvaluateUtilityAction(Character character)
+    {
+        ArgumentNullException.ThrowIfNull(character);
+        if (!IsAbilityPhase) return new(character, TauntActionOutcome.WrongPhase);
+        if (!ReferenceEquals(ActiveCharacter, character)) return new(character, TauntActionOutcome.WrongActiveCharacter);
+        if (character.IsDefeated) return new(character, TauntActionOutcome.CharacterDefeated);
+        if (!CanUseUtilityAction) return new(character, TauntActionOutcome.UtilityActionUnavailable);
+        var restriction = ActionRestrictions.GetActive(character.Id);
+        return new(character, TauntActionOutcome.Allowed, restriction);
+    }
+
+    /// <summary>Commits source invalidation immediately before a validated Main Action, without spending an opportunity.</summary>
+    public TauntActionResult BeginApprovedMainAction(Character character, TauntActionResult approval)
+    {
+        var validation = ValidateApprovedMainAction(character, approval);
+        if (!validation.IsAllowed) return validation;
+        if (approval.ReleasesTaunt && approval.RestrictionId is not null)
+            ActionRestrictions.EndInvalidSource(approval.RestrictionId);
+        return approval;
+    }
+
+    /// <summary>Explicitly refreshes a required source's validity before action selection; never selects a replacement.</summary>
+    public TauntActionResult ReleaseInvalidTauntSource(Character character, TauntAttackAvailability availability)
+    {
+        ArgumentNullException.ThrowIfNull(availability);
+        var approval = EvaluateMainAction(character, new(false, requiredAttack: availability));
+        return approval.IsAllowed && approval.ReleasesTaunt ? BeginApprovedMainAction(character, approval) : approval;
+    }
+
+    public IReadOnlyList<TauntEndResult> ProcessTauntCleanup()
+    {
+        if (_roundLifecycle is null) throw new InvalidOperationException("Taunt Cleanup requires a connected round lifecycle.");
+        return ActionRestrictions.ExpireAtCleanup(_roundLifecycle);
+    }
+
+    /// <summary>Finishes a caller-reported resolved action using permission checked before its effects.</summary>
+    /// <remarks>
+    /// Use this to complete an approved attack even if its source/actor died during that exchange.
+    /// It never executes effects and does not authorize an ability or replace its finalizer/cooldown.
+    /// The same activation and round must still be owned, and the restriction cannot have changed.
+    /// </remarks>
+    public TauntActionResult CompleteApprovedMainAction(Character character, TauntActionResult approval)
+    {
+        var validation = BeginApprovedMainAction(character, approval);
+        if (!validation.IsAllowed) return validation;
+        var restriction = ActionRestrictions.GetActive(character.Id);
+        if (restriction is not null && ActionRestrictions.SourceDefinitelyInvalid(restriction))
+            ActionRestrictions.EndInvalidSource(restriction.Id);
+        CompleteResolvedMainAction();
+        return approval;
+    }
+
+    internal TauntActionResult ValidateApprovedMainAction(Character character, TauntActionResult approval)
+    {
+        ArgumentNullException.ThrowIfNull(character);
+        ArgumentNullException.ThrowIfNull(approval);
+        var current = ActionRestrictions.GetActive(character.Id);
+        if (!approval.IsAllowed || !ReferenceEquals(approval.Manager, this) || !ReferenceEquals(approval.Character, character)
+            || approval.ApprovedRound != CurrentRound || !ReferenceEquals(ActiveCharacter, character) || !IsAbilityPhase
+            || !CanCompleteResolvedMainAction || (approval.RestrictionId != current?.Id
+                && !(current is null && approval.RestrictionId is not null && ActionRestrictions.EndedForInvalidSource(approval.RestrictionId))))
+            return new(character, TauntActionOutcome.ApprovalContextChanged, current);
+        return approval;
+    }
+
+    /// <summary>Records only an allowed completed Main Action; checking this does not execute an attack.</summary>
+    public TauntActionResult TryCompleteMainAction(Character character, MainActionProposal? proposal = null)
+    {
+        var result = EvaluateMainAction(character, proposal);
+        if (!result.IsAllowed) return result;
+        CompleteApprovedMainAction(character, result);
+        return result;
+    }
+
+    /// <summary>Explicitly ends without a Main Action when no legal required attack is available after movement.</summary>
+    public TauntActionResult EndActivationForTaunt(Character character, TauntAttackAvailability availability)
+    {
+        ArgumentNullException.ThrowIfNull(availability);
+        var result = EvaluateMainAction(character, new(false, requiredAttack: availability));
+        if (!result.RequiresEndActivation) return result;
+        var restriction = ActionRestrictions.GetActive(character.Id);
+        CompleteActivationCore();
+        return new(character, TauntActionOutcome.ActivationEnded, restriction);
+    }
+
     /// <summary>Records Main Action completion and ends the activation through the existing completion flow.</summary>
     /// <remarks>
     /// Call after the entire action resolves, including counters and follow-ups. This method
     /// does not execute the action. If the character died during resolution, use CompleteActivation
     /// to close the activation; a defeated character cannot record further actions.
     /// </remarks>
-    public void CompleteMainAction()
+    public void CompleteMainAction(MainActionProposal? proposal = null)
     {
         ValidateActionRecording();
         if (MainActionUsed) throw new InvalidOperationException("The Main Action has already been used in this activation.");
-        MainActionUsed = true;
-        CompleteActivation();
+        var result = TryCompleteMainAction(ActiveCharacter!, proposal);
+        if (!result.IsAllowed) throw new InvalidOperationException($"Main Action rejected: {result.Outcome}.");
     }
 
-    // Only successful-use finalization calls this after validating the action before its effect.
+    // Shared completion path for Main Actions approved before their effects resolved.
     internal void CompleteResolvedMainAction()
     {
         if (!CanCompleteResolvedMainAction)
@@ -134,6 +245,19 @@ public sealed class ActivationManager
     /// <summary>Ends the selected activation, including when the player chooses to stop early.</summary>
     /// <remarks>CompleteMainAction uses this same flow. It also permits closing a defeated character's activation.</remarks>
     public void CompleteActivation()
+    {
+        var character = ActiveCharacter
+            ?? throw new InvalidOperationException("There is no active character to complete.");
+        var restriction = ActionRestrictions.GetActive(character.Id);
+        if (!MainActionUsed && !character.IsDefeated && restriction is not null)
+        {
+            if (ActionRestrictions.SourceDefinitelyInvalid(restriction)) ActionRestrictions.EndInvalidSource(restriction.Id);
+            else throw new InvalidOperationException("A taunted unit must resolve its required attack or use the validated no-attack fallback.");
+        }
+        CompleteActivationCore();
+    }
+
+    private void CompleteActivationCore()
     {
         var character = ActiveCharacter
             ?? throw new InvalidOperationException("There is no active character to complete.");

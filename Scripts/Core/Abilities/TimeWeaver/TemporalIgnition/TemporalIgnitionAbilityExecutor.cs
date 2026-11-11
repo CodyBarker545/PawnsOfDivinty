@@ -35,7 +35,7 @@ public sealed class TemporalIgnitionAbilityExecutor
         ArgumentNullException.ThrowIfNull(targetingRules);
         ArgumentException.ThrowIfNullOrWhiteSpace(delayedAttackId);
         if (elementId is not null) ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, target, isAttack: true);
         if (!approval.Succeeded) return Result(approval.Eligibility);
         if (use.AbilityId != TimeWeaver.TemporalIgnitionId)
             return Result(new(use.CharacterId, use.AbilityId, AbilityRejectionReason.UnsupportedAbility));
@@ -76,13 +76,13 @@ public sealed class TemporalIgnitionAbilityExecutor
         var preview = Preview(use, target, delayedAttackId, magicalAttack, defenderWeapon, targetingRules,
             defenderEvasionModifier, mapTargetLegal, elementId);
         if (!preview.CanExecute) return preview;
-        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use);
+        var approval = AbilityUseFinalizer.ValidateSuccessfulUse(use, target, isAttack: true, preparingExecution: true);
         if (!approval.Succeeded) return new(use, target.Id, delayedAttackId, approval.Eligibility, preview.Targeting);
         _scheduler.ValidateCanSchedule(delayedAttackId);
         var strike = _strikes.ResolvePreparedStrike(preview.Prepared!.Value);
         var attack = DelayedAttack.CreateTemporalIgnition(delayedAttackId, use.CharacterId, target.Id, use.RoundNumber, strike);
         var scheduled = _scheduler.Schedule(attack);
-        var finalization = AbilityUseFinalizer.FinalizeSuccessfulUse(use);
+        var finalization = AbilityUseFinalizer.FinalizeResolvedMainAction(use, approval);
         var accumulation = finalization.Succeeded
             ? TemporalAccumulation.Process(use.Character, delayedAttackId, elementId, strike) : null;
         return new(use, target.Id, delayedAttackId, preview.Eligibility, preview.Targeting,
