@@ -1,0 +1,68 @@
+[
+  {
+    "Model": "Assassin",
+    "Source": "SourceAssets/characters/hooded_assassin/assassin.blend",
+    "Runtime": "Assets/Characters/MobaBeta/Assassin.glb",
+    "SHA256": "B84F39D3B5C7D02F8F2DF47D09D8DF7B0BF0953C73C012B40D22AF8C405394DE",
+    "OriginalBlenderSource": "SourceAssets/characters/hooded_assassin/assassin.blend",
+    "OriginalBlenderSHA256": "2CF521999E0C4CB66D3F6633D8B92D7BB2C9DF1E4AFA515B618D4F15964C25B7",
+    "MainScene": "Inspection_assassin_tpose.001",
+    "ExportedMeshCount": 1,
+    "ExportedVertexCount": 140240
+  },
+  {
+    "Model": "GentleGuardian",
+    "Source": "SourceAssets/characters/gental_guardian/guardian.blend",
+    "Runtime": "Assets/Characters/MobaBeta/GentleGuardian.glb",
+    "SHA256": "1B0B7198E24500F4369E91015312653F134498176689C03EE4966DB22611C9D2",
+    "OriginalBlenderSource": "SourceAssets/characters/gental_guardian/guardian.blend",
+    "OriginalBlenderSHA256": "E7024F958FBBE2E28072F48E94FCC1FA673B86DCAF1CE54C378D8EC491701775",
+    "MainScene": "Scene",
+    "ExportedMeshCount": 1,
+    "ExportedVertexCount": 154072
+  },
+  {
+    "Model": "TimeWeaver",
+    "Source": "SourceAssets/characters/ash_scholar/mage.blend",
+    "Runtime": "Assets/Characters/MobaBeta/TimeWeaver.glb",
+    "SHA256": "685DDFEB1B69C53C91E9B0A3C52461405011CC30C766AA028650A6CCAB730F3B",
+    "OriginalBlenderSource": "SourceAssets/characters/ash_scholar/mage.blend",
+    "OriginalBlenderSHA256": "56F6AAF8C8BEB0D898476E3562DBA1BF8B11F91C5033C9F4A887BF836BAAF997",
+    "MainScene": "Scene",
+    "ExportedMeshCount": 1,
+    "ExportedVertexCount": 135337
+  },
+  {
+    "Model": "Colossus",
+    "Source": "SourceAssets/characters/broken_oath_knight/knight.blend",
+    "Runtime": "Assets/Characters/MobaBeta/Colossus.glb",
+    "SHA256": "C914EDF567D32D9562E394B61D79FCC06677C91015911C49C0E3A3F0E2196FDA",
+    "OriginalBlenderSource": "SourceAssets/characters/broken_oath_knight/knight.blend",
+    "OriginalBlenderSHA256": "467A7A1ADDE6D1C95A5915BE97F3CDCCB928812DACC41B5A74BB58687814D548",
+    "MainScene": "Scene",
+    "ExportedMeshCount": 1,
+    "ExportedVertexCount": 168974
+  },
+  {
+    "Model": "Nigel",
+    "Source": "SourceAssets/characters/axe_warrior/nigel.blend",
+    "Runtime": "Assets/Characters/MobaBeta/Nigel.glb",
+    "SHA256": "59BFE52F165A3A401FC62344C8E751F530519424C560AC5F9A9391606DCAA38A",
+    "OriginalBlenderSource": "SourceAssets/characters/axe_warrior/nigel.blend",
+    "OriginalBlenderSHA256": "EEB056D2C45D13B2B20090825186ECB5B3678345289B4813A2EF744947576B3D",
+    "MainScene": "Scene",
+    "ExportedMeshCount": 1,
+    "ExportedVertexCount": 154306
+  },
+  {
+    "Model": "SpiritGuardian",
+    "Source": "SourceAssets/characters/native/native.blend",
+    "Runtime": "Assets/Characters/MobaBeta/SpiritGuardian.glb",
+    "SHA256": "D09218FB07D3EBD005F279FF30CCCB2027173A2AEB3E61A5A766E5434C76D694",
+    "OriginalBlenderSource": "SourceAssets/characters/native/native.blend",
+    "OriginalBlenderSHA256": "3B9B30A151B97DB9461AF9FC1781E232458526C82E5947A6463CA166CF0E8C14",
+    "MainScene": "Scene",
+    "ExportedMeshCount": 1,
+    "ExportedVertexCount": 155173
+  }
+]

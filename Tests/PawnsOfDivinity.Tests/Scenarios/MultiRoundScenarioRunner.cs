@@ -87,6 +87,8 @@ public sealed class MultiRoundScenarioRunner
             foreach (var action in activation.Actions)
             {
                 var result = Execute(action);
+                // An interrupted ordinary move is a resolved action, not a broken round.
+                // The explicit script may still use the surviving actor's remaining actions.
                 if (result.Outcome is ScenarioOutcome.Unresolved or ScenarioOutcome.PartiallyApplied or ScenarioOutcome.UnexpectedFailure)
                 { Interrupt(result.Outcome, result.Reason); break; }
             }

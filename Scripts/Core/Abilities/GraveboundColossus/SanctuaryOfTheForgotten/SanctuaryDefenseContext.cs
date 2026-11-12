@@ -48,6 +48,7 @@ public sealed class SanctuaryDefenseUnresolvedException : InvalidOperationExcept
 public sealed class SanctuaryDefenseContext
 {
     private readonly IReadOnlyDictionary<string, Character> _characters;
+    private Func<Character, GridPosition?> _positions = c => c.TacticalPosition;
     public IReadOnlyList<Character> Participants { get; }
 
     public SanctuaryDefenseContext(IEnumerable<Character> participants)
@@ -69,6 +70,9 @@ public sealed class SanctuaryDefenseContext
         return new(activations.FirstTeam.Concat(activations.SecondTeam));
     }
 
+    internal SanctuaryDefenseContext WithProjectedPosition(string characterId, GridPosition position)
+        => new(Participants) { _positions = c => c.Id == characterId ? position : c.TacticalPosition };
+
     public SanctuaryDefenseResult Evaluate(Character attacker, Character recipient)
     {
         ArgumentNullException.ThrowIfNull(attacker);
@@ -78,7 +82,7 @@ public sealed class SanctuaryDefenseContext
             || !_characters.TryGetValue(recipient.Id, out var knownRecipient) || !ReferenceEquals(knownRecipient, recipient))
             return Result(SanctuaryDefenseReason.MissingParticipant, Array.Empty<SanctuaryEvaluation>());
         var sources = Participants.Where(SanctuaryOfTheForgotten.IsPassiveOwner)
-            .Select(source => SanctuaryOfTheForgotten.Evaluate(source, recipient, attacker)).ToArray();
+            .Select(source => SanctuaryOfTheForgotten.EvaluateAt(source, recipient, attacker, _positions)).ToArray();
         if (sources.Any(s => s.Reason == SanctuaryReason.MissingPosition)) return Result(SanctuaryDefenseReason.MissingPosition, sources);
         if (sources.Any(s => s.Reason == SanctuaryReason.SourceDeathUnresolved)) return Result(SanctuaryDefenseReason.SourceDeathUnresolved, sources);
         if (sources.Count(s => s.BonusApplies) > 1) return Result(SanctuaryDefenseReason.OverlapUnresolved, sources);

@@ -8,11 +8,17 @@ using PawnsOfDivinity.Core.Gameplay;
 namespace PawnsOfDivinity.Tests.Scenarios;
 
 /// <summary>Flat-grid fixture information. Unknown visibility, terrain and transitions stay unknown.</summary>
-public sealed class ScenarioMap : IForcedMovementMap, IWailingRampartMap, ISpiritFrostMap, ISentinelReactionMap
+public sealed class ScenarioMap : IForcedMovementMap, IWailingRampartMap, ISpiritFrostMap, ISentinelReactionMap, IOrdinaryMovementMap
 {
     private readonly CombatScenario _scenario;
     private readonly HashSet<GridPosition> _blocked;
     private readonly Dictionary<(string Id, GridPosition From, GridPosition To), bool?> _transitions = new();
+    public MovementRuleAuthority RuleAuthority => MovementRuleAuthority.ProvisionalFixture;
+    public string PolicyDescription => "Explicit flat fixture: unit-cost orthogonal steps; living occupants block traversal. No height rules.";
+    public bool UseProvisionalFlatMovement { get; set; }
+    public bool? InterruptedMovementConsumesOpportunity { get; set; }
+    public bool? CanTraverseOccupiedTile(Character actor, Character occupant) => UseProvisionalFlatMovement ? false : null;
+    public int? GetStepCost(Character actor, GridPosition from, GridPosition to) => UseProvisionalFlatMovement ? 1 : null;
     public int Width { get; }
     public int Height { get; }
     public bool? TargetingConfirmed { get; set; }

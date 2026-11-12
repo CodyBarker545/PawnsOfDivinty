@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/Levels/BetaLevelElement.cs" id="1_kdn2k"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dj3hk"]
+albedo_color = Color(0.36, 0.36, 0.32, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="BoxMesh_l0qh3"]
+size = Vector3(0.95, 0.7, 0.9)
+
+[node name="ruin_4_16" type="Node3D" unique_id=1934714211]
+script = ExtResource("1_kdn2k")
+Kind = 6
+BlocksMovement = true
+
+[node name="BlockedRuin" type="MeshInstance3D" parent="." unique_id=1210084530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+material_override = SubResource("StandardMaterial3D_dj3hk")
+mesh = SubResource("BoxMesh_l0qh3")

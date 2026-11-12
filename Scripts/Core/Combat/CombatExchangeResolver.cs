@@ -258,7 +258,7 @@ public sealed class CombatExchangeResolver
             BerserkersFury.ValidatePotentialDamage(request.Defender, counterDamage);
     }
 
-    private static (int HitChance, int CandidateDamage, WeaponTriangleOutcome Outcome) PrepareStrike(
+    internal static (int HitChance, int CandidateDamage, WeaponTriangleOutcome Outcome) PrepareStrike(
         AttackType attackType, Character attacker, Character defender, int power,
         WeaponCategory attackerWeapon, WeaponCategory defenderWeapon, int baseAccuracy, int evasionModifier,
         SanctuaryDefenseContext? sanctuary)

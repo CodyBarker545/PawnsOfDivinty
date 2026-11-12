@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Gameplay/Levels/BetaLevelElement.cs" id="1_kcgb5"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u288y"]
+albedo_color = Color(0.3, 0.34, 0.39, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="BoxMesh_xj4d0"]
+size = Vector3(1.12, 0.86, 1.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ldnfl"]
+albedo_color = Color(0.85, 0.18, 0.24, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="BoxMesh_p17xf"]
+size = Vector3(0.68, 0.26, 0.68)
+
+[node name="red_home_wall_29_9" type="Node3D" unique_id=309069552]
+script = ExtResource("1_kcgb5")
+Kind = 6
+BlocksMovement = true
+
+[node name="red_home_wall" type="MeshInstance3D" parent="." unique_id=2009270789]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.43, 0)
+material_override = SubResource("StandardMaterial3D_u288y")
+mesh = SubResource("BoxMesh_xj4d0")
+
+[node name="@MeshInstance3D@9" type="MeshInstance3D" parent="." unique_id=694282816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99, 0)
+material_override = SubResource("StandardMaterial3D_ldnfl")
+mesh = SubResource("BoxMesh_p17xf")

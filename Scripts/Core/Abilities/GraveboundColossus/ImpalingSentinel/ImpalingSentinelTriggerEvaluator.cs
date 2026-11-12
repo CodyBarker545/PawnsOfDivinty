@@ -53,6 +53,11 @@ public sealed class ImpalingSentinelTriggerEvaluator
 
     public ImpalingSentinelTriggerResult Evaluate(string ownerId, SentinelMovementEvent movement,
         AttackConfiguration? currentLance, ISentinelReactionMap? map)
+        => EvaluateStep(ownerId, movement, currentLance, map, null);
+
+    // A path preview supplies its projected step origin without changing authoritative position.
+    internal ImpalingSentinelTriggerResult EvaluateStep(string ownerId, SentinelMovementEvent movement,
+        AttackConfiguration? currentLance, ISentinelReactionMap? map, GridPosition? projectedPosition)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
         ArgumentNullException.ThrowIfNull(movement);
@@ -74,7 +79,7 @@ public sealed class ImpalingSentinelTriggerEvaluator
         if (mover.IsDefeated) return Result(ImpalingSentinelReason.TargetDefeated);
         if (movement.From == movement.Destination) return Result(ImpalingSentinelReason.Stationary);
         if (movement.Kind != SentinelMovementKind.Ordinary) return Result(ImpalingSentinelReason.SpecialMovementUnresolved);
-        if (mover.TacticalPosition != (movement.IsCommitted ? movement.Destination : movement.From))
+        if ((projectedPosition ?? mover.TacticalPosition) != (movement.IsCommitted ? movement.Destination : movement.From))
             return Result(ImpalingSentinelReason.StalePosition);
         // A start/end pair cannot reveal a longer path's first range entry. Require an explicit
         // adjacent step rather than treating every traversed tile or a whole path as one trigger.

@@ -13,6 +13,9 @@ tonemap_mode = 2
 
 [node name="Battlefield" type="Node3D"]
 script = ExtResource("1")
+DevelopmentMovementPolicy = true
+DevelopmentOpenTargeting = true
+DevelopmentInterruptedMovementSpent = true
 
 [node name="StartingLevel" parent="." instance=ExtResource("2")]
 

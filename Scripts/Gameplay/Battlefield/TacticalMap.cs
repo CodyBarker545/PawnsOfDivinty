@@ -1,13 +1,15 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using PawnsOfDivinity.Gameplay;
+using CoreCell = PawnsOfDivinity.Core.Abilities.GridPosition;
 
 /// <summary>Grid rules over the actual Terrain3D surface and authored level props.</summary>
-public sealed class TacticalMap
+public sealed class TacticalMap : IBattlefieldTerrain
 {
-    public const int Size = 16;
-    public const float CellSize = 1.25f;
-    public const float Center = 16f;
+    public const int Size = BattlefieldGrid.Size;
+    public const float CellSize = (float)BattlefieldGrid.CellSize;
+    public const float Center = (float)BattlefieldGrid.WorldCenter;
     private readonly GodotObject _data;
     private readonly List<(Vector3 Position, Vector2 Size)> _bridges = new();
     private readonly List<(Vector3 Position, float Radius)> _obstacles = new();
@@ -26,14 +28,24 @@ public sealed class TacticalMap
 
     public bool InBounds(Vector2I cell) => cell.X >= 0 && cell.Y >= 0 && cell.X < Size && cell.Y < Size;
 
-    public Vector2I WorldToCell(Vector3 point) => new(
-        Mathf.RoundToInt((point.X - Center) / CellSize + (Size - 1) / 2f),
-        Mathf.RoundToInt((point.Z - Center) / CellSize + (Size - 1) / 2f));
+    public Vector2I WorldToCell(Vector3 point)
+    {
+        var cell = BattlefieldGrid.WorldToCell(point.X, point.Z);
+        return new(cell.X, cell.Y);
+    }
+
+    public bool? IsWalkable(CoreCell cell) => Walkable(new(cell.X, cell.Y));
+    public double? Height(CoreCell cell)
+    {
+        var height = CellPosition(new(cell.X, cell.Y)).Y - .045f;
+        return float.IsFinite(height) ? height : null;
+    }
+    public bool? PrototypeTransition(CoreCell from, CoreCell to) => CanTraverse(new(from.X, from.Y), new(to.X, to.Y));
 
     public Vector3 CellPosition(Vector2I cell)
     {
-        var position = new Vector3(Center + (cell.X - (Size - 1) / 2f) * CellSize, 0,
-            Center + (cell.Y - (Size - 1) / 2f) * CellSize);
+        var center = BattlefieldGrid.CellCenter(new(cell.X, cell.Y));
+        var position = new Vector3((float)center.X, 0, (float)center.Z);
         position.Y = SurfaceHeight(position) + 0.045f;
         return position;
     }
@@ -84,6 +96,7 @@ public sealed class TacticalMap
         return blocked;
     }
 
+    // Legacy pathfinding helper; the authoritative battlefield never calls this.
     public List<Vector2I>? FindPath(Vector2I start, Vector2I goal, HashSet<Vector2I> occupied) =>
         GridPathfinder.Find(start, goal, Size, occupied, Walkable, CanTraverse);
 

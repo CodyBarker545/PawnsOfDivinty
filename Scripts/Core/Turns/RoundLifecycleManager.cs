@@ -18,6 +18,13 @@ public sealed class RoundLifecycleManager
     public RoundPhase CurrentPhase { get; private set; } = RoundPhase.Shop;
     /// <summary>The single match-owned Cleanup boundary, when configured. Expiration does not advance phases.</summary>
     public RoundCleanupCoordinator? CleanupCoordinator { get; private set; }
+    public MovementActionExecutor? MovementExecutor { get; private set; }
+
+    internal void RegisterMovementExecutor(MovementActionExecutor executor)
+    {
+        if (MovementExecutor is not null) throw new InvalidOperationException("Reuse this match's movement executor.");
+        MovementExecutor = executor;
+    }
 
     internal void RegisterCleanupCoordinator(RoundCleanupCoordinator coordinator)
     {

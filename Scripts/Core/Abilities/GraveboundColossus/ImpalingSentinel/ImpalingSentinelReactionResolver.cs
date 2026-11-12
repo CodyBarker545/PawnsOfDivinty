@@ -44,8 +44,13 @@ public sealed class ImpalingSentinelReactionResolver
 
     public ImpalingSentinelReactionResult Preview(string ownerId, SentinelMovementEvent movement,
         AttackConfiguration? currentLance, CombatExchangeRequest? request, ISentinelReactionMap? map)
+        => PreviewStep(ownerId, movement, currentLance, request, map, null);
+
+    internal ImpalingSentinelReactionResult PreviewStep(string ownerId, SentinelMovementEvent movement,
+        AttackConfiguration? currentLance, CombatExchangeRequest? request, ISentinelReactionMap? map,
+        GridPosition? projectedPosition)
     {
-        var trigger = _triggers.Evaluate(ownerId, movement, currentLance, map);
+        var trigger = _triggers.EvaluateStep(ownerId, movement, currentLance, map, projectedPosition);
         if (!trigger.IsEligible) return new(trigger, trigger.RejectionReason);
         if (request is null) return new(trigger, ImpalingSentinelReason.CombatInformationRequired);
         if (!ReferenceEquals(request.Attacker, _tracker.FindCharacter(ownerId)) ||
@@ -58,12 +63,15 @@ public sealed class ImpalingSentinelReactionResolver
         foreach (var other in _tracker.Preparations)
         {
             if (other.OwnerCharacterId == ownerId || other.Status != SentinelPreparationStatus.Prepared) continue;
-            var otherTrigger = _triggers.Evaluate(other.OwnerCharacterId, movement, other.Lance, map);
+            var otherTrigger = _triggers.EvaluateStep(other.OwnerCharacterId, movement, other.Lance, map, projectedPosition);
             if (otherTrigger.IsEligible || otherTrigger.RejectionReason is ImpalingSentinelReason.MissingMapInformation
                     or ImpalingSentinelReason.SpellRestrictionUnresolved)
                 return new(trigger, ImpalingSentinelReason.MultipleReactionsOrderingUnresolved);
         }
-        CombatExchangeResolver.ValidateRequest(WithoutFollowUps(request));
+        var combatRequest = WithoutFollowUps(request);
+        if (projectedPosition is { } projected)
+            combatRequest = combatRequest with { Sanctuary = combatRequest.Sanctuary!.WithProjectedPosition(movement.CharacterId, projected) };
+        CombatExchangeResolver.ValidateRequest(combatRequest);
         return new(trigger, ImpalingSentinelReason.None);
     }
 

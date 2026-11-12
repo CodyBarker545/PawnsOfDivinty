@@ -203,3 +203,31 @@ Unadapted abilities, unresolved spell tags under Silence, flying-effectiveness r
 Sanctuary overlap, unsupported knockback geometry, terrain Frostbite, Sentinel special movement
 and competing-reaction ordering remain outside successful scripted execution. No AI, pathfinding,
 shop/economy, redeployment, objectives, victory, rankings or Godot integration is added.
+
+
+## Stage 6.6 — production ordinary movement
+
+`ScenarioActionKind.Movement` supplies an ordered `Tiles` route **including its origin**.
+The runner invokes the match-owned `MovementActionExecutor`; snapshots read the same
+`Character.TacticalPosition` used by subsequent attacks and occupancy queries. Preview is
+non-mutating. Movement events represent actual committed steps and Sentinel results; damage
+observations are not counted again when the reaction already reports them.
+
+The fixture must explicitly set `scenario.Map.UseProvisionalFlatMovement = true` to supply
+flat unit-step costs and blocked living occupancy. These are provisional fixture rules, not
+new Specification v0.2 decisions. The default map leaves movement costs unresolved. A path
+with a prospective Sentinel also needs an explicit
+`scenario.Map.InterruptedMovementConsumesOpportunity = true` fixture policy, configured
+Lance/counter inputs and the existing provisional reaction-limit opt-in.
+
+A Sentinel hit returns `ScenarioOutcome.Interrupted`, preserves the reached tile/damage and
+spent Movement, and leaves remaining actions available if the mover survived. An explicit
+multi-round script may continue; it does not automatically select an attack or end activation.
+Unresolved rules, partial failures and unexpected failures retain the existing script-stop
+behavior. Cleanup and next-round preparation still use their production coordinators.
+
+`ConfirmedMovement` remains an externally confirmed **bookkeeping-only fixture action** for
+older tests; it never means the new executor moved a character. See
+`Docs/MOVEMENT_EXECUTION.md` for API details, unapproved rules and the Godot/core authority
+boundary. `MovementScenarioTests` covers movement-to-attack, occupancy, terrain, interruption
+and successive rounds. No matchup balance conclusions are changed by these fixture policies.

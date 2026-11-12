@@ -29,14 +29,14 @@ public sealed record SanctuaryEvaluation
     public int? DefenseBonus => IsResolved ? (BonusApplies ? 3 : 0) : null;
 
     internal SanctuaryEvaluation(Character source, Character recipient, Character attacker, SanctuaryReason reason,
-        long? recipientDistance, long? attackerDistance, bool? condition)
+        long? recipientDistance, long? attackerDistance, bool? condition, Func<Character, GridPosition?>? positions = null)
     {
         SourceId = source.Id;
         RecipientId = recipient.Id;
         AttackerId = attacker.Id;
-        SourcePosition = source.TacticalPosition;
-        RecipientPosition = recipient.TacticalPosition;
-        AttackerPosition = attacker.TacticalPosition;
+        SourcePosition = positions is null ? source.TacticalPosition : positions(source);
+        RecipientPosition = positions is null ? recipient.TacticalPosition : positions(recipient);
+        AttackerPosition = positions is null ? attacker.TacticalPosition : positions(attacker);
         RecipientDistance = recipientDistance;
         AttackerDistance = attackerDistance;
         ConditionSatisfied = condition;
@@ -51,6 +51,11 @@ public static class SanctuaryOfTheForgotten
     public const int Radius = 2;
 
     public static SanctuaryEvaluation Evaluate(Character source, Character recipient, Character attacker)
+        => EvaluateAt(source, recipient, attacker, c => c.TacticalPosition);
+
+    // Movement preflight evaluates a proposed checkpoint without moving a runtime character.
+    internal static SanctuaryEvaluation EvaluateAt(Character source, Character recipient, Character attacker,
+        Func<Character, GridPosition?> positions)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(recipient);
@@ -62,11 +67,11 @@ public static class SanctuaryOfTheForgotten
         if (recipient.IsDefeated) return Result(SanctuaryReason.RecipientDefeated, false);
         if (attacker.TeamId == source.TeamId) return Result(SanctuaryReason.AttackerNotEnemy, false);
         if (attacker.IsDefeated) return Result(SanctuaryReason.AttackerDefeated, false);
-        if (source.TacticalPosition is not { } center || recipient.TacticalPosition is not { } target)
+        if (positions(source) is not { } center || positions(recipient) is not { } target)
             return Result(SanctuaryReason.MissingPosition, null);
         recipientDistance = center.ManhattanDistanceTo(target);
         if (recipientDistance > Radius) return Result(SanctuaryReason.OutsideRadius, false);
-        if (attacker.TacticalPosition is not { } incoming) return Result(SanctuaryReason.MissingPosition, null);
+        if (positions(attacker) is not { } incoming) return Result(SanctuaryReason.MissingPosition, null);
         attackerDistance = center.ManhattanDistanceTo(incoming);
         if (attackerDistance != 1) return Result(SanctuaryReason.AttackerNotAdjacent, false);
         // Section 10 preserves effects placed on other characters, but does not explicitly
@@ -75,7 +80,7 @@ public static class SanctuaryOfTheForgotten
         return Result(SanctuaryReason.Applies, true);
 
         SanctuaryEvaluation Result(SanctuaryReason reason, bool? condition)
-            => new(source, recipient, attacker, reason, recipientDistance, attackerDistance, condition);
+            => new(source, recipient, attacker, reason, recipientDistance, attackerDistance, condition, positions);
     }
 
     internal static bool IsPassiveOwner(Character source) => source.Definition?.Id == "gravebound_colossus"

@@ -89,7 +89,7 @@ public sealed class ActivationManager
         ActiveCharacter = character;
     }
 
-    /// <summary>Records the completed use of the one unsplit movement opportunity, not a path step.</summary>
+    /// <summary>Spends the one unsplit movement opportunity. A movement coordinator calls this once, not per tile.</summary>
     public void RecordMovement()
     {
         ValidateActionRecording();
@@ -254,6 +254,15 @@ public sealed class ActivationManager
             if (ActionRestrictions.SourceDefinitelyInvalid(restriction)) ActionRestrictions.EndInvalidSource(restriction.Id);
             else throw new InvalidOperationException("A taunted unit must resolve its required attack or use the validated no-attack fallback.");
         }
+        CompleteActivationCore();
+    }
+
+    /// <summary>Forfeits an expired activation without executing a Main Action or clearing restrictions.</summary>
+    /// <remarks>The authoritative timer caller establishes expiry. Ordinary End retains its taunt guard.</remarks>
+    public void ForfeitActivationForTimeout()
+    {
+        if (!IsAbilityPhase) throw new InvalidOperationException("Timeout forfeiture requires the activation phase.");
+        if (ActiveCharacter is null) throw new InvalidOperationException("There is no active character to forfeit.");
         CompleteActivationCore();
     }
 

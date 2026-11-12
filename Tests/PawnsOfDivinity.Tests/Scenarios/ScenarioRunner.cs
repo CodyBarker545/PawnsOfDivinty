@@ -35,8 +35,24 @@ public sealed class ScenarioRunner
         Selection = new("selection", selection, RecordDraw);
         var combat = new CombatExchangeResolver(new SingleStrikeResolver(new HitRoller(Accuracy)));
         _attacks = new(combat);
+        _ = new MovementActionExecutor(scenario.Activations, scenario.Lifecycle, scenario.Map, scenario.Walls,
+            scenario.Ice, scenario.Sentinel, combat, new MovementInputs(scenario));
         _arrows = new(combat, new FrostbiteArrowEffect(new HitRoller(Status)));
     }
+    private sealed class MovementInputs(CombatScenario scenario) : IMovementReactionInputs
+    {
+        public AttackConfiguration? CurrentLance(string ownerId) => scenario.AttackInputs.GetValueOrDefault(ownerId)?.Configuration;
+        public CombatExchangeRequest? CreateRequest(string ownerId, string moverId, int distance)
+        {
+            var lance = CurrentLance(ownerId);
+            var counter = scenario.AttackInputs.GetValueOrDefault(moverId)?.Configuration;
+            if (lance is null || counter is null) return null;
+            return new(scenario.Characters[ownerId], scenario.Characters[moverId], lance.Type, lance.Power, lance.Category,
+                counter.Category, lance.BaseAccuracy, counter.Type, counter.Power, counter.BaseAccuracy,
+                counter.MinimumRange, counter.MaximumRange, distance, true, false);
+        }
+    }
+
     private void RecordDraw(string stream, int? value, int maximum, ScenarioDrawOutcome outcome)
         => _draws.Add(new(_draws.Count + 1, stream, value, maximum, outcome));
 
@@ -76,7 +92,7 @@ public sealed class ScenarioRunner
         if (preview && (before.ToCanonicalJson() != after.ToCanonicalJson() || _draws.Count != drawStart))
             decision = decision with { Outcome = before.ToCanonicalJson() != after.ToCanonicalJson()
                 ? ScenarioOutcome.PartiallyApplied : ScenarioOutcome.UnexpectedFailure, Reason = "Production preview changed state or consumed randomness" };
-        if (decision.Outcome != ScenarioOutcome.Completed && decision.Outcome != ScenarioOutcome.Ready &&
+        if (decision.Outcome != ScenarioOutcome.Completed && decision.Outcome != ScenarioOutcome.Ready && decision.Outcome != ScenarioOutcome.Interrupted &&
             before.ToCanonicalJson() != after.ToCanonicalJson())
             decision = decision with { Outcome = ScenarioOutcome.PartiallyApplied };
         if (!preview) RecordOutcome(action, decision, before, after);
@@ -91,6 +107,23 @@ public sealed class ScenarioRunner
         if (!_scenario.Characters.TryGetValue(action.ActorId, out var actor))
             return new(ScenarioOutcome.Rejected, "UnknownActor");
         var activations = _scenario.Activations;
+        if (action.Kind == ScenarioActionKind.Movement)
+        {
+            if (action.Tiles is null) return new(ScenarioOutcome.Rejected, "ExplicitMovementPathRequired");
+            var movementRequest = new MovementActionRequest(action.Id, actor.Id, _scenario.Lifecycle.CurrentRound, action.Tiles);
+            var movement = preview ? _scenario.Movement.Preview(movementRequest) : _scenario.Movement.Execute(movementRequest);
+            var outcome = movement.Outcome switch
+            {
+                MovementOutcome.Ready => ScenarioOutcome.Ready,
+                MovementOutcome.Completed => ScenarioOutcome.Completed,
+                MovementOutcome.Interrupted => ScenarioOutcome.Interrupted,
+                MovementOutcome.UnresolvedRule => ScenarioOutcome.Unresolved,
+                MovementOutcome.PartiallyApplied => ScenarioOutcome.PartiallyApplied,
+                MovementOutcome.Failed => ScenarioOutcome.UnexpectedFailure,
+                _ => ScenarioOutcome.Rejected
+            };
+            return new(outcome, movement.Reason, new(nameof(MovementActionResult), movement: movement));
+        }
         if (action.Kind is ScenarioActionKind.ConfirmedUtility or ScenarioActionKind.ConfirmedMovement)
         {
             // Bookkeeping only, for an external coordinator's already-confirmed legal action. No movement/effect is invented.
@@ -295,6 +328,27 @@ public sealed class ScenarioRunner
             _scenario.Lifecycle.CurrentRound, _scenario.Lifecycle.CurrentPhase));
     private void RecordOutcome(ScenarioAction action, Decision decision, ScenarioSnapshot before, ScenarioSnapshot after)
     {
+        if (decision.Production?.Movement is { } movement)
+        {
+            for (int i = 1; i < movement.TraversedPath.Count; i++)
+            {
+                var tile = movement.TraversedPath[i];
+                Emit(action.ActorId, null, ScenarioEventType.MovementStep, detail: $"{tile.X},{tile.Y}");
+                foreach (var reaction in movement.Reactions.Where(r => r.StepIndex == i))
+                {
+                    if (reaction.Result?.Strike is { } strike)
+                        Emit(reaction.SourceId, reaction.TargetId, strike.Hit ? ScenarioEventType.Hit : ScenarioEventType.Miss, strike.Damage);
+                    if (reaction.TargetShieldLost > 0) Emit(reaction.SourceId, reaction.TargetId, ScenarioEventType.ShieldDamage, reaction.TargetShieldLost);
+                    if (reaction.TargetHPLost > 0) Emit(reaction.SourceId, reaction.TargetId, ScenarioEventType.HPDamage, reaction.TargetHPLost);
+                    if (reaction.Result?.Combat?.CounterStrike is { } counter)
+                        Emit(reaction.TargetId, reaction.SourceId, counter.Hit ? ScenarioEventType.Hit : ScenarioEventType.Miss, counter.Damage);
+                    if (reaction.SourceShieldLost > 0) Emit(reaction.TargetId, reaction.SourceId, ScenarioEventType.ShieldDamage, reaction.SourceShieldLost);
+                    if (reaction.SourceHPLost > 0) Emit(reaction.TargetId, reaction.SourceId, ScenarioEventType.HPDamage, reaction.SourceHPLost);
+                }
+            }
+            if (movement.Outcome == MovementOutcome.Interrupted)
+                Emit(action.ActorId, null, ScenarioEventType.MovementInterrupted, detail: movement.Reason);
+        }
         var combat = decision.Production?.Combat;
         if (combat is not null)
         {
@@ -315,11 +369,15 @@ public sealed class ScenarioRunner
         foreach (var (id, previous) in before.Characters)
         {
             var current = after.Characters[id];
-            int observedShield = previous.ShieldHP - current.ShieldHP - (combat is not null && id == action.TargetId ? combat.OpeningShieldAbsorbed : 0);
-            // Production reports opening shield loss precisely; later shield changes are observations, not invented strike details.
+            var movementReactions = decision.Production?.Movement?.Reactions ?? Array.Empty<MovementReactionObservation>();
+            int movementShield = movementReactions.Sum(r => (r.TargetId == id ? r.TargetShieldLost : 0) + (r.SourceId == id ? r.SourceShieldLost : 0));
+            int movementHP = movementReactions.Sum(r => (r.TargetId == id ? r.TargetHPLost : 0) + (r.SourceId == id ? r.SourceHPLost : 0));
+            int observedShield = previous.ShieldHP - current.ShieldHP - movementShield - (combat is not null && id == action.TargetId ? combat.OpeningShieldAbsorbed : 0);
+            // Only unattributed changes become observations, so batch metrics do not count reaction damage twice.
             if (observedShield > 0) Emit(action.ActorId, id, ScenarioEventType.ShieldChangeObserved, observedShield);
-            if (combat is null && previous.CurrentHealth > current.CurrentHealth)
-                Emit(action.ActorId, id, ScenarioEventType.HealthChangeObserved, previous.CurrentHealth - current.CurrentHealth);
+            int observedHP = previous.CurrentHealth - current.CurrentHealth - movementHP;
+            if (combat is null && observedHP > 0)
+                Emit(action.ActorId, id, ScenarioEventType.HealthChangeObserved, observedHP);
             if (previous.CurrentHealth > 0 && current.CurrentHealth == 0) Emit(action.ActorId, id, ScenarioEventType.CharacterDefeated);
         }
         if (decision.Production?.HPHealed is { } healed) Emit(action.ActorId, action.TargetId, ScenarioEventType.Healing, healed);

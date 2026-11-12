@@ -23,6 +23,7 @@ public sealed record ShadowStrikeEligibilityResult
     public GridPosition? TargetPosition { get; }
     public SmokeVisibilityResult? OpeningVisibility { get; }
     public bool InvisibleOpening => IsAllowed && OpeningVisibility!.IsInvisible;
+    public int OpeningDamageBonus => IsAllowed ? (InvisibleOpening ? 5 : 3) : 0;
 
     internal ShadowStrikeEligibilityResult(ShadowStrikeRejectionReason reason, GridPosition? source,
         GridPosition? target, SmokeVisibilityResult? visibility)

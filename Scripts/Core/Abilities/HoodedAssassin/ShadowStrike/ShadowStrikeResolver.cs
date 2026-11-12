@@ -85,7 +85,7 @@ public sealed class ShadowStrikeResolver
             OpeningEvasionModifier = SmokeVeil.GetEvasionModifier(request.Defender, eligibility.TargetPosition!.Value, _smoke),
             CounterattackEvasionModifier = SmokeVeil.GetEvasionModifier(request.Attacker, eligibility.SourcePosition!.Value, _smoke)
         };
-        var exchange = _combat.ResolveOpening(effectiveRequest, eligibility.InvisibleOpening ? 5 : 3,
+        var exchange = _combat.ResolveOpening(effectiveRequest, eligibility.OpeningDamageBonus,
             eligibility.InvisibleOpening, revealAttacker: true);
         return new(eligibility, exchange);
     }

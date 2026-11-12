@@ -26,6 +26,7 @@ public sealed class CombatScenario
     internal HashSet<int> RoundAttempts { get; } = new();
     public ScenarioMap Map { get; }
     public ScenarioRunner Runner { get; }
+    public MovementActionExecutor Movement => Lifecycle.MovementExecutor!;
     public ScenarioSnapshot InitialSnapshot { get; }
     internal CombatScenario(Dictionary<string, Character> characters, Dictionary<string, ScenarioAttackInput> attacks,
         RoundLifecycleManager lifecycle, ActivationManager activations, int width, int height, IEnumerable<GridPosition> blocked,

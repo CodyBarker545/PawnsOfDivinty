@@ -14,15 +14,15 @@ using PawnsOfDivinity.Core.Turns.Restrictions;
 
 namespace PawnsOfDivinity.Tests.Scenarios;
 
-public enum ScenarioActionKind { Attack, Ability, StartActivation, EndActivation, ConfirmedUtility, ConfirmedMovement }
-public enum ScenarioOutcome { Ready, Completed, Rejected, Unresolved, PartiallyApplied, UnexpectedFailure }
+public enum ScenarioActionKind { Attack, Ability, StartActivation, EndActivation, ConfirmedUtility, ConfirmedMovement, Movement }
+public enum ScenarioOutcome { Ready, Completed, Rejected, Unresolved, PartiallyApplied, UnexpectedFailure, Interrupted }
 public enum ScenarioEventType
 {
     ActionRequested, AttackStarted, Hit, Miss, ShieldDamage, HPDamage, CharacterDefeated,
     StatusApplied, TauntApplied, Healing, AbilityFinalized, ActivationStarted, ActivationEnded,
     ShieldChangeObserved, HealthChangeObserved, ActionRejected, ActionUnresolved, ActionFailed,
     RoundStarted, PhaseAdvanced, PhaseNoOp, PoisonResolved, DelayedAttackResolved, DelayedAttackCancelled,
-    StatusExpired, ModifierExpired, TerrainExpired, TauntExpired, SentinelRetired, RoundEnded, TerrainCreated, SentinelPrepared
+    StatusExpired, ModifierExpired, TerrainExpired, TauntExpired, SentinelRetired, RoundEnded, TerrainCreated, SentinelPrepared, MovementStep, MovementInterrupted
 }
 
 /// <summary>A test request, not a second gameplay command engine. Production still grants or rejects permission.</summary>
@@ -155,6 +155,7 @@ public sealed record ScenarioSnapshot
 public sealed record ScenarioProductionOutcome
 {
     public string ResultType { get; }
+    public MovementActionResult? Movement { get; }
     public CombatExchangeResult? Combat { get; }
     public int? HPHealed { get; }
     public int? ReadyRound { get; }
@@ -165,9 +166,9 @@ public sealed record ScenarioProductionOutcome
     public string? PreparationId { get; }
     internal ScenarioProductionOutcome(string type, CombatExchangeResult? combat = null, int? healed = null,
         int? readyRound = null, bool finalized = false, IEnumerable<ScenarioStatusChange>? statuses = null, IEnumerable<string>? taunted = null,
-        string? terrainId = null, string? preparationId = null)
+        string? terrainId = null, string? preparationId = null, MovementActionResult? movement = null)
     {
-        ResultType = type; Combat = combat; HPHealed = healed; ReadyRound = readyRound; AbilityFinalized = finalized;
+        Movement = movement; ResultType = type; Combat = combat; HPHealed = healed; ReadyRound = readyRound; AbilityFinalized = finalized;
         Statuses = Array.AsReadOnly(statuses?.ToArray() ?? Array.Empty<ScenarioStatusChange>());
         TauntedIds = Array.AsReadOnly(taunted?.ToArray() ?? Array.Empty<string>());
         CreatedTerrainId = terrainId; PreparationId = preparationId;
