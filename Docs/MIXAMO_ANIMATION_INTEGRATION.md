@@ -1,5 +1,7 @@
 # Mixamo animation integration
 
+**Arm refinement, 2026-11-15:** The six current libraries and packed character sources now include per-rig arm bind-direction calibration. This fixes inward-folded Idle arms while preserving meshes/rigs, clip timing, body/root/leg tracks and final grounded Death poses. The bake script includes the correction for future exports. See [the refinement report](CHARACTER_ARM_REFINEMENT.md) for exact scope, backups and matched comparisons.
+
 The six existing MobaBeta models now use a reusable C# controller and five real Mixamo clips. The battlefield's ten authored fixtures (including team duplicates) receive the controller at runtime. Existing model resources and authored scene transforms remain in place. No domain combat, movement, stats, castle, timer or victory rules were changed by this integration.
 
 **Textured Assassin update:** Both Assassin fixtures now reference `Assets/Characters/MobaBeta/AssassinTextured.glb`, exported from the newly downloaded FBX under `working_textured_model_assassin`. Its base color, normal, metallic and roughness textures are embedded. The previous Assassin GLB remains available. The new model has a 24-bone unprefixed rig, including a reverse-numbered spine chain, so it uses its own `AssassinTextured.tres` library and an explicit hierarchy-based bone map in the existing bake script. All five original gameplay animation states remain connected through the same controller.

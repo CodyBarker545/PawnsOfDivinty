@@ -5,16 +5,16 @@ using PawnsOfDivinity.Core.Characters;
 
 namespace PawnsOfDivinity.Gameplay.Levels;
 
-/// <summary>Scene-derived flat beta observations plus the existing explicit prototype movement policy.</summary>
+/// <summary>Scene-derived terrain observations plus the existing explicit prototype movement policy.</summary>
 public sealed class MobaMovementMap : IOrdinaryMovementMap
 {
     private readonly MobaBetaLayout _layout;
     private readonly IReadOnlyDictionary<string,Character> _characters;
     private readonly WailingRampartService _walls;
     private readonly SpiritFrostService _ice;
-    private static readonly HashSet<string> FlatVisualTags=new(){"jungle","lane","flank","stone","camp","objective","capture","deployment"};
+    private static readonly HashSet<string> FlatVisualTags=new(){"jungle","lane","flank","stone","camp","objective","capture","deployment","stairs"};
     public MovementRuleAuthority RuleAuthority=>MovementRuleAuthority.ProvisionalFixture;
-    public string PolicyDescription=>"BETA DEVELOPMENT POLICY: authored flat cells, cost 1 per orthogonal step; living occupied cells block both teams. Unknown terrain/elevation/ice interactions remain unresolved, not canonical balance.";
+    public string PolicyDescription=>"BETA DEVELOPMENT POLICY: authored walkable cells, cost 1 per legal orthogonal step; living occupied cells block both teams. Unknown terrain/elevation/ice interactions remain unresolved, not canonical balance.";
     public bool? InterruptedMovementConsumesOpportunity=>null;
     public MobaMovementMap(MobaBetaLayout layout,IReadOnlyDictionary<string,Character> characters,
         WailingRampartService walls,SpiritFrostService ice)
@@ -25,7 +25,7 @@ public sealed class MobaMovementMap : IOrdinaryMovementMap
     public bool HasKnownFlatCost(GridPosition cell)=>_layout.Terrain.TryGetValue(cell,out var tag)&&FlatVisualTags.Contains(tag);
     public int? GetStepCost(Character actor,GridPosition from,GridPosition to)
     {
-        if(!_layout.Walkable(from)||!_layout.Walkable(to)||from.ManhattanDistanceTo(to)!=1)return null;
+        if(!_layout.CanStep(from,to))return null;
         if(!HasKnownFlatCost(from)||!HasKnownFlatCost(to))return null;
         if(_walls.CanEnter(actor,to)!=true||_ice.EvaluateMovement(actor,to).Outcome==SpiritFrostMovementOutcome.TerrainFrostbiteRulesUnresolved)return null;
         return 1;

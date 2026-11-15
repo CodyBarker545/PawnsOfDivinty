@@ -42,7 +42,7 @@ public sealed partial class MobaHotseatSession
         using var timing=BeginTimedCommand();if(!timing.Accepted)return new(BattlefieldOutcome.Rejected,"Activation timed out; targeting cancelled.");
         if(!CanAttack)return new(BattlefieldOutcome.Rejected,"Selected unit has no available basic attack.");
         if(Activations.ActiveCharacter is null)Activations.StartActivation(SelectedCharacter!);
-        return new(BattlefieldOutcome.Completed,"Choose an enemy, review the opening estimate, then Confirm Attack. DEV loadout / open targeting; LOS unresolved.");
+        return new(BattlefieldOutcome.Completed,"Choose an enemy, review the opening estimate, then Confirm Attack.");
     }
     private (AttackIntent Intent,CombatExchangeRequest Request,AttackConfiguration Attack) AttackContext(Character actor,Character target,string actionId="ordinary_attack")
     {
@@ -51,7 +51,7 @@ public sealed partial class MobaHotseatSession
         var intent=new AttackIntent(actor,target,actionId,Activations,true,
             new(AbilityTargetType.Character,false,AbilityTargetTeam.Enemy,true,true,false,false),
             mapTargetLegal:()=>_developmentOpenTargeting
-                ?MovementMap.IsValidPosition(actor.TacticalPosition!.Value)==true&&MovementMap.IsValidPosition(target.TacticalPosition!.Value)==true&&SmokeVisibility.CanTargetThroughVisibility(actor,Visibility(target.Id),false)
+                ?MovementMap.IsValidPosition(actor.TacticalPosition!.Value)==true&&MovementMap.IsValidPosition(target.TacticalPosition!.Value)==true&&_layout.HasClearSight(actor.TacticalPosition.Value,target.TacticalPosition.Value)&&SmokeVisibility.CanTargetThroughVisibility(actor,Visibility(target.Id),false)
                 :null);
         var request=new CombatExchangeRequest(actor,target,attack.Type,attack.Power,attack.Category,counter.Category,attack.BaseAccuracy,
             counter.Type,counter.Power,counter.BaseAccuracy,counter.MinimumRange,counter.MaximumRange,
@@ -82,7 +82,7 @@ public sealed partial class MobaHotseatSession
             }
             var r=context.Request;var a=context.Attack;
             var opening=CombatExchangeResolver.PrepareStrike(a.Type,actor,target,a.Power,a.Category,r.DefenderWeapon,a.BaseAccuracy,r.OpeningEvasionModifier,r.Sanctuary);
-            return new(BattlefieldOutcome.Ready,"Opening estimate only; counters/follow-ups can change total damage. DEV loadouts, LOS not enforced.",actor.Id,target.Id,
+            return new(BattlefieldOutcome.Ready,"Opening estimate only. Counters and follow-ups can change total damage. DEV loadouts.",actor.Id,target.Id,
                 r.Distance,a.MinimumRange,a.MaximumRange,opening.HitChance,opening.CandidateDamage);
         }
         catch(Exception error) when(error is ArgumentException or InvalidOperationException or OverflowException)

@@ -143,8 +143,9 @@ public partial class StaticTacticalCharacter : Node3D
         var facing=GetNode<Node3D>("Facing");
         facing.Rotation=new(0,Mathf.Atan2(direction.X,direction.Z),0);
     }
-    private static Vector3 Center(Cell cell,RectangularBoard board)
-    {var p=board.CellCenter(cell);return new((float)p.X,0,(float)p.Z);}
+    public Func<Cell,float>? SurfaceHeight { get; set; }
+    private Vector3 Center(Cell cell,RectangularBoard board)
+    {var p=board.CellCenter(cell);return new((float)p.X,SurfaceHeight?.Invoke(cell) ?? 0,(float)p.Z);}
     private static void Freeze(Node node)
     {
         if(node is AnimationPlayer player){player.Stop();player.Active=false;}

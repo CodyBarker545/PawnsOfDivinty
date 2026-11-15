@@ -19,6 +19,8 @@ public sealed record AuthoredElementData
     public int TeamId { get; init; }
     public bool IsHome { get; init; }
     public bool BlocksMovement { get; init; }
+    public int Elevation { get; init; }
+    public bool BlocksSight { get; init; }
     public string TerrainTag { get; init; } = "";
     public string DisplayName { get; init; } = "";
     public string DefinitionId { get; init; } = "";

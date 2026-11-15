@@ -8,7 +8,8 @@ namespace PawnsOfDivinity.Tests.Levels;
 /// <summary>One headless Godot run per test process extracts the real serialized scene. No copied map fixture.</summary>
 internal static class AuthoredBetaScene
 {
-    private static readonly Lazy<AuthoredLevelData> Snapshot=new(Extract);
+    private static readonly Lazy<AuthoredLevelData> Snapshot=new(() => Extract("Scenes/Battlefields/MobaBeta/MobaBetaBattlefield.tscn"));
+    internal static readonly Lazy<MobaBetaLayout> Cliffside = new(() => new(Extract("Scenes/Battlefields/CliffsideArena/CliffsideArena.tscn")));
     public static AuthoredLevelData Data=>Snapshot.Value;
     public static MobaBetaLayout Layout=>new(Data);
     // Explicit historical 3v3 adapter fixtures retain the B.1/B.2 regression scenarios while
@@ -26,7 +27,7 @@ internal static class AuthoredBetaScene
         }
     }
     public static MobaBetaLayout LegacyLayout=>new(LegacyData);
-    private static AuthoredLevelData Extract()
+    private static AuthoredLevelData Extract(string scenePath)
     {
         var root=new DirectoryInfo(AppContext.BaseDirectory);
         while(root is not null&&!File.Exists(Path.Combine(root.FullName,"PawnsOfDivinity.sln")))root=root.Parent;
@@ -44,7 +45,7 @@ internal static class AuthoredBetaScene
             var start=new ProcessStartInfo(engine){WorkingDirectory=root.FullName,UseShellExecute=false,
                 CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true};
             foreach(string arg in new[]{"--headless","--path",root.FullName,"--log-file",Path.Combine(temp,"godot.log"),
-                "Scenes/Battlefields/MobaBeta/MobaBetaBattlefield.tscn","--","--export-beta-layout="+output})start.ArgumentList.Add(arg);
+                scenePath,"--",(scenePath.Contains("CliffsideArena") ? "--export-authored-layout=" : "--export-beta-layout=")+output})start.ArgumentList.Add(arg);
             using var process=Process.Start(start)??throw new InvalidOperationException("Godot did not start.");
             var stdout=process.StandardOutput.ReadToEndAsync();var stderr=process.StandardError.ReadToEndAsync();
             if(!process.WaitForExit(45000)){process.Kill(true);throw new InvalidOperationException("Godot authored scene extraction timed out.");}

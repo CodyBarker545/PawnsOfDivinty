@@ -46,6 +46,28 @@ public sealed class MobaBetaLayout
     public IReadOnlySet<GridPosition> Obstacles { get; }
     public IReadOnlyDictionary<string, IReadOnlySet<GridPosition>> Connections { get; }
     public IReadOnlyDictionary<GridPosition, string> Terrain { get; }
+    public const float ElevationStep = 0.6f;
+    public IReadOnlyDictionary<GridPosition,int> Elevations { get; }
+    public IReadOnlyList<int> PickingLevels { get; }
+    public IReadOnlySet<GridPosition> SightBlockers { get; }
+    public float SurfaceHeight(GridPosition cell) => Elevations[cell] * ElevationStep;
+
+    // Trace center to center. A corner touch alone does not enter either side cell.
+    public bool HasClearSight(GridPosition from, GridPosition to)
+    {
+        int dx = Math.Abs(to.X-from.X), dy = Math.Abs(to.Y-from.Y);
+        int sx = Math.Sign(to.X-from.X), sy = Math.Sign(to.Y-from.Y);
+        int x = from.X, y = from.Y, ix = 0, iy = 0;
+        while (ix < dx || iy < dy)
+        {
+            int crossing = (2*ix+1)*dy - (2*iy+1)*dx;
+            if (crossing <= 0) { x += sx; ix++; }
+            if (crossing >= 0) { y += sy; iy++; }
+            if ((x != to.X || y != to.Y) && SightBlockers.Contains(new(x,y))) return false;
+        }
+        return true;
+    }
+
     public AuthoredLevelData Source { get; }
 
     public MobaBetaLayout(AuthoredLevelData source)
@@ -91,6 +113,9 @@ public sealed class MobaBetaLayout
         if(rows.Count(r=>r.Data.Kind=="Objective")!=1)errors.Add("Objectives: exactly one objective region is required.");
         if(!rows.Any(r=>r.Data.Kind=="Fixture"))errors.Add("CharacterFixtures: at least one spawn anchor is required.");
         Fail();
+        Elevations = floors.ToDictionary(r => r.Cells.Single(), r => r.Data.Elevation);
+        PickingLevels = Elevations.Values.Distinct().OrderByDescending(level => level).ToArray();
+        SightBlockers = rows.Where(r => r.Data.BlocksSight).SelectMany(r => r.Cells).ToHashSet();
         Terrain=floors.ToDictionary(r=>r.Cells.Single(),r=>r.Data.TerrainTag);
         HashSet<GridPosition> Zone(string id,string kind)=>rows.Where(r=>r.Data.Kind==kind&&r.Data.CastleId==id).SelectMany(r=>r.Cells).ToHashSet();
         Castles=rows.Where(r=>r.Data.Kind=="Castle").Select(r=>new BetaCastle(r.Data.Id,r.Data.TeamId,r.Data.IsHome,r.Cells,
@@ -123,6 +148,10 @@ public sealed class MobaBetaLayout
         Enumerable.Range(x0,x1-x0+1).SelectMany(x => Enumerable.Range(y0,y1-y0+1).Select(y => new GridPosition(x,y))).ToHashSet();
     public bool Walkable(GridPosition p) => Board.Contains(p) && !Obstacles.Contains(p);
 
+    public bool CanStep(GridPosition from, GridPosition to) =>
+        Walkable(from) && Walkable(to) && from.ManhattanDistanceTo(to) == 1 &&
+        Math.Abs(Elevations[from] - Elevations[to]) <= 1;
+
     /// <summary>Development flood fill, not a gameplay pathfinder or movement policy.</summary>
     public HashSet<GridPosition> Reachable(GridPosition start, IReadOnlySet<GridPosition>? region = null)
     {
@@ -132,7 +161,7 @@ public sealed class MobaBetaLayout
         seen.Add(start); queue.Enqueue(start);
         while (queue.TryDequeue(out var p))
             foreach (var next in new[] {new GridPosition(p.X+1,p.Y),new(p.X-1,p.Y),new(p.X,p.Y+1),new(p.X,p.Y-1)})
-                if (Allowed(next) && seen.Add(next)) queue.Enqueue(next);
+                if (Allowed(next) && CanStep(p,next) && seen.Add(next)) queue.Enqueue(next);
         return seen;
     }
 

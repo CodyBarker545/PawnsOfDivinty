@@ -50,7 +50,7 @@ public partial class MobaBetaBattlefield : Node3D
     private bool _capture, _smoke, _captureHotseat, _captureMovement, _captureAttack, _captureFeedback, _captureFive;
     private double _elapsed;
     private int _captureStep;
-    private string? _snapshotPath;
+    private string? _snapshotPath, _authoredSnapshotPath;
 
     public override void _Ready()
     {
@@ -65,6 +65,7 @@ public partial class MobaBetaBattlefield : Node3D
             _camera=GetNode<Camera3D>("Camera3D");_grid=GetNode<Node3D>("GridOverlay");
             foreach(var view in GetNode("CharacterFixtures").GetChildren().OfType<StaticTacticalCharacter>())
             {
+                view.SurfaceHeight=Layout.SurfaceHeight;
                 view.Bind(Layout.Fixtures.Single(f=>f.CharacterId==view.CharacterId));
                 view.BindRuntime(Session.Characters[view.CharacterId]);_fixtures.Add(view);
                 var ring=new MeshInstance3D {Name="RuntimeAttackTarget",Position=new(0,.075f,0),Visible=false,
@@ -117,6 +118,7 @@ public partial class MobaBetaBattlefield : Node3D
             if(_captureAssassin)StageSmokePreview();
             if(_capturePolish){RunCommand(()=>Session.Select("hooded_assassin"));_focus=CellPosition(new(12,10));_camera.Size=27;UpdateCamera();}
             if(_captureFreeTesting){RunCommand(()=>Session.Select("nigel"));MoveAt(new(25,12));}
+            _authoredSnapshotPath = args.FirstOrDefault(a => a.StartsWith("--export-authored-layout="))?.Split('=',2)[1];
             _snapshotPath=args.FirstOrDefault(a=>a.StartsWith("--export-beta-layout="))?.Split('=',2)[1];
             _smoke=args.Contains("--beta-smoke-test")||_snapshotPath is not null;
             GD.Print($"MOBA AUTHORED BETA READY: {Layout.Board.Width}x{Layout.Board.Height}; {Layout.Obstacles.Count} blocked; {Layout.Terrain.Count-Layout.Obstacles.Count} walkable; {_fixtures.Count} original fixtures.");
@@ -137,7 +139,7 @@ public partial class MobaBetaBattlefield : Node3D
         else GD.Print($"AUTHORING VALID: {Name}; {BetaSceneReader.Extract(this).Obstacles.Count} blocked cells. No nodes changed.");
     }
     public Vector3 CellPosition(Cell cell,float height=0)
-    {var p=Layout.Board.CellCenter(cell);return new((float)p.X,height,(float)p.Z);}
+    {var p=Layout.Board.CellCenter(cell);return new((float)p.X,height+Layout.SurfaceHeight(cell),(float)p.Z);}
     private void BuildHud()
     {
         _hud=new MobaTacticalHud();AddChild(_hud);_hud.Initialize(GetWorld3D(),_camera);_hud.RetainPortraitResources(_fixtures);
@@ -428,8 +430,16 @@ public partial class MobaBetaBattlefield : Node3D
     {
         var local=GameplayPoint(screen);var origin=_camera.ProjectRayOrigin(local);var direction=_camera.ProjectRayNormal(local);
         cell=default;if(!IsBattlefieldPoint(screen)||Mathf.Abs(direction.Y)<.00001f) return false;
-        float t=-origin.Y/direction.Y;if(t<0)return false;
-        var point=origin+direction*t;cell=Layout.Board.WorldToCell(point.X,point.Z);return Layout.Board.Contains(cell);
+        foreach (int level in Layout.PickingLevels)
+        {
+            float t = (level * MobaBetaLayout.ElevationStep - origin.Y) / direction.Y;
+            if (t < 0) continue;
+            var point = origin + direction * t;
+            var candidate = Layout.Board.WorldToCell(point.X, point.Z);
+            if (Layout.Elevations.TryGetValue(candidate, out int elevation) && elevation == level)
+            { cell = candidate; return true; }
+        }
+        return false;
     }
     public override void _UnhandledInput(InputEvent input)
     {
@@ -481,6 +491,21 @@ public partial class MobaBetaBattlefield : Node3D
             UpdateMovementOverlay(destination);_hover.Visible=true;_hover.Position=CellPosition(destination,.025f);
         }
         _elapsed+=delta;
+        if (_authoredSnapshotPath is { } snapshotFile && _elapsed > 1)
+        {
+            _authoredSnapshotPath = null;
+            try
+            {
+                BetaSceneRoundTrip.Verify(SceneFilePath);
+                foreach (var tile in Layout.Board.Cells.Where(Layout.Walkable))
+                    if (!Pick(WorldToScreen(CellPosition(tile)),out var picked) || picked != tile)
+                        throw new InvalidOperationException($"Gameplay camera could not pick tile {tile}.");
+                System.IO.File.WriteAllText(snapshotFile,System.Text.Json.JsonSerializer.Serialize(Layout.Source));
+                GetTree().Quit();
+            }
+            catch (Exception error) { GD.PushError(error.ToString()); GetTree().Quit(1); }
+            return;
+        }
         if(_smoke && _elapsed>1) {_smoke=false;SmokeTest();return;}
         if(_capture && _elapsed>(_captureFeedback?(_captureStep==0?2.1:1.1):_captureMovement&&_captureStep==1?.4:2))
         {

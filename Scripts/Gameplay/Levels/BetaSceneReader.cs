@@ -30,7 +30,7 @@ public static class BetaSceneReader
                     CellOffsets=element.CellOffsets.Select(c=>new Cell(c.X,c.Y)).ToArray(),
                     CastleId=element.CastleId!=""?element.CastleId:element.Kind==BetaElementKind.Castle?"":castle,
                     Role=element.Role,TeamId=element.InitialTeamId,IsHome=element.IsHome,
-                    BlocksMovement=element.BlocksMovement,TerrainTag=element.TerrainTag});
+                    Elevation=element.Elevation,BlocksSight=element.BlocksSight,BlocksMovement=element.BlocksMovement,TerrainTag=element.TerrainTag});
             }
             if(node is StaticTacticalCharacter fixture)
             {

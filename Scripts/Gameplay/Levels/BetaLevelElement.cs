@@ -16,5 +16,7 @@ public partial class BetaLevelElement : Node3D
     [Export] public int InitialTeamId { get; set; }
     [Export] public bool IsHome { get; set; }
     [Export] public bool BlocksMovement { get; set; }
+    [Export] public int Elevation { get; set; }
+    [Export] public bool BlocksSight { get; set; }
     [Export] public string TerrainTag { get; set; } = "";
 }

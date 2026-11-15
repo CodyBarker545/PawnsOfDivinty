@@ -1,5 +1,7 @@
 # Character texturing delivery — 2026-11-15
 
+Follow-up: [arm animation refinement](CHARACTER_ARM_REFINEMENT.md) corrects the previously documented tucked-arm Idle poses and improves arm alignment across the five existing clips. Current delivered sources/libraries include that correction. The texturing-stage preservation notes and comparisons below describe the earlier stage; the new arm-pose comparison shows the latest state.
+
 All six existing characters now have textured, rigged Godot assets, packed Blender sources, and separate PBR maps. The Assassin's existing 4K textures were retained and validated. The remaining five received new 2K concept-guided PBR textures through five sequential Meshy Retexture jobs. Exactly 50 credits were used; the verified balance changed from 2,043 to 1,993. No retry, regeneration, remesh, rigging, or animation-generation jobs were submitted.
 
 The user's “finish this now” instruction followed the reviewed five-job/50-credit proposal and was used as authorization to execute that proposal. The API key stayed in Blender add-on preferences and was never written into scripts, reports, model scenes, or job journals.
