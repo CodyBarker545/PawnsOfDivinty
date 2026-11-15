@@ -46,6 +46,11 @@ internal static class AuthoredBetaScene
                 CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true};
             foreach(string arg in new[]{"--headless","--path",root.FullName,"--log-file",Path.Combine(temp,"godot.log"),
                 scenePath,"--",(scenePath.Contains("CliffsideArena") ? "--export-authored-layout=" : "--export-beta-layout=")+output})start.ArgumentList.Add(arg);
+            if (scenePath.Contains("CliffsideArena"))
+            {
+                start.ArgumentList.Add("--verify-stair-preview");
+                start.ArgumentList.Add("--verify-central-ruins");
+            }
             using var process=Process.Start(start)??throw new InvalidOperationException("Godot did not start.");
             var stdout=process.StandardOutput.ReadToEndAsync();var stderr=process.StandardError.ReadToEndAsync();
             if(!process.WaitForExit(45000)){process.Kill(true);throw new InvalidOperationException("Godot authored scene extraction timed out.");}

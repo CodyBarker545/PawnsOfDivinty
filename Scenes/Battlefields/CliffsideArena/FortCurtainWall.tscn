@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[sub_resource type="BoxMesh" id="Block"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="Stone"]
+albedo_color = Color(0.34, 0.35, 0.32, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Edge"]
+albedo_color = Color(0.48, 0.46, 0.39, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Base"]
+albedo_color = Color(0.22, 0.24, 0.24, 1)
+roughness = 1.0
+
+[node name="FortCurtainWall" type="Node3D"]
+
+[node name="Footing" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.11, 0)
+scale = Vector3(1.25, 0.22, 0.77)
+mesh = SubResource("Block")
+material_override = SubResource("Base")
+
+[node name="Wall" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.48, 0)
+scale = Vector3(1.25, 0.58, 0.54)
+mesh = SubResource("Block")
+material_override = SubResource("Stone")
+
+[node name="Coping" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.81, 0)
+scale = Vector3(1.25, 0.1, 0.65)
+mesh = SubResource("Block")
+material_override = SubResource("Edge")
+
+[node name="Merlon0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.44, 0.97, 0)
+scale = Vector3(0.24, 0.23, 0.56)
+mesh = SubResource("Block")
+material_override = SubResource("Stone")
+
+[node name="Merlon1" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.97, 0)
+scale = Vector3(0.24, 0.23, 0.56)
+mesh = SubResource("Block")
+material_override = SubResource("Stone")
+
+[node name="Merlon2" type="MeshInstance3D" parent="."]
+position = Vector3(0.44, 0.97, 0)
+scale = Vector3(0.24, 0.23, 0.56)
+mesh = SubResource("Block")
+material_override = SubResource("Stone")

@@ -12,7 +12,7 @@ public sealed class MobaMovementMap : IOrdinaryMovementMap
     private readonly IReadOnlyDictionary<string,Character> _characters;
     private readonly WailingRampartService _walls;
     private readonly SpiritFrostService _ice;
-    private static readonly HashSet<string> FlatVisualTags=new(){"jungle","lane","flank","stone","camp","objective","capture","deployment","stairs"};
+    private static readonly HashSet<string> FlatVisualTags=new(){"grass","tree","bush","jungle","lane","flank","stone","camp","objective","capture","deployment","stairs"};
     public MovementRuleAuthority RuleAuthority=>MovementRuleAuthority.ProvisionalFixture;
     public string PolicyDescription=>"BETA DEVELOPMENT POLICY: authored walkable cells, cost 1 per legal orthogonal step; living occupied cells block both teams. Unknown terrain/elevation/ice interactions remain unresolved, not canonical balance.";
     public bool? InterruptedMovementConsumesOpportunity=>null;

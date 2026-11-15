@@ -45,6 +45,8 @@ public partial class MobaBetaBattlefield : Node3D
     private MobaMovementPreview? _movementPreview;
     private StandardMaterial3D _neutralHoverMaterial=null!;
     private MobaMovementPlan? _hoverPlan;
+    private Mesh _flatHoverMesh = null!;
+    private readonly Dictionary<Cell,Mesh> _stairHoverMeshes = new();
     private Vector3 _focus;
     private float _yaw;
     private bool _capture, _smoke, _captureHotseat, _captureMovement, _captureAttack, _captureFeedback, _captureFive;
@@ -78,6 +80,7 @@ public partial class MobaBetaBattlefield : Node3D
                 MaterialOverride=new StandardMaterial3D {AlbedoColor=new(.4f,.95f,1,.18f),Transparency=BaseMaterial3D.TransparencyEnum.Alpha,
                     ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded}};
             AddChild(_hover);ResetCamera();BuildHud();RefreshMatchHud();
+            _flatHoverMesh = _hover.Mesh;
             _neutralHoverMaterial=(StandardMaterial3D)_hover.MaterialOverride;
             _reachableMaterial=Overlay(new(.25f,.7f,.59f,.36f));
             _pathMaterial=Overlay(new(.65f,1,.96f,.85f));
@@ -359,6 +362,100 @@ public partial class MobaBetaBattlefield : Node3D
     }
     private static StandardMaterial3D Overlay(Color color)=>new(){AlbedoColor=color,Transparency=BaseMaterial3D.TransparencyEnum.Alpha,
         ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded,CullMode=BaseMaterial3D.CullModeEnum.Disabled};
+    private void VerifyCentralRuinFootprints()
+    {
+        foreach (var ruin in GetNode("Obstacles").GetChildren().OfType<BetaLevelElement>()
+            .Where(e => e.Role is "ruined_gate" or "broken_wall" or "collapsed_column" or "rock_outcrop"))
+        {
+            var cell = Layout.Board.WorldToCell(ruin.GlobalPosition.X,ruin.GlobalPosition.Z);
+            var center = CellPosition(cell);
+            float half = (float)Layout.Board.CellSize / 2;
+            var meshes = ruin.GetChildren().OfType<MeshInstance3D>().Where(m => m.IsVisibleInTree()).ToArray();
+            if (meshes.Length == 0 || Layout.Walkable(cell) || !Layout.SightBlockers.Contains(cell))
+                throw new InvalidOperationException($"Ruin {ruin.Name} has inconsistent geometry or gameplay flags.");
+            foreach (var mesh in meshes)
+            {
+                var bounds = mesh.GlobalTransform * mesh.GetAabb();
+                if (bounds.Position.X < center.X-half || bounds.End.X > center.X+half ||
+                    bounds.Position.Z < center.Z-half || bounds.End.Z > center.Z+half || bounds.End.Y <= center.Y)
+                    throw new InvalidOperationException($"Ruin mesh {mesh.GetPath()} extends outside its tile or below the floor.");
+            }
+        }
+    }
+
+    private void VerifyStairPreview()
+    {
+        foreach (var cell in Layout.Board.Cells)
+        {
+            bool stair = Layout.Terrain[cell] == "stairs";
+            var floor = GetNode<MeshInstance3D>($"Terrain/tile_{cell.X}_{cell.Y}/{(stair ? "Tread2" : "Surface")}");
+            var bounds = floor.GlobalTransform * floor.GetAabb();
+            if (!Mathf.IsEqualApprox(bounds.End.Y, CellPosition(cell).Y))
+                throw new InvalidOperationException($"Tile {cell} does not match its visible center height.");
+        }
+        var actor = Session.Characters["blue_gravebound_colossus"];
+        foreach (int x in new[] {4,5,24,25})
+        foreach (int row in new[] {14,17})
+        {
+            actor.SetTacticalPosition(new(x,row));
+            Session.Select(actor.Id);
+            Cell goal = new(x,row == 14 ? 17 : 14);
+            UpdateMovementOverlay(goal);
+            if (_hoverPlan?.Cost != 3 ||
+                !_movementTiles.Where(p => p.Value.Visible).Select(p => p.Key).ToHashSet().SetEquals(Session.ReachableDestinations().Keys))
+                throw new InvalidOperationException($"Stair preview from ({x},{row}) disagrees with movement.");
+            foreach (int y in new[] {15,16})
+            {
+                Cell cell = new(x,y);
+                var tile = _movementTiles[cell];
+                if (!tile.Visible || tile.MaterialOverride != _pathMaterial)
+                    throw new InvalidOperationException($"Missing stair path highlight at {cell}.");
+                UpdateMovementOverlay(cell);
+                var treads = GetNode<Node3D>($"Terrain/tile_{x}_{y}").GetChildren().OfType<MeshInstance3D>();
+                foreach (var tread in treads)
+                {
+                    float top = (tread.GlobalTransform * tread.GetAabb()).End.Y;
+                    foreach (var mesh in new[] {tile.Mesh, _hover.Mesh})
+                    {
+                        var vertices = mesh.SurfaceGetArrays(0)[(int)Mesh.ArrayType.Vertex].AsVector3Array();
+                        if (!vertices.Any(v => Mathf.IsEqualApprox(v.Y + CellPosition(cell).Y, top)))
+                            throw new InvalidOperationException($"Stair highlight misses {tread.Name} at {cell}.");
+                    }
+                }
+                UpdateMovementOverlay(goal);
+            }
+        }
+    }
+
+    private Mesh CreateStairOverlay(Cell cell, bool filled)
+    {
+        var tile = GetNode<Node3D>($"Terrain/tile_{cell.X}_{cell.Y}");
+        var surface = new SurfaceTool();
+        surface.Begin(filled ? Mesh.PrimitiveType.Triangles : Mesh.PrimitiveType.Lines);
+        float half = (float)Layout.Board.CellSize * (filled ? .5f : .43f);
+        foreach (var tread in tile.GetChildren().OfType<MeshInstance3D>())
+        {
+            var bounds = tread.GlobalTransform * tread.GetAabb();
+            var center = CellPosition(cell);
+            float y = bounds.End.Y - center.Y;
+            float front = Mathf.Max(-half,bounds.Position.Z-center.Z);
+            float back = Mathf.Min(half,bounds.End.Z-center.Z);
+            Vector3 a = new(-half,y,front), b = new(half,y,front);
+            Vector3 c = new(half,y,back), d = new(-half,y,back);
+            if (filled)
+            {
+                foreach (var vertex in new[] {a,b,c,a,c,d}) surface.AddVertex(vertex);
+            }
+            else
+            {
+                surface.AddVertex(a); surface.AddVertex(d);
+                surface.AddVertex(b); surface.AddVertex(c);
+                if (front == -half) { surface.AddVertex(a); surface.AddVertex(b); }
+                if (back == half) { surface.AddVertex(d); surface.AddVertex(c); }
+            }
+        }
+        return surface.Commit();
+    }
     private void UpdateMovementOverlay(Cell? hover)
     {
         _status.Text=hover is { } inspected?DescribeTile(inspected):Session.Victory.IsFinished?"Match finished; Reset Match starts a fresh game.":"Hover a tile to inspect its coordinates and runtime control.";
@@ -370,11 +467,17 @@ public partial class MobaBetaBattlefield : Node3D
             {
                 if(!_movementTiles.TryGetValue(cell,out var tile))
                 {
-                    var edge=new SurfaceTool();edge.Begin(Mesh.PrimitiveType.Lines);
-                    float half=(float)Layout.Board.CellSize*.43f;
-                    Vector3[] corners={new(-half,0,-half),new(half,0,-half),new(half,0,half),new(-half,0,half)};
-                    for(int i=0;i<4;i++){edge.AddVertex(corners[i]);edge.AddVertex(corners[(i+1)%4]);}
-                    tile=new MeshInstance3D {Name=$"Reachable_{cell.X}_{cell.Y}",Position=CellPosition(cell,.035f),Mesh=edge.Commit()};
+                    Mesh mesh;
+                    if (Layout.Terrain[cell] == "stairs") mesh = CreateStairOverlay(cell,false);
+                    else
+                    {
+                        var edge=new SurfaceTool();edge.Begin(Mesh.PrimitiveType.Lines);
+                        float half=(float)Layout.Board.CellSize*.43f;
+                        Vector3[] corners={new(-half,0,-half),new(half,0,-half),new(half,0,half),new(-half,0,half)};
+                        for(int i=0;i<4;i++){edge.AddVertex(corners[i]);edge.AddVertex(corners[(i+1)%4]);}
+                        mesh = edge.Commit();
+                    }
+                    tile=new MeshInstance3D {Name=$"Reachable_{cell.X}_{cell.Y}",Position=CellPosition(cell,.035f),Mesh=mesh};
                     AddChild(tile);_movementTiles.Add(cell,tile);
                 }
                 tile.Visible=!_attackMode&&!_transferMode&&!_abilitiesOpen;
@@ -384,6 +487,13 @@ public partial class MobaBetaBattlefield : Node3D
         var path=_hoverPlan?.Path.ToHashSet();
         foreach(var entry in _movementTiles.Where(e=>e.Value.Visible))
             entry.Value.MaterialOverride=path?.Contains(entry.Key)==true?_pathMaterial:_reachableMaterial;
+        if (hover is { } stair && Layout.Terrain[stair] == "stairs")
+        {
+            if (!_stairHoverMeshes.TryGetValue(stair,out var hoveredMesh))
+                _stairHoverMeshes[stair] = hoveredMesh = CreateStairOverlay(stair,true);
+            _hover.Mesh = hoveredMesh;
+        }
+        else _hover.Mesh = _flatHoverMesh;
         _hover.MaterialOverride=_neutralHoverMaterial;
         if(_attackMode||_transferMode||_abilitiesOpen){_hover.Visible=false;return;}
         if(hover is { } h&&Session.SelectedCharacter is not null)
@@ -500,6 +610,8 @@ public partial class MobaBetaBattlefield : Node3D
                 foreach (var tile in Layout.Board.Cells.Where(Layout.Walkable))
                     if (!Pick(WorldToScreen(CellPosition(tile)),out var picked) || picked != tile)
                         throw new InvalidOperationException($"Gameplay camera could not pick tile {tile}.");
+                if (OS.GetCmdlineUserArgs().Contains("--verify-central-ruins")) VerifyCentralRuinFootprints();
+                if (OS.GetCmdlineUserArgs().Contains("--verify-stair-preview")) VerifyStairPreview();
                 System.IO.File.WriteAllText(snapshotFile,System.Text.Json.JsonSerializer.Serialize(Layout.Source));
                 GetTree().Quit();
             }

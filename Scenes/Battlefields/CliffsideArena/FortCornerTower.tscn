@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[sub_resource type="BoxMesh" id="Block"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="Stone"]
+albedo_color = Color(0.34, 0.35, 0.32, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Edge"]
+albedo_color = Color(0.48, 0.46, 0.39, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Base"]
+albedo_color = Color(0.22, 0.24, 0.24, 1)
+roughness = 1.0
+
+[node name="FortCornerTower" type="Node3D"]
+
+[node name="Plinth" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.12, 0)
+scale = Vector3(1.24, 0.24, 1.24)
+mesh = SubResource("Block")
+material_override = SubResource("Base")
+
+[node name="Tower" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.77, 0)
+scale = Vector3(1.09, 1.06, 1.09)
+mesh = SubResource("Block")
+material_override = SubResource("Stone")
+
+[node name="Crown" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.36, 0)
+scale = Vector3(1.23, 0.16, 1.23)
+mesh = SubResource("Block")
+material_override = SubResource("Edge")
+
+[node name="Parapet" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.48, 0)
+scale = Vector3(1.11, 0.12, 1.11)
+mesh = SubResource("Block")
+material_override = SubResource("Base")
+
+[node name="Merlon0" type="MeshInstance3D" parent="."]
+position = Vector3(-0.4, 1.64, -0.4)
+scale = Vector3(0.29, 0.28, 0.29)
+mesh = SubResource("Block")
+material_override = SubResource("Edge")
+
+[node name="Merlon1" type="MeshInstance3D" parent="."]
+position = Vector3(0.4, 1.64, -0.4)
+scale = Vector3(0.29, 0.28, 0.29)
+mesh = SubResource("Block")
+material_override = SubResource("Edge")
+
+[node name="Merlon2" type="MeshInstance3D" parent="."]
+position = Vector3(-0.4, 1.64, 0.4)
+scale = Vector3(0.29, 0.28, 0.29)
+mesh = SubResource("Block")
+material_override = SubResource("Edge")
+
+[node name="Merlon3" type="MeshInstance3D" parent="."]
+position = Vector3(0.4, 1.64, 0.4)
+scale = Vector3(0.29, 0.28, 0.29)
+mesh = SubResource("Block")
+material_override = SubResource("Edge")

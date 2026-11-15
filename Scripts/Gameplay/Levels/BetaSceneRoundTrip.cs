@@ -19,14 +19,14 @@ public static class BetaSceneRoundTrip
         try
         {
             SaveAndCheck(before.Source);
-            var tree=clone.GetNode<BetaLevelElement>("Obstacles/tree_3_2");
-            tree.Position+=new Vector3(0,0,(float)before.Board.CellSize);
+            var obstacle=clone.GetNode<BetaLevelElement>("Obstacles/ruin_13_8");
+            obstacle.Position+=new Vector3(0,0,(float)before.Board.CellSize);
             var edited=BetaSceneReader.Extract(clone);
-            Check(edited.Walkable(new Cell(3,2))&&!edited.Walkable(new Cell(3,3)),"Moved obstacle must change static walkability.");
+            Check(edited.Walkable(new Cell(13,8))&&!edited.Walkable(new Cell(13,9)),"Moved obstacle must change static walkability.");
             SaveAndCheck(edited.Source);
-            tree.Position+=new Vector3(.1f,0,0);
+            obstacle.Position+=new Vector3(.1f,0,0);
             bool rejected=false;
-            try{BetaSceneReader.Extract(clone);}catch(LevelAuthoringException e){rejected=e.Message.Contains("tree_3_2")&&e.Message.Contains("grid aligned");}
+            try{BetaSceneReader.Extract(clone);}catch(LevelAuthoringException e){rejected=e.Message.Contains(obstacle.ElementId)&&e.Message.Contains("grid aligned");}
             Check(rejected,"Off-grid placement must identify the offending node.");
             GD.Print("AUTHORED SCENE ROUND TRIP PASSED: native PackedScene pack/save/load, original layout equivalence, moved obstacle persistence/walkability, invalid transform rejection.");
         }

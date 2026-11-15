@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r5jvc"]
+albedo_color = Color(0.3, 0.22, 0.14, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="BoxMesh_fwu12"]
+size = Vector3(0.3, 0.9, 0.3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fua6i"]
+albedo_color = Color(0.17, 0.27, 0.22, 1)
+roughness = 0.95
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_31p4h"]
+top_radius = 0.08
+bottom_radius = 0.52
+height = 1.3
+radial_segments = 6
+
+[node name="ForestTree" type="Node3D"]
+
+[node name="Trunk" type="MeshInstance3D" parent="." unique_id=813130737]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+material_override = SubResource("StandardMaterial3D_r5jvc")
+mesh = SubResource("BoxMesh_fwu12")
+
+[node name="Canopy" type="MeshInstance3D" parent="." unique_id=1402936595]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+material_override = SubResource("StandardMaterial3D_fua6i")
+mesh = SubResource("CylinderMesh_31p4h")

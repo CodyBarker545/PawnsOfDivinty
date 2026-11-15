@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Props/ModularStoneWall/ModularStoneWall.glb" id="Mesh"]
+
+[node name="ModularStoneWall" type="Node3D"]
+
+[node name="Stone" parent="." instance=ExtResource("Mesh")]
