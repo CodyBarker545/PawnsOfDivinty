@@ -12,13 +12,13 @@ public sealed record MobaHudPresentation(string Name,string Team,string Health,f
         if(session.SelectedCharacter is not { } c)return new("No unit selected","Select a friendly unit","—",0,
             "Awaiting selection","STR —    DEF —    INT —    RES —\nWIS —    SPD —    MOV —","No active unit","Equipment / items\nSelect a unit to inspect.\nInventory management unavailable.");
         var s=session.Capture(c.Id);var b=c.BaseStats;
-        var cooldowns=c.Cooldowns.Cooldowns.OrderBy(e=>e.Key,StringComparer.Ordinal).Select(e=>$"{c.Definition!.Abilities.First(a=>a.Id==e.Key).DisplayName}: {(e.Value.ReadyRound>session.Round?$"R{e.Value.ReadyRound}":"ready")}");
+        var cooldowns=c.Cooldowns.Cooldowns.OrderBy(e=>e.Key,StringComparer.Ordinal).Select(e=>$"{c.Definition!.Abilities.FirstOrDefault(a=>a.Id==e.Key)?.DisplayName??e.Key}: {(e.Value.ReadyRound>session.Round?$"R{e.Value.ReadyRound}":"ready")}");
         var effects=s.Statuses.Concat(cooldowns).ToArray();
         return new(c.Name,c.TeamId==1?"BLUE TEAM":"RED TEAM",$"{s.HP} / {s.MaxHP} HP · SHD {s.ShieldHP}",
             (float)s.HP/s.MaxHP,s.Defeated?"DEFEATED":s.HasActed?"ACTIVATED":session.Activations.ActiveCharacter==c?"ACTIVE":"READY",
             $"STR {b.Strength}    DEF {c.EffectiveDefense}    INT {b.Intelligence}    RES {c.EffectiveResistance}\nWIS {b.Wisdom}    SPD {b.Speed}    MOV {s.Movement}  ({session.RemainingMovement} available)",
             effects.Length==0?"No active statuses or cooldowns":string.Join(" · ",effects),
-            $"Scroll: {c.EquippedScroll?.Name??"none equipped"}\nDEV combat loadout in use.\nItem management unavailable.");
+            $"Scroll: {c.EquippedScroll?.DisplayName??"none equipped"}\nDEV combat loadout in use.\nItem management unavailable.");
     }
 }
 

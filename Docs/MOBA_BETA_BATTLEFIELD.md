@@ -1,4 +1,304 @@
-# One-lane MOBA beta battlefield — Stages 6.7A through 6.7B.8A
+# MOBA beta battlefield
+
+## Current three-route layout — Stage 6.7B revision
+
+The board has 30 columns and 20 rows at 1.25 world units per cell. Coordinates below are zero-based, inclusive, with north at Y=0. The Godot scene places the floor, structures, start zones and ten original fixtures. The historical stage notes below describe earlier versions.
+
+### Placement
+
+| Region | Blue | Red |
+|---|---|---|
+| Small spawn castle courtyard | X0–3, Y7–13 | X26–29, Y7–13 |
+| Four solid courtyard towers | X0 and 3 at Y7 and 13 | X26 and 29 at Y7 and 13 |
+| Five initial deployment cells | X2, Y8–12 | X27, Y8–12 |
+| Capturable castle | X6–11, Y8–14 | X18–23, Y8–14 |
+| Capture zone | X8–9, Y10–11 | X20–21, Y10–11 |
+| Castle transfer arrivals | X7–9, Y12–13 | X20–22, Y12–13 |
+| West and east gates | X6 and 11, Y10–11 | X18 and 23, Y10–11 |
+| North and south gates | X8–9 at Y8 and 14 | X20–21 at Y8 and 14 |
+
+The small castles have a 28-cell footprint, four corner towers and a colored start strip. The main castles occupy 42 cells each. Only the two main castles supply capture zones and transfer arrivals. A team can transfer after obtaining both castles, subject to the existing uncontested control, empty arrival cell and Main Action checks.
+
+The neutral ruins occupy X12–17, Y8–13. Four broken stone structures block (13,8), (16,8), (13,13) and (16,13). The other 32 cells are walkable. A low stone dais marks the geometric center (14.5,10.5), shared by X14–15, Y10–11. These four cells were already the live center objective. Their occupation, contest and existing development VP behavior carry over. The ruins add scenery only.
+
+### Travel costs at deployment
+
+Costs come from GridPathfinder with the session movement map and the other nine living units occupying their initial cells. Each legal cardinal step costs one MOV. The authored floor is flat. Values apply to both teams individually. Castle and ruins columns give the shortest distance to any capture or objective cell. Flank columns measure the nearest team-side middle column at Y4 or Y17 (Blue X14, Red X15).
+
+| Start Y | Blue / Red unit | Own castle | Ruins | North middle | South middle |
+|---|---|---:|---:|---:|---:|
+| 8 | Time Weaver / Time Weaver | 8 | 14 | 16 | 21 |
+| 9 | Hooded Assassin / Hooded Assassin | 7 | 13 | 17 | 20 |
+| 10 | Gravebound Colossus / Gravebound Colossus | 6 | 12 | 18 | 19 |
+| 11 | Gentle Guardian / Gentle Guardian | 6 | 12 | 19 | 18 |
+| 12 | Beothuk Spirit Guardian / Nigel | 7 | 13 | 20 | 17 |
+
+The shortest castle-capture-cell to ruins trip costs **5 MOV** on each side. The nearest spawn-to-castle trip costs **6**, and spawn-to-ruins costs **12**. Left/right obstacles, openings and costs mirror across X14.5. The original rosters differ in the last slot, where the Spirit Guardian has 5 MOV and Nigel has 4. At the same 13-cell distance they consequently need three and four full movement opportunities respectively.
+
+### Routes, crossings and reservations
+
+- **Center.** The authored main lane spans Y9–13. Rows 10 and 11 run through both forts into the arena. Two adjacent cells stay open at each castle gate. In the ruins, the 4×4 inner court at X13–16, Y9–12 stays completely clear. All four faces have at least two ways in.
+- **North.** The jungle band spans Y1–7. Rows 3 and 4 form a continuous marked path above both castles. X4–5 and X24–25 connect the outer approaches, and the north castle gates connect to the lane. Trees shape sightlines visually. The scene adds no elevation or line-of-sight rule.
+- **South.** The flank spans Y16–18. Row 17 crosses the field between staggered rubble. X5, 12, 17 and 24 connect the flank to the main lane, giving each side an inside and an outside return.
+- **Chokes.** A pair of occupants can close a fort gate. All four gates and the paths around the exterior remain available. The ruins have open sides between the broken corner stones. All 538 legal floor cells belong to one connected component. At the start, adjacent units fill the deployment strip, but every unit can leave sideways.
+- **Slow-unit check.** Both Colossi, the slowest registered units at 3 MOV, completed ordinary budget-limited movement from their starting cells. The direct center trip cost 12 (four moves). Reaching the far-side exit via X5–24 along Y4 cost 28 (ten moves), and via Y17 cost 29 (ten moves). Those side trips cross to the opposite flank exit, beyond the midpoint. The extra step south follows the actual spacing between the central gates and flank. It applies equally to Blue and Red.
+
+| Candidate single-cell NPC reservation | Blue half | Red half |
+|---|---|---|
+| North | (9,3) | (20,3) |
+| South | (9,18) | (20,18) |
+| Center approach | (12,9) | (17,9) |
+
+This table reserves the six cells for a future iteration. The scene has zero camp placements, camp highlights or neutral NPC fixtures. Navigation tests also exclude all six cells simultaneously and verify that the three crossings and inner court remain accessible.
+
+### Before and after
+
+Originally, four castles occupied the board, with both five-unit teams deployed inside their forward forts. Two 3×3 camp highlights dominated the north route. The five regions fit by retaining the capturable forts and their four existing gate pairs, replacing the outer home capture locations with smaller spawn castles, and reusing the existing center objective.
+
+The revised board has 62 blocked cells (10.3%), up from 58 (9.7%). The four added ruins blocks account for the difference. Both revised captures show all five regions, a distinct north trail, the open south flank and the team-colored deployment strips outside the main forts. The stone dais and broken corners mark the center at both sizes. At 720p the models overlap visually along the spawn strip and the small world labels are hard to read at overview zoom. The floor colors and structures carry most of the overview information.
+
+For the next playtest, record first arrival, first contact and gate occupation for each side, including how often a Colossus takes the long flank. If selecting rear units feels crowded in live play, try a staggered formation inside the same small courtyard and rerun the occupied-start costs.
+
+### Verification and changed files
+
+- Build: `dotnet build PawnsOfDivinity.sln --no-restore` succeeded with zero warnings and zero errors.
+- xUnit: `dotnet test PawnsOfDivinity.sln --no-build --logger "trx;LogFileName=layout.trx" --results-directory artifacts/layout_tests` passed 3,273 of 3,273 with zero skipped.
+- Godot 4.7.2 .NET: the authored scene passed `--beta-smoke-test` headless and with the OpenGL renderer, exit 0 in both cases. Checks include save/reload, all-cell picking at multiple camera angles, 720p/1080p target clicks, all ten movement bindings, capture, contested zones, transfer, HUD, timer, victory and free testing.
+- Captures: [original 1280×720](../artifacts/layout_before_720.png), [revised 1280×720](../artifacts/layout_after_720.png), [revised 1920×1080](../artifacts/layout_after_1080.png). The captures use the normal-match verification view. Free testing remains the F6 launch mode.
+- Scene files: `Scenes/Battlefields/MobaBeta/MobaBetaBattlefield.tscn` and `Elements/Objective.tscn` within that scene directory.
+- Under `Scripts/Gameplay/Levels/`: `BetaLevelElement.cs`, `MobaBetaLayout.cs`, `MobaBetaBattlefield.cs`, `MobaBetaBattlefield.Objectives.cs`, `MobaBetaBattlefield.Timer.cs`, `MobaBetaBattlefield.FreeTesting.cs`. These changes cover spawn metadata, the ruins label and verification/capture staging.
+- Under `Tests/PawnsOfDivinity.Tests/Levels/`: `AuthoredLevelValidationTests.cs`, `MobaActivationTimerTests.cs`, `MobaBetaLayoutTests.cs`, `MobaCompetitiveRouteTests.cs` (new), `MobaFiveVsFiveTests.cs`, `MobaFreeTestingTests.cs`, `MobaMovementTests.cs` and `MobaObjectiveTests.cs`.
+- Report: `Docs/MOBA_BETA_BATTLEFIELD.md`. The verification runs also refreshed the standard `artifacts/moba_beta_overhead.png` and `artifacts/moba_beta_castle.png` outputs and wrote `artifacts/layout_tests/layout.trx`.
+
+## Historical one-lane MOBA beta battlefield — Stages 6.7A through 6.7B.8A, tactical HUD redesign
+
+## Current launch mode — free testing
+
+The authored beta scene now sets **Free Testing = true** on its root. F6 starts an untimed
+sandbox: select any living unit on either team. **Normal movement restrictions remain enabled**:
+runtime MOV allowance, actual path costs, obstacles, occupancy, bounds, one unsplit movement
+per test activation and smooth path animation. MOV is not refilled by clicking the same selected
+unit. Deselect/reselect (or choose another unit and return) to begin a fresh test activation.
+The unlimited-distance/instant-placement bypass has been removed. Domain
+positions, occupancy, picking and original model transforms stay synchronized.
+
+Timer and End Activation controls are hidden/disconnected; the top bar identifies FREE TESTING.
+Normal timer/turn/round functions remain intact. To reconnect them, uncheck **Free Testing**
+in the MobaBetaBattlefield root Inspector and restart F6. A fresh pure MobaHotseatSession still
+defaults to normal mode; CreateResetSession preserves its current mode. There is no mid-match
+conversion of sandbox state into competitive state.
+
+Attacks, ability execution, HP/shields, statuses, capture/contest metadata and Reset remain
+available through existing production services. Selecting another actor creates a fresh production
+action context for that actor, independently of team order. Ordinary round progression, cleanup,
+cooldown advancement and round-end scoring are paused with the match loop; this is free testing,
+not a revised competitive ruleset. Smoke/cooldowns therefore persist until Reset while rounds
+are paused. Defeated units still require Reset to restore. Character stats are unchanged.
+
+The development branch in MobaHotseatSession.FreeTesting.cs only prepares a fresh production
+action context for the chosen actor, with a movement executor bound to that same context.
+Both testing and normal mode use the production MOV/action-spending executor, route validation,
+smooth animation and movement acknowledgement lock. Core gameplay code,
+original assets and authored geometry are untouched; the scene only adds the root switch.
+
+Regression/capture arguments for earlier stages explicitly run normal mode so all retained match
+tests continue exercising timer and activation rules. The native smoke also tests the serialized
+free-testing default, either-team selection, MOV4 rejection, movement consumption and animation,
+combat, reset and restoration of normal mode. `--capture-free-testing` runs the actual free launch
+configuration and saves `artifacts/moba_free_testing.png`. Movement-balance follow-up: **3,268 passed, 0 failed,
+0 skipped**, build **0 warnings/errors**, graphical smoke passed. Logs use
+`artifacts/movementbalance_{tests,build,graphical_smoke}.log`. No commit or push.
+
+Model-click targeting follow-up: in Attack or unit-ability targeting, click the character's torso
+or head to choose it, then use the existing confirmation button. Runtime picking-only boxes now
+cover each original model's transformed bounds; they still block no movement. Model hits take
+precedence over occupants of the ground tile projected behind the upper body. Ordinary crowded
+unit/tile selection retains its existing scoring and tile clicks remain available as a fallback.
+Target legality, hidden/defeated gates and action confirmation are unchanged. `MobaUnitPicking`
+provides deterministic model-hit ordering. Six new pure regression cases and native torso/head
+clicks for all five opposing fixtures at 720p/1080p pass. Latest results: **3,256 passed, 0 failed,
+0 skipped**; build **0 warnings/errors**; graphical smoke passed. Logs use
+`artifacts/modelpicking_{tests,build,graphical_smoke}.log`.
+
+## HUD Polish Pass 1
+
+This is presentation polish of the existing docked HUD. Map geometry, character assets, stats,
+combat, range/path costs, targeting, transfers, action economy, timers and scoring are unchanged.
+
+- Contextual health bars retain the selected/validated-target-only behavior described below.
+  Invisible, dead, removed, hovered or merely attackable units gain no additional visibility.
+  The bottom selected-unit HP/shield display is unchanged.
+- The existing `Selection` mesh is refined in place to a thin cyan (Blue) or violet (Red) ring.
+  Existing runtime target rings now mark **only the chosen legal target**, with a larger warm
+  orange outline for a hostile target or mint for a permitted friendly target. Targets in range
+  without a chosen preview get no ring. Cancel, invalidation, completion and reset hide stale
+  rings. No friendly-targeting ability is invented. Both rings are non-colliding children of
+  their fixture, inherit its position/elevation and remain clear of the flat floor.
+- Reachable borders are subdued translucent mint. Actual hovered shortest paths receive a
+  brighter cyan border, with a light destination tint and actual cost/MOV label in the details
+  panel. Invalid feedback remains red. Paths still come from MobaMovementPreview and the same
+  authoritative session query; other command modes suppress movement decoration. Selected-unit
+  rings remain distinct from destination tiles. Existing cell meshes/materials are pooled.
+- Available commands use the normal dark/gold theme; hover brightens it; the current command
+  stays cyan/inset; disabled commands are grey and never appear selected. Move is the existing
+  default mode for an eligible selected unit with movement remaining. Attack, ability inspection
+  and Transfer accents follow existing controller flags, not a second command state machine.
+- Eligibility remains session-owned. Move uses RemainingMovement, Attack uses CanAttack without
+  demanding an immediately available target, Transfer uses existing castle eligibility, and End
+  uses CanSelect plus the production taunt-source guard for ordinary End. The Abilities panel remains inspectable while cooldown/status prevents casting;
+  Preview is separately disabled using production cooldown, Silence and active ability checks.
+  Confirmation still revalidates the actual target. Disabled-button bindings also ignore synthetic
+  Pressed signals, preventing tests or queued UI callbacks from entering invalid modes.
+- Shared typography tiers in `MobaHudStyle` use 13-pixel captions, 14-pixel body text, 16-pixel
+  headings and a 24-pixel clock. Top readiness, selected identity/HP, stats, status/equipment and
+  ability text have increased contrast/size. Theme active/hover/disabled resources remain in
+  `Resources/UI/MobaTacticalTheme.tres`. Top padding is adjusted to retain the same 54-pixel
+  reservation; the bottom reservation and all four HUD regions are preserved. Ability descriptions
+  scroll inside their existing region, with essential command buttons outside the scroll area.
+
+`MobaCommandPresentation` is a read-only mapping of existing mode flags/eligibility. Its
+CanPreviewAssassinAbility composes existing session, cooldown, Silence and AbilityEligibility
+queries (including the existing prospective taunt policy) without starting an activation, rolling or spending resources. `MobaTacticalHud` only
+applies the resulting button state and guarded bindings. The battlefield supplies one validated
+chosen target to both health bars and target rings. No production gameplay implementation changed.
+
+Native regression staging now emits the real OptionButton ItemSelected signal when selecting
+an ability programmatically; a plain Select changes the index but does not refresh the UI as an
+actual click does. Existing acceptance assertions remain; this avoids bypassing the new disabled
+input guard with a stale button state in smoke tests.
+
+Verification: **3,250 passed, 0 failed, 0 skipped** (all 3,234 earlier cases plus 16 new command
+projection/eligibility cases). Native smoke checks also cover selected/target-only rings, invalid
+and hidden targets, inherited elevation, unchanged reachable sets/costs, active/cancelled modes,
+disabled input, status changes, movement exhaustion, Red selection and legal castle transfers.
+HUD text/button bounds and all-cell picking are checked at **1280×720 and 1920×1080**.
+`--capture-polish` saves movement/path, chosen attack target and ability-panel captures at both
+resolutions to `artifacts/moba_polish_*.png`. Captures stage only runtime presentation/positions.
+Logs use `artifacts/hudpolish_{tests,build,smoke,graphical_smoke,capture,preservation,diffcheck}.log`.
+
+Files for this pass: MobaBetaBattlefield.cs (target rings, subdued overlays and command refresh),
+StaticTacticalCharacter.cs (existing selector), MobaCombatHud.cs (readable contextual HP text),
+MobaTacticalHud.cs and MobaTacticalTheme.tres (type tiers and active/disabled styling),
+MobaBetaBattlefield.Assassin.cs (preview eligibility and realistic native dropdown staging),
+MobaBetaBattlefield.Objectives.cs (guarded transfer bindings), MobaCommandPresentation.cs and
+MobaHudStyle.cs (read-only state/style helpers), MobaBetaBattlefield.HudVerification.cs and
+MobaBetaBattlefield.HealthBarVerification.cs (stronger bounds/realistic dropdown signals),
+MobaBetaBattlefield.PolishVerification.cs and MobaCommandPresentationTests.cs (new checks),
+and this document. No commit or push is part of the pass.
+
+Final build: **0 warnings, 0 errors**. Standalone headless and graphical smoke both pass with
+clean logs; all six movement/attack/abilities captures at both sizes were inspected. No new
+graphical shutdown error was observed in the final runs. `git diff --check` and source/model/
+map preservation checks pass. A repeated-selection run exposed an intermittent Godot managed
+resource-handle error in portrait PackedScene loading; source scenes are now retained once per
+original model for the HUD lifetime. Only the selected portrait is instantiated. Native tests
+force garbage collection between selections to stress this fix. The original failure log is
+retained as `artifacts/hudpolish_resource_handle_failure.log`; existing assertions were not
+removed or weakened. Gameplay specifications that were already unresolved remain unresolved.
+
+## Current tactical HUD — Stage 6.7B.8
+
+Open `Scenes/Battlefields/MobaBeta/MobaBetaBattlefield.tscn` and press F6. This presentation
+redesign retains the subsequent B.8A Assassin integration and all existing match rules.
+Historical controls/screenshots below describe earlier milestones; this section takes precedence
+for HUD placement. No authored geometry, model source, production scene, combat formula or
+session command changed for this redesign.
+
+- The 54-pixel top bar shows round, active team, readiness, remaining activation time and
+  Blue/Red VP. Journal, DEV and F1 help are compact utility buttons. Provisional scoring detail
+  and coordinates no longer occupy the battlefield.
+- The bottom deck contains a selected-unit head/shoulders portrait, name, team, HP/shields,
+  readiness, STR/DEF/INT/RES/WIS/SPD/MOV, statuses/cooldowns, commands and an equipment/item
+  region. No character level or invented inventory slots/capacity is displayed. Actual equipped
+  scroll names are shown when present; item management remains unavailable. The empty selection
+  state has a neutral portrait symbol, empty stats and disabled action buttons.
+- Move restores the existing movement-selection mode. Attack and Transfer reveal their existing
+  target/deployment previews and confirmation controls. Abilities opens the existing Assassin
+  panel inside the details region; its information scrolls while Preview/Confirm/Cancel stay
+  visible in the command grid. Disabled controls explain requirements in tooltips. End Activation
+  retains its existing meaning and action economy.
+- Journal opens a collapsed-by-default right-side combat history. DEV opens reset, timer
+  enable/pause, coordinates, detailed stats, scoring assumptions and control diagnostics. F1 or
+  the help button toggles camera/gameplay instructions. These panels block picking beneath them;
+  closing them restores the unobstructed battlefield. Reset clears selection, portrait, targeting,
+  journal, help and DEV state while preserving the existing camera pose and reset configuration.
+- World labels now use compact HOME/FORT/OBELISK ownership indicators. Character names appear
+  only on the selected model; defeat remains marked. HP bars use smaller text/bars and stable
+  non-overlapping placement with leader lines where needed. Invisible Assassin HP stays hidden;
+  shield and floating production combat feedback remain intact. Battlefield HP bars appear only
+  for the selected living unit and its current validated unit target. Range rings, hovering,
+  damage and combat playback never reveal unrelated HP bars. Cancelling/completing targeting,
+  deselecting, death or removal hides stale bars immediately; reset leaves all bars hidden.
+
+Health-bar visibility follow-up: `MobaHealthBarVisibility.Resolve` is a stateless filter of
+existing selection/validated target IDs and currently presented living units. It accepts either
+team when a command permits that target; it adds no friendly targeting rule. The battlefield
+passes existing basic/ability command targets after their normal validation. MobaCombatHud
+retains the same HP calculations, colours, proportions, visibility gates and anchored widgets,
+and hides removed views/leader lines safely. Twelve new pure regression cases plus native
+selected/target switching, cancellation/completion, death, view removal and reset checks pass.
+Latest verification: **3,234 passed, 0 failed, 0 skipped**, build **0 warnings/errors**, graphical
+smoke and capture passed. Logs: `artifacts/healthbars_{tests,build,graphical_smoke,capture}.log`.
+
+### UI structure, styling and camera coordinates
+
+`MobaTacticalHud` constructs a Godot-native Control/container tree under the runtime CanvasLayer:
+`TacticalHud / MatchBar`, `BattlefieldViewport / TacticalWorld`, `UnitDeck` (four container
+regions), `Development` and `ControlsHelp`. Existing battlefield partial classes bind their
+existing handlers to exposed command/context hosts. `MobaCombatHud` owns health widgets,
+floating feedback and the side journal. Victory retains its existing overlay and reset command.
+This UI is runtime presentation; opening the scene in the editor continues to show the same
+authored map, not regenerated terrain or an alternate gameplay scene.
+
+`Resources/UI/MobaTacticalTheme.tres` supplies dark-metal panels/buttons, restrained gold borders,
+readable text and hover/disabled styles. `MobaHudPresentation.Capture` is a pure read-only runtime
+snapshot for unit details/equipment. `MobaHudMetrics.For` defines a bounded bottom reservation
+(228 pixels at 720p, at most 280 pixels on larger logical viewports). The supported window
+minimum is 1280×720; native containers/anchors support 1920×1080 and the existing canvas scaling.
+The battlefield retains more than 55% of viewport height at supported sizes.
+
+The existing Camera3D is moved at runtime into a SubViewport sharing the original World3D.
+Its SubViewportContainer occupies exactly the area between top bar and bottom deck, so HUD
+panels cannot hide tactical tiles. `WorldToScreen` adds that rectangle's offset to camera
+projections; `GameplayPoint` subtracts it for rays; `Pick` rejects HUD and open utility panels.
+Physics picking continues to query the original world and original fixture bodies. Recenter and
+resize fit the board using projected corner bounds. Existing pan, rotation, zoom and grid-toggle
+controls remain; gameplay coordinates and movement costs are unchanged.
+
+The portrait uses a separate small SubViewport/World3D with its own lighting and orthographic
+camera. One visual-only instance of the selected original imported PackedScene shares the mesh
+and material resources; it contains no Character, action state or gameplay fixture. Animation,
+processing and collisions are disabled. Mesh bounds frame the upper head/shoulders and the
+portrait renders only when selection changes. Original Blender/GLB resources are never modified.
+Portrait appearance inherits the supplied greybox model materials; no new portrait art is required.
+
+### Verification and development captures
+
+`MobaHudPresentationTests` adds 11 cases covering bounded viewport reservations and picking
+bounds, empty state, authoritative stats/HP/shields/statuses, equipped scroll information,
+cooldown display, reset, team and activation readiness. Native `VerifyHudSmoke` checks the
+actual HUD controls/portrait identities, F1, journal, DEV, movement/attack context, docked ability
+controls, reset, non-overlapping command bounds, viewport dimensions and all 600 cell projection/
+picking round trips at **1280×720 and 1920×1080**. Existing native smoke still exercises movement,
+attacks/counters/follow-ups, transfer, capture, victory, timers and Assassin abilities.
+
+Run the scene with user argument `--beta-smoke-test` for these checks. `--capture-hud` saves
+`artifacts/moba_hud_empty.png`, `moba_hud_selected.png`, `moba_hud_abilities.png`,
+`moba_hud_development.png`, `moba_hud_help.png`, `moba_hud_selected_1080.png` and
+`moba_hud_reset_1080.png`. Capture staging
+changes only runtime UI/window state; it does not save scene transforms or alter match rules.
+
+Final verification: **3,222 passed, 0 failed, 0 skipped** (all 3,211 previous tests plus 11 new
+presentation cases). Full solution build: **0 warnings, 0 errors**. Godot import succeeds with
+the existing nested-prototype and editor-shutdown dummy-texture/CanvasItem/ObjectDB/resource
+diagnostics. Headless and graphical standalone smoke pass, and the final capture rerun exits
+cleanly. One earlier graphical capture saved all images and then hit a native signal-11 crash
+during engine shutdown; it did not reproduce in the capture rerun or graphical full smoke.
+That diagnostic is retained in `artifacts/stage67b8hud_capture_shutdown_crash.log`; it is not
+treated as a gameplay exception or silently omitted. Logs use
+`artifacts/stage67b8hud_{tests,build,import,smoke,capture}.log`. Screenshots at both requested
+resolutions were visually inspected. `git diff --check` and preservation checks are recorded
+alongside those logs. No commit or push is part of this stage.
 
 **Current configuration: fixed 5v5, ten independent runtime characters, first to 15 VP,
 no gameplay round limit.** B.6 implements castle capture/transfers and configurable DEVELOPMENT

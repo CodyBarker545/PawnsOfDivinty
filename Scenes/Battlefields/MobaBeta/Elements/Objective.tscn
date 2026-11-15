@@ -3,14 +3,17 @@
 [ext_resource type="Script" path="res://Scripts/Gameplay/Levels/BetaLevelElement.cs" id="1_2acds"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_67ylv"]
-albedo_color = Color(0.8, 0.66, 1, 1)
+albedo_color = Color(0.76, 0.74, 0.67, 1)
 roughness = 0.95
 
-[sub_resource type="PrismMesh" id="PrismMesh_cx5fn"]
-size = Vector3(0.6, 1.2, 0.6)
+[sub_resource type="CylinderMesh" id="Dais"]
+top_radius = 0.52
+bottom_radius = 0.58
+height = 0.12
+radial_segments = 8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_42dqe"]
-albedo_color = Color(0.8666667, 0.627451, 0.8666667, 1)
+albedo_color = Color(0.75, 0.75, 0.70, 1)
 roughness = 0.95
 
 [sub_resource type="BoxMesh" id="BoxMesh_ggo84"]
@@ -43,17 +46,16 @@ Kind = 5
 CellOffsets = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(1, 0), Vector2i(1, 1)])
 
 [node name="NeutralObjectiveMarker" type="MeshInstance3D" parent="." unique_id=9090760]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.625, 1.4, 0.625)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.625, 0.07, 0.625)
 material_override = SubResource("StandardMaterial3D_67ylv")
-mesh = SubResource("PrismMesh_cx5fn")
+mesh = SubResource("Dais")
 
 [node name="@Label3D@158" type="Label3D" parent="." unique_id=870303711]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.625, 2.7, 0.625)
 pixel_size = 0.006
 billboard = 1
-modulate = Color(0.8666667, 0.627451, 0.8666667, 1)
-text = "CENTRAL OBJECTIVE
-INACTIVE"
+modulate = Color(0.75, 0.75, 0.70, 1)
+text = "NEUTRAL RUINS"
 font_size = 23
 
 [node name="@MeshInstance3D@159" type="MeshInstance3D" parent="." unique_id=1859404726]

@@ -2,7 +2,7 @@ using Godot;
 
 namespace PawnsOfDivinity.Gameplay.Levels;
 
-public enum BetaElementKind { Terrain, Castle, CaptureZone, DeploymentZone, Camp, Objective, Obstacle, Entrance, Route, Connection }
+public enum BetaElementKind { Terrain, Castle, CaptureZone, DeploymentZone, Camp, Objective, Obstacle, Entrance, Route, Connection, SpawnZone }
 
 /// <summary>Serialized authoring data. The node transform, never a stored absolute cell, locates its footprint.</summary>
 [Tool, GlobalClass]

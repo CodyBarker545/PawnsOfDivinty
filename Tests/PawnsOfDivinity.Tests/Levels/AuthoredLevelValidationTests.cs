@@ -25,8 +25,8 @@ public class AuthoredLevelValidationTests
     [Fact] public void SceneExtractionPreservesOriginalGeometryAndRoster()
     {
         var map=new MobaBetaLayout(Data);
-        Assert.Equal(600,map.Terrain.Count);Assert.Equal(58,map.Obstacles.Count);
-        Assert.Equal(542,map.Board.Cells.Count(map.Walkable));Assert.Equal(10,map.Fixtures.Count);
+        Assert.Equal(600,map.Terrain.Count);Assert.Equal(62,map.Obstacles.Count);
+        Assert.Equal(538,map.Board.Cells.Count(map.Walkable));Assert.Equal(10,map.Fixtures.Count);
         Assert.All(map.Fixtures,f=>Assert.StartsWith("res://Assets/Characters/MobaBeta/",f.ModelPath));
         Assert.Equal(6,map.Fixtures.Select(f=>f.ModelPath).Distinct().Count());
     }
@@ -42,18 +42,18 @@ public class AuthoredLevelValidationTests
     {
         var map=new MobaBetaLayout(Edit("tree_3_2",e=>e with {Z=e.Z+Data.Board.CellSize}));
         Assert.True(map.Walkable(new(3,2)));Assert.False(map.Walkable(new(3,3)));
-        Assert.Equal(58,map.Obstacles.Count);Assert.Contains(map.Source.Elements,e=>e.Id=="tree_3_2");
+        Assert.Equal(62,map.Obstacles.Count);Assert.Contains(map.Source.Elements,e=>e.Id=="tree_3_2");
     }
     [Fact] public void BlocksMovementIsAuthoritativeRatherThanAnOldObstacleArray()
     {
         var map=new MobaBetaLayout(Edit("tree_3_2",e=>e with {BlocksMovement=false}));
-        Assert.True(map.Walkable(new(3,2)));Assert.Equal(57,map.Obstacles.Count);
+        Assert.True(map.Walkable(new(3,2)));Assert.Equal(61,map.Obstacles.Count);
     }
     [Fact] public void TerrainCanExplicitlyBlockATile()
     {
         var map=new MobaBetaLayout(Edit("tile_3_3",e=>e with {BlocksMovement=true,TerrainTag="authored_rock"}));
         Assert.False(map.Walkable(new(3,3)));Assert.Equal("authored_rock",map.Terrain[new(3,3)]);
-        Assert.Equal(59,map.Obstacles.Count);
+        Assert.Equal(63,map.Obstacles.Count);
     }
     [Fact] public void InvalidAlignmentNamesTheNodeAndSuggestedCenter() =>
         Reject(Edit("tree_3_2",e=>e with {X=e.X+.1}),"tree_3_2","grid aligned","Nearest cell");
@@ -70,7 +70,7 @@ public class AuthoredLevelValidationTests
     [Fact] public void TerrainHolesAreRejected() =>
         Reject(Data with {Elements=Data.Elements.Where(e=>e.Id!="tile_3_3").ToArray()},"every board cell");
     [Fact] public void BlockedSpawnIdentifiesTheFixture() =>
-        Reject(AddBlocker(Data,7,12,"spawn_blocker"),"hooded_assassin","blocked or disconnected");
+        Reject(AddBlocker(Data,2,9,"spawn_blocker"),"hooded_assassin","blocked or disconnected");
     [Fact] public void DuplicateSpawnPositionsAreRejected()
     {
         var assassin=Data.Elements.Single(e=>e.Id=="hooded_assassin");
@@ -79,9 +79,9 @@ public class AuthoredLevelValidationTests
     [Fact] public void MissingOriginalModelFailsRatherThanCreatingAPlaceholder() =>
         Reject(Edit("hooded_assassin",e=>e with {ModelPath=null}),"hooded_assassin","model instance is missing");
     [Fact] public void CaptureDeploymentOverlapIsRejected() =>
-        Reject(Edit("blue_home_capture",e=>e with {Z=e.Z+2*Data.Board.CellSize}),"Overlapping zones");
+        Reject(Edit("blue_forward_capture",e=>e with {Z=e.Z+2*Data.Board.CellSize}),"Overlapping zones");
     [Fact] public void UnknownCastleReferenceIsRejected() =>
-        Reject(Edit("blue_home_capture",e=>e with {CastleId="missing_castle"}),"does not reference an authored castle");
+        Reject(Edit("blue_forward_capture",e=>e with {CastleId="missing_castle"}),"does not reference an authored castle");
     [Fact] public void BlockedEntranceIsRejected() =>
         Reject(AddBlocker(Data,6,10,"gate_blocker"),"blue_forward/west","open and accessible");
     [Fact] public void DisconnectedWalkablePocketIsRejected() =>

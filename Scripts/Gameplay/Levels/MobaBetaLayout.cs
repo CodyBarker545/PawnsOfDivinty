@@ -35,6 +35,7 @@ public sealed class MobaBetaLayout
 {
     public RectangularBoard Board { get; }
     public IReadOnlyList<BetaCastle> Castles { get; }
+    public IReadOnlyDictionary<int, IReadOnlySet<GridPosition>> SpawnZones { get; }
     public IReadOnlyList<BetaCamp> Camps { get; }
     public IReadOnlyList<BetaCharacterFixture> Fixtures { get; }
     public IReadOnlySet<GridPosition> Objective { get; }
@@ -56,7 +57,7 @@ public sealed class MobaBetaLayout
             throw new LevelAuthoringException(new[]{"BoardDefinition: dimensions must be 1–256; cell size positive; center/scale finite."});
         var rows=new List<(AuthoredElementData Data,HashSet<GridPosition> Cells)>();
         var ids=new HashSet<string>();
-        var kinds=new[]{"Terrain","Castle","CaptureZone","DeploymentZone","Camp","Objective","Obstacle","Entrance","Route","Connection","Fixture"};
+        var kinds=new[]{"Terrain","Castle","CaptureZone","DeploymentZone","Camp","Objective","Obstacle","Entrance","Route","Connection","Fixture","SpawnZone"};
         foreach(var e in source.Elements)
         {
             string prefix=$"{e.Path} [{e.Id}]: ";
@@ -96,6 +97,12 @@ public sealed class MobaBetaLayout
             Zone(r.Data.Id,"CaptureZone"),Zone(r.Data.Id,"DeploymentZone"),
             rows.Where(w=>w.Data.Kind=="Obstacle"&&w.Data.CastleId==r.Data.Id&&w.Data.BlocksMovement).SelectMany(w=>w.Cells).ToHashSet(),
             rows.Where(w=>w.Data.Kind=="Entrance"&&w.Data.CastleId==r.Data.Id).ToDictionary(w=>w.Data.Role,w=>(IReadOnlySet<GridPosition>)w.Cells))).ToArray();
+        var starts = rows.Where(r => r.Data.Kind == "SpawnZone").ToArray();
+        foreach (var group in starts.GroupBy(r => r.Data.TeamId))
+            if (group.Key is not (1 or 2) || group.Count() != 1)
+                errors.Add("SpawnZone: expected one start region per participating team.");
+        Fail();
+        SpawnZones = starts.ToDictionary(r => r.Data.TeamId, r => (IReadOnlySet<GridPosition>)r.Cells);
         Camps=rows.Where(r=>r.Data.Kind=="Camp").Select(r=>new BetaCamp(r.Data.Id,r.Cells)).ToArray();
         Fixtures=rows.Where(r=>r.Data.Kind=="Fixture").Select(r=>new BetaCharacterFixture(r.Data.Id,r.Data.DisplayName,r.Data.TeamId,r.Cells.Single(),r.Data.ModelPath,r.Data.DefinitionId)).ToArray();
         Objective=rows.Single(r=>r.Data.Kind=="Objective").Cells;
@@ -141,7 +148,9 @@ public sealed class MobaBetaLayout
         {
             Check(Walkable(f.Cell)&&reachable.Contains(f.Cell),$"CharacterFixtures/{f.CharacterId}: spawn {f.Cell} is blocked or disconnected.");
             Check(!string.IsNullOrWhiteSpace(f.ModelPath),$"CharacterFixtures/{f.CharacterId}: the serialized original model instance is missing.");
-            if(Source.RequireDeploymentSpawns)Check(Castles.Any(c=>c.InitialTeamId==f.TeamId&&c.DeploymentCells.Contains(f.Cell)),
+            if(Source.RequireDeploymentSpawns)Check(SpawnZones.Count > 0
+                ? SpawnZones.TryGetValue(f.TeamId, out var start) && start.Contains(f.Cell)
+                : Castles.Any(c=>c.InitialTeamId==f.TeamId&&c.DeploymentCells.Contains(f.Cell)),
                 $"CharacterFixtures/{f.CharacterId}: spawn {f.Cell} must be in a deployment zone belonging to team {f.TeamId} (BoardDefinition.RequireDeploymentSpawns).");
         }
         foreach (var c in Castles)
@@ -154,7 +163,8 @@ public sealed class MobaBetaLayout
                 Check(c.Entrances.TryGetValue(direction,out var opening)&&opening.Count>=2&&opening.All(p=>Walkable(p)&&reachable.Contains(p))&&
                     opening.All(Reachable(opening.First(),opening).Contains),$"{c.Id}/{direction}: entrance must have at least two connected, open and accessible cells.");
         }
-        var zones = Castles.SelectMany(c=>c.CaptureCells.Concat(c.DeploymentCells)).Concat(Objective).Concat(Camps.SelectMany(c=>c.Cells)).ToArray();
+        Check(SpawnZones.Values.SelectMany(s => s).All(p => Walkable(p) && reachable.Contains(p)), "Blocked spawn zone.");
+        var zones = Castles.SelectMany(c=>c.CaptureCells.Concat(c.DeploymentCells)).Concat(SpawnZones.Values.SelectMany(s => s)).Concat(Objective).Concat(Camps.SelectMany(c=>c.Cells)).ToArray();
         Check(zones.Distinct().Count()==zones.Length,"Overlapping special regions.");
         Check(Camps.All(c=>c.Cells.All(p=>Walkable(p) && reachable.Contains(p))),"Unreachable camp.");
         Check(Objective.All(p=>Walkable(p) && reachable.Contains(p)),"Unreachable objective.");

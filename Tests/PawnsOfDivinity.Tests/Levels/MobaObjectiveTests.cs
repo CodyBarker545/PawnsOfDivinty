@@ -28,7 +28,7 @@ public class MobaObjectiveTests
 
     [Fact] public void InitialCastleOwnersFollowMetadataAndCenterIsNeutralWithNoCampObjectives()
     {
-        var s=Match();Assert.Equal(4,s.Control.AllZones().Count(z=>z.Id!=s.Control.ObjectiveId));
+        var s=Match();Assert.Equal(2,s.Control.AllZones().Count(z=>z.Id!=s.Control.ObjectiveId));
         foreach(var c in AuthoredBetaScene.Layout.Castles)Assert.Equal(c.InitialTeamId,s.Control.Castle(c.Id).OwnerTeamId);
         Assert.Null(s.Control.Objective.OwnerTeamId);Assert.False(s.Control.Objective.Contested);Assert.Equal(0,s.Victory.BlueVP);
         Assert.DoesNotContain(s.Control.AllZones(),z=>AuthoredBetaScene.Layout.Camps.Any(c=>c.Id==z.Id));
@@ -88,7 +88,9 @@ public class MobaObjectiveTests
     }
     [Fact] public void HomesRemainFixedAndNeverEarnForwardCastleHoldPoints()
     {
-        var s=Match(first:2);Place(s,"nigel",0,10);Move(s,"nigel",1,10);Assert.Equal(1,s.Control.Castle("blue_home").OwnerTeamId);
+        var data=AuthoredBetaScene.Data;
+        var map=new MobaBetaLayout(data with {Elements=data.Elements.Select(e=>e.Id=="blue_forward"?e with {IsHome=true}:e).ToArray()});
+        var s=new MobaHotseatSession(map,2,new Hits());Place(s,"nigel",7,10);Move(s,"nigel",8,10);Assert.Equal(1,s.Control.Castle("blue_forward").OwnerTeamId);
         Assert.False(s.CanBeginTransfer);FinishRound(s);Assert.Equal(0,s.Victory.RedVP);
     }
     [Fact] public void NeutralForwardCastleCanBeAuthoredAndCapturedWithoutChangingHomeRules()
@@ -140,7 +142,7 @@ public class MobaObjectiveTests
     [Theory] [InlineData(DevelopmentTiePolicy.HigherScoreThenDraw)] [InlineData(DevelopmentTiePolicy.Draw)]
     public void SimultaneousEqualThresholdUsesExplicitDevelopmentDrawPolicy(DevelopmentTiePolicy policy)
     {
-        var s=Match(new(0,0,15,0,policy));Move(s,"gentle_guardian",8,11);s.EndSelectedActivation();Move(s,"time_weaver",21,11);FinishRound(s);
+        var s=Match(new(0,0,15,0,policy));Place(s,"gentle_guardian",8,12);Move(s,"gentle_guardian",8,11);s.EndSelectedActivation();Place(s,"time_weaver",21,12);Move(s,"time_weaver",21,11);FinishRound(s);
         Assert.Equal(15,s.Victory.BlueVP);Assert.Equal(15,s.Victory.RedVP);Assert.True(s.Victory.IsDraw);
     }
     [Fact] public void NoRoundLimitIsIntroducedWhenScoringIsConfiguredToZero()
@@ -151,30 +153,37 @@ public class MobaObjectiveTests
     [Fact] public void CapturedCastleImmediatelyAllowsMoveThenTransferAtAnyDistanceAndEndsMainAction()
     {
         var s=CaptureRed();Assert.True(s.CanBeginTransfer);Assert.Equal(BattlefieldOutcome.Completed,s.BeginTransferTargeting().Outcome);
-        var preview=s.PreviewTransfer("blue_home",new(1,12));Assert.True(preview.CanExecute);var p=preview.Plan!;
-        Assert.Equal(BattlefieldOutcome.Completed,s.ExecuteTransfer("transfer",p).Outcome);Assert.Equal(new GridPosition(1,12),s.Characters[p.ActorId].TacticalPosition);
+        var preview=s.PreviewTransfer("blue_forward",new(7,12));Assert.True(preview.CanExecute);var p=preview.Plan!;
+        Assert.Equal(BattlefieldOutcome.Completed,s.ExecuteTransfer("transfer",p).Outcome);Assert.Equal(new GridPosition(7,12),s.Characters[p.ActorId].TacticalPosition);
         Assert.True(s.Characters[p.ActorId].HasActedThisRound);Assert.True(s.Activations.MainActionUsed);Assert.Equal(2,s.CurrentPlayer);
         Assert.Equal(BattlefieldOutcome.AlreadyProcessed,s.ExecuteTransfer("transfer",p).Outcome);Assert.Equal(1,s.Control.Castle("red_forward").OwnerTeamId);
     }
-    [Theory] [InlineData("red_forward",20,13)] [InlineData("red_home",27,12)] [InlineData("blue_home",0,0)] [InlineData("unknown",1,12)]
-    public void SameCastleEnemyDestinationInvalidDeploymentAndUnknownCastleRejectWithoutResources(string castle,int x,int y)
+    [Theory] [InlineData("red_forward",20,13)] [InlineData("blue_forward",0,0)] [InlineData("unknown",1,12)]
+    public void SameCastleInvalidDeploymentAndUnknownCastleRejectWithoutResources(string castle,int x,int y)
     {
         var s=CaptureRed();s.BeginTransferTargeting();Assert.False(s.PreviewTransfer(castle,new(x,y)).CanExecute);
         Assert.False(s.Activations.MainActionUsed);Assert.False(s.Characters["hooded_assassin"].HasActedThisRound);
     }
+    [Fact] public void EnemyCastleRejectsTransferBeforeMainActionIsSpent()
+    {
+        var s=Match();Place(s,"hooded_assassin",8,10);s.Select("hooded_assassin");s.BeginTransferTargeting();
+        var preview=s.PreviewTransfer("red_forward",new(20,12));
+        Assert.False(preview.CanExecute);Assert.Contains("friendly-controlled",preview.Reason);
+        Assert.False(s.Activations.MainActionUsed);
+    }
     [Theory] [InlineData(true)] [InlineData(false)]
     public void ContestedOriginOrDestinationRejectsStaleTransferBeforeSpending(bool origin)
     {
-        var s=CaptureRed();s.BeginTransferTargeting();var p=s.PreviewTransfer("blue_home",new(1,12)).Plan!;
-        Place(s,"nigel",origin?21:1,10);
-        if(!origin)Place(s,"gentle_guardian",2,10);
-        Assert.False(s.PreviewTransfer("blue_home",new(1,12)).CanExecute);Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("stale",p).Outcome);
+        var s=CaptureRed();s.BeginTransferTargeting();var p=s.PreviewTransfer("blue_forward",new(7,12)).Plan!;
+        Place(s,"nigel",origin?21:8,10);
+        if(!origin)Place(s,"gentle_guardian",9,10);
+        Assert.False(s.PreviewTransfer("blue_forward",new(7,12)).CanExecute);Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("stale",p).Outcome);
         Assert.Equal(new GridPosition(20,10),s.SelectedCharacter!.TacticalPosition);Assert.False(s.Activations.MainActionUsed);
     }
     [Fact] public void TransferRevalidatesOccupiedTileChangedOriginRoundAndOwnership()
     {
-        var s=CaptureRed();s.BeginTransferTargeting();var p=s.PreviewTransfer("blue_home",new(1,12)).Plan!;
-        Place(s,"gentle_guardian",1,12);Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("occupied",p).Outcome);
+        var s=CaptureRed();s.BeginTransferTargeting();var p=s.PreviewTransfer("blue_forward",new(7,12)).Plan!;
+        Place(s,"gentle_guardian",7,12);Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("occupied",p).Outcome);
         Place(s,"gentle_guardian",8,12);Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("round",p with {Round=2}).Outcome);
         Place(s,"hooded_assassin",19,10);Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("origin",p).Outcome);
         Assert.False(s.Activations.MainActionUsed);
@@ -184,7 +193,7 @@ public class MobaObjectiveTests
         var s=Match();s.Select("hooded_assassin");Assert.Equal(BattlefieldOutcome.Rejected,s.BeginTransferTargeting().Outcome);
         Place(s,"hooded_assassin",19,10);var move=s.MoveTo(new(20,10));Assert.Equal(MovementOutcome.Completed,move.Outcome);
         Assert.Equal(BattlefieldOutcome.Rejected,s.BeginTransferTargeting().Outcome);s.AcknowledgeVisualMovement(move.RequestId,move.FinalPosition!.Value);
-        Assert.Equal(BattlefieldOutcome.Completed,s.BeginTransferTargeting().Outcome);Assert.True(s.PreviewTransfer("blue_home",new(1,12)).CanExecute);
+        Assert.Equal(BattlefieldOutcome.Completed,s.BeginTransferTargeting().Outcome);Assert.True(s.PreviewTransfer("blue_forward",new(7,12)).CanExecute);
     }
     [Fact] public void RepeatedResetRestoresOwnershipAndScoreWithoutDuplicatedEvents()
     {
@@ -199,12 +208,12 @@ public class MobaObjectiveTests
     [Theory] [InlineData(DevelopmentTiePolicy.HigherScoreThenDraw,1)] [InlineData(DevelopmentTiePolicy.Draw,null)]
     public void UnequalSimultaneousThresholdIsSettledAsOneBatchAndRetainsCombatHistory(DevelopmentTiePolicy policy,int? winner)
     {
-        var s=Match(new(1,0,15,0,policy));Move(s,"gentle_guardian",8,11);s.EndSelectedActivation();Move(s,"time_weaver",21,11);s.EndSelectedActivation();
+        var s=Match(new(1,0,15,0,policy));Place(s,"gentle_guardian",8,12);Move(s,"gentle_guardian",8,11);s.EndSelectedActivation();Place(s,"time_weaver",21,12);Move(s,"time_weaver",21,11);s.EndSelectedActivation();
         Place(s,"hooded_assassin",14,10);Place(s,"nigel",15,10);s.Characters["nigel"].TakeDamage(51);
         s.Select("hooded_assassin");s.BeginAttackTargeting();s.ExecuteBasicAttack("victory-kill","nigel");FinishRound(s);
         Assert.Equal(16,s.Victory.BlueVP);Assert.Equal(15,s.Victory.RedVP);Assert.Equal(winner,s.Victory.WinnerTeamId);Assert.Single(s.CombatHistory.Records);
         Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteBasicAttack("victory-kill","nigel").Outcome);Assert.Single(s.CombatHistory.Records);
-        var forged=new CastleTransferPlan("hooded_assassin",s.Round,"blue_forward","blue_home",new(8,10),new(1,12));
+        var forged=new CastleTransferPlan("hooded_assassin",s.Round,"blue_forward","blue_forward",new(8,10),new(7,12));
         Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("after-victory",forged).Outcome);
         Assert.Equal(3,s.Victory.Awards.Count);Assert.All(s.Victory.Awards,a=>Assert.True(a.Settled));
     }
@@ -221,8 +230,8 @@ public class MobaObjectiveTests
     }
     [Fact] public void RejectedTransferMayBeRetriedWithSameIdAfterOccupancyIsCorrectedWithoutResourceLoss()
     {
-        var s=CaptureRed();s.BeginTransferTargeting();var plan=s.PreviewTransfer("blue_home",new(1,12)).Plan!;
-        Place(s,"gentle_guardian",1,12);Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("retry",plan).Outcome);Assert.False(s.Activations.MainActionUsed);
+        var s=CaptureRed();s.BeginTransferTargeting();var plan=s.PreviewTransfer("blue_forward",new(7,12)).Plan!;
+        Place(s,"gentle_guardian",7,12);Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("retry",plan).Outcome);Assert.False(s.Activations.MainActionUsed);
         Place(s,"gentle_guardian",8,12);Assert.Equal(BattlefieldOutcome.Completed,s.ExecuteTransfer("retry",plan).Outcome);
     }
 }

@@ -1,0 +1,14 @@
+{
+  "Source": "SourceAssets/characters/hooded_assassin/working_textured_model_assassin/Meshy_AI_Masked_Assassin_Rigged_20261115_animated_mixamo_Running/Meshy_AI_Masked_Assassin_Rigged_20261115_animated_mixamo_Running.fbx",
+  "SourceSHA256": "e08077028becb5c61e0f4f0c443c68e63814415e9069cf099e432b5f59e5800b",
+  "Runtime": "Assets/Characters/MobaBeta/AssassinTextured.glb",
+  "RuntimeSHA256": "1a341cc452c4b3b6353f8ebb5692a2f84cf7fec65a1550b86b07bce01edb83e1",
+  "Bones": 24,
+  "Vertices": 18622,
+  "Textures": [
+    "Meshy_AI_Masked_Assassin_Rigged_20261115_animated_mixamo_Running.png",
+    "Meshy_AI_Masked_Assassin_Rigged_20261115_animated_mixamo_Running_normal.png",
+    "Meshy_AI_Masked_Assassin_Rigged_20261115_animated_mixamo_Running_roughness.png",
+    "Meshy_AI_Masked_Assassin_Rigged_20261115_animated_mixamo_Running_metallic.png"
+  ]
+}

@@ -26,14 +26,14 @@ public class MobaFiveVsFiveTests
         foreach(var f in map.Fixtures){var c=s.Characters[f.CharacterId];Assert.Same(CharacterRegistry.GetCharacter(f.DefinitionId),c.Definition);Assert.Equal(f.TeamId,c.TeamId);}
     }
     [Theory]
-    [InlineData("hooded_assassin",1,7,12)] [InlineData("gentle_guardian",1,8,12)] [InlineData("beothuk_spirit_guardian",1,9,12)]
-    [InlineData("blue_time_weaver",1,7,13)] [InlineData("blue_gravebound_colossus",1,9,13)]
-    [InlineData("nigel",2,22,12)] [InlineData("time_weaver",2,21,12)] [InlineData("gravebound_colossus",2,20,12)]
-    [InlineData("red_hooded_assassin",2,22,13)] [InlineData("red_gentle_guardian",2,20,13)]
+    [InlineData("hooded_assassin",1,2,9)] [InlineData("gentle_guardian",1,2,11)] [InlineData("beothuk_spirit_guardian",1,2,12)]
+    [InlineData("blue_time_weaver",1,2,8)] [InlineData("blue_gravebound_colossus",1,2,10)]
+    [InlineData("nigel",2,27,12)] [InlineData("time_weaver",2,27,8)] [InlineData("gravebound_colossus",2,27,10)]
+    [InlineData("red_hooded_assassin",2,27,9)] [InlineData("red_gentle_guardian",2,27,11)]
     public void EveryAuthoredSpawnIsAnUnoccupiedFriendlyDeploymentCell(string id,int team,int x,int y)
     {
         var map=AuthoredBetaScene.Layout;var f=map.Fixtures.Single(f=>f.CharacterId==id);Assert.Equal(team,f.TeamId);Assert.Equal(new GridPosition(x,y),f.Cell);
-        Assert.True(map.Walkable(f.Cell));Assert.Contains(map.Castles,c=>c.InitialTeamId==team&&c.DeploymentCells.Contains(f.Cell));
+        Assert.True(map.Walkable(f.Cell));Assert.Contains(f.Cell,map.SpawnZones[team]);
         Assert.Single(map.Fixtures,other=>other.Cell==f.Cell);
     }
     [Fact] public void SpawnSetsAreHorizontallyMirroredAndDeploymentValidationSurvivesSerialization()
@@ -43,7 +43,7 @@ public class MobaFiveVsFiveTests
         var restored=new MobaBetaLayout(JsonSerializer.Deserialize<AuthoredLevelData>(JsonSerializer.Serialize(map.Source))!);
         Assert.True(restored.Source.RequireDeploymentSpawns);Assert.Equal(map.Fixtures,restored.Fixtures);
     }
-    [Theory] [InlineData(14,10)] [InlineData(21,13)]
+    [Theory] [InlineData(14,10)] [InlineData(27,11)]
     public void NonDeploymentAndEnemyDeploymentSpawnsFailWithActionableFixtureIdentity(int x,int y)
     {
         var data=AuthoredBetaScene.Data;var p=data.Board.CellCenter(new(x,y));
@@ -130,7 +130,7 @@ public class MobaFiveVsFiveTests
     {
         var data=AuthoredBetaScene.Data;var template=data.Elements.Single(e=>e.Id=="hooded_assassin");var p=data.Board.CellCenter(new(8,13));
         var extra=template with {Id="sixth_blue",Path="CharacterFixtures/sixth_blue",X=p.X,Z=p.Z};
-        var error=Assert.Throws<ArgumentException>(()=>new MobaHotseatSession(new(data with {Elements=data.Elements.Append(extra).ToArray()})));
+        var error=Assert.Throws<ArgumentException>(()=>new MobaHotseatSession(new(data with {RequireDeploymentSpawns=false,Elements=data.Elements.Append(extra).ToArray()})));
         Assert.Contains("1–5",error.Message);Assert.Equal(6,new MobaHotseatSession(AuthoredBetaScene.LegacyLayout).Characters.Count);
     }
 }

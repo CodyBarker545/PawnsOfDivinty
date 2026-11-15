@@ -96,18 +96,20 @@ public class MobaActivationTimerTests
     }
     [Fact] public void TransferTargetingTimeoutCancelsUnconfirmedTransferWithoutMoving()
     {
-        var t=new Time();var s=Match(t);s.Characters["hooded_assassin"].SetTacticalPosition(new(8,10));s.Select("hooded_assassin");s.BeginTransferTargeting();
-        var plan=s.PreviewTransfer("blue_home",new(1,12)).Plan!;Assert.NotNull(plan);t.Advance(30);
-        Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("late",plan).Outcome);Assert.Equal(new GridPosition(8,10),s.Characters["hooded_assassin"].TacticalPosition);
+        var t=new Time();var s=Match(t);s.Characters["hooded_assassin"].SetTacticalPosition(new(19,10));s.Select("hooded_assassin");
+        var capture=s.MoveTo(new(20,10));s.AcknowledgeVisualMovement(capture.RequestId,new(20,10));s.BeginTransferTargeting();
+        var plan=s.PreviewTransfer("blue_forward",new(7,12)).Plan!;Assert.NotNull(plan);t.Advance(30);
+        Assert.Equal(BattlefieldOutcome.Rejected,s.ExecuteTransfer("late",plan).Outcome);Assert.Equal(new GridPosition(20,10),s.Characters["hooded_assassin"].TacticalPosition);
         Assert.Equal(2,s.CurrentPlayer);Assert.True(s.Characters["hooded_assassin"].HasActedThisRound);Assert.False(s.Activations.MainActionUsed);
     }
     [Fact] public void TransferExecutionPausesClockAndHandsOffWithFullNextAllowance()
     {
-        var t=new Time();var s=Match(t);s.Characters["hooded_assassin"].SetTacticalPosition(new(8,10));s.Select("hooded_assassin");s.BeginTransferTargeting();
-        var plan=s.PreviewTransfer("blue_home",new(1,12)).Plan!;Tick(s,t,29.9);bool observed=false;
+        var t=new Time();var s=Match(t);s.Characters["hooded_assassin"].SetTacticalPosition(new(19,10));s.Select("hooded_assassin");
+        var capture=s.MoveTo(new(20,10));s.AcknowledgeVisualMovement(capture.RequestId,new(20,10));s.BeginTransferTargeting();
+        var plan=s.PreviewTransfer("blue_forward",new(7,12)).Plan!;Tick(s,t,29.9);bool observed=false;
         t.DuringRead=()=>{if(!s.CanResetMatch&&s.ActivationTimer.Pause==ActivationTimerPause.Command){observed=true;t.Advance(60);}};
         Assert.Equal(BattlefieldOutcome.Completed,s.ExecuteTransfer("near-zero",plan).Outcome);t.DuringRead=null;
-        Assert.True(observed);Assert.Equal(new GridPosition(1,12),s.Characters["hooded_assassin"].TacticalPosition);Assert.Equal(30,s.ActivationTimer.RemainingSeconds);Assert.Equal(0,s.TimeoutCount);
+        Assert.True(observed);Assert.Equal(new GridPosition(7,12),s.Characters["hooded_assassin"].TacticalPosition);Assert.Equal(30,s.ActivationTimer.RemainingSeconds);Assert.Equal(0,s.TimeoutCount);
     }
     [Fact] public void DevelopmentPauseResumeAndDisableDoNotReplenishAnActivation()
     {

@@ -26,7 +26,7 @@ public sealed partial class MobaHotseatSession
     public MobaHotseatSession CreateResetSession(IRandomRollProvider? random=null,IActivationTimeSource? timeSource=null)
     {
         if(!CanResetMatch)throw new InvalidOperationException("Wait for combat resolution before resetting.");
-        return new(_layout,StartingPlayer,random,_developmentOpenTargeting,Victory.Profile,ActivationTimer.Configuration,timeSource??_timeSource,AssassinProfile);
+        return new(_layout,StartingPlayer,random,_developmentOpenTargeting,Victory.Profile,ActivationTimer.Configuration,timeSource??_timeSource,AssassinProfile,FreeTesting);
     }
     public bool CanAttack=>SelectedCharacter is { } c&&CanSelect(c.Id)
         &&(Activations.ActiveCharacter is null||Activations.CanUseMainAction);

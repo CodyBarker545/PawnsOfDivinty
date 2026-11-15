@@ -37,24 +37,29 @@ public partial class MobaTacticalHud : CanvasLayer
     private Node3D _portraitRoot=null!;
     private Camera3D _portraitCamera=null!;
     private Node3D? _portraitModel;
+    private readonly Dictionary<string,PackedScene> _portraitScenes=new(StringComparer.Ordinal);
+    public int RetainedPortraitCount=>_portraitScenes.Count;
     private string? _portraitId;
     public string? PortraitId=>_portraitId;
     public bool HelpVisible=>_help.Visible;
+    public bool CoversBattlefieldPoint(Vector2 point)=>(DeveloperPanel.Visible&&DeveloperPanel.GetGlobalRect().HasPoint(point))||(_help.Visible&&_help.GetGlobalRect().HasPoint(point));
     public Theme HudTheme {get;private set;}=null!;
     private Vector2 _lastSize;
     public event Action? LayoutChanged;
 
     public void Initialize(World3D world,Camera3D camera)
     {
+        GetWindow().MinSize=new(1280,720);
         Layer=3;HudTheme=GD.Load<Theme>("res://Resources/UI/MobaTacticalTheme.tres");
         Root=new Control {Name="TacticalHud",MouseFilter=Control.MouseFilterEnum.Ignore,Theme=HudTheme};AddChild(Root);Root.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
         Battlefield=new SubViewportContainer {Name="BattlefieldViewport",Stretch=true,MouseFilter=Control.MouseFilterEnum.Ignore};Root.AddChild(Battlefield);
         WorldView=new SubViewport {Name="TacticalWorld",World3D=world,HandleInputLocally=false,RenderTargetUpdateMode=SubViewport.UpdateMode.Always};Battlefield.AddChild(WorldView);
         camera.Reparent(WorldView,true);camera.Current=true;
         var top=Panel("MatchBar",Root);top.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.TopWide);top.OffsetBottom=54;
+        var topStyle=(StyleBoxFlat)HudTheme.GetStylebox("panel","PanelContainer").Duplicate();topStyle.ContentMarginTop=7;topStyle.ContentMarginBottom=7;top.AddThemeStyleboxOverride("panel",topStyle);
         var topRow=new HBoxContainer();top.AddChild(topRow);
         TopLeft=new VBoxContainer {SizeFlagsHorizontal=Control.SizeFlags.ExpandFill};topRow.AddChild(TopLeft);TopLeft.AddThemeConstantOverride("separation",0);
-        Timer=new Label {HorizontalAlignment=HorizontalAlignment.Center,CustomMinimumSize=new(142,0)};Timer.AddThemeFontSizeOverride("font_size",23);topRow.AddChild(Timer);
+        Timer=new Label {HorizontalAlignment=HorizontalAlignment.Center,CustomMinimumSize=new(142,0)};Timer.AddThemeFontSizeOverride("font_size",MobaHudStyle.Timer);topRow.AddChild(Timer);
         TopRight=new HBoxContainer {SizeFlagsHorizontal=Control.SizeFlags.ExpandFill,Alignment=BoxContainer.AlignmentMode.End};topRow.AddChild(TopRight);
         Bottom=Panel("UnitDeck",Root);Bottom.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         var deck=new VBoxContainer();Bottom.AddChild(deck);
@@ -71,17 +76,17 @@ public partial class MobaTacticalHud : CanvasLayer
         _portraitCamera=new Camera3D {Projection=Camera3D.ProjectionType.Orthogonal,Current=true};_portraitRoot.AddChild(_portraitCamera);
         _emptyPortrait=new Label {Text="◇",HorizontalAlignment=HorizontalAlignment.Center,VerticalAlignment=VerticalAlignment.Center,MouseFilter=Control.MouseFilterEnum.Ignore};_emptyPortrait.AddThemeFontSizeOverride("font_size",34);portraitFrame.AddChild(_emptyPortrait);
         var identityColumn=new VBoxContainer {SizeFlagsHorizontal=Control.SizeFlags.ExpandFill};portraitRow.AddChild(identityColumn);
-        NameText=Text(identityColumn,"No unit selected",16);NameText.AutowrapMode=TextServer.AutowrapMode.WordSmart;
-        _identity=Text(identityColumn,"Select a friendly unit",12);HealthText=Text(identityColumn,"—",12);
+        NameText=Text(identityColumn,"No unit selected",MobaHudStyle.Heading);NameText.AutowrapMode=TextServer.AutowrapMode.WordSmart;
+        _identity=Text(identityColumn,"Select a friendly unit",MobaHudStyle.Caption);HealthText=Text(identityColumn,"—",MobaHudStyle.Caption);
         _health=new ProgressBar {MinValue=0,MaxValue=1,ShowPercentage=false,CustomMinimumSize=new(0,7)};_health.AddThemeStyleboxOverride("fill",new StyleBoxFlat {BgColor=new(.2f,.67f,.46f)});portraitBody.AddChild(_health);
         var detailPanel=Region("UNIT DETAILS",regions,0,out var detailBody);detailPanel.SizeFlagsHorizontal=Control.SizeFlags.ExpandFill;detailPanel.SizeFlagsStretchRatio=1;
         ContextHost=new Control {SizeFlagsVertical=Control.SizeFlags.ExpandFill,CustomMinimumSize=new(235,130)};detailBody.AddChild(ContextHost);
         Details=new VBoxContainer();ContextHost.AddChild(Details);Details.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
-        StatsText=Text(Details,"",13);EffectsText=Text(Details,"",12);EffectsText.AutowrapMode=TextServer.AutowrapMode.WordSmart;
-        Context=Text(Details,"Select a unit to inspect available actions.",12);Context.AutowrapMode=TextServer.AutowrapMode.WordSmart;
+        StatsText=Text(Details,"",MobaHudStyle.Body);EffectsText=Text(Details,"",MobaHudStyle.Caption);EffectsText.AutowrapMode=TextServer.AutowrapMode.WordSmart;
+        Context=Text(Details,"Select a unit to inspect available actions.",MobaHudStyle.Caption);Context.AutowrapMode=TextServer.AutowrapMode.WordSmart;
         Region("COMMANDS",regions,300,out var actionBody);Commands=new GridContainer {Columns=3,SizeFlagsHorizontal=Control.SizeFlags.ExpandFill};actionBody.AddChild(Commands);
-        Region("EQUIPMENT / ITEMS",regions,180,out var inventoryBody);InventoryText=Text(inventoryBody,"No unit selected",13);InventoryText.AutowrapMode=TextServer.AutowrapMode.WordSmart;
-        Message=Text(deck,"Select a friendly unit. F1 for controls.",12);Message.MaxLinesVisible=2;Message.TextOverrunBehavior=TextServer.OverrunBehavior.TrimEllipsis;
+        Region("EQUIPMENT / ITEMS",regions,180,out var inventoryBody);InventoryText=Text(inventoryBody,"No unit selected",MobaHudStyle.Body);InventoryText.AutowrapMode=TextServer.AutowrapMode.WordSmart;
+        Message=Text(deck,"Select a friendly unit. F1 for controls.",MobaHudStyle.Caption);Message.MaxLinesVisible=2;Message.TextOverrunBehavior=TextServer.OverrunBehavior.TrimEllipsis;
         DeveloperPanel=Panel("Development",Root);DeveloperPanel.Visible=false;DeveloperPanel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.TopRight);DeveloperPanel.OffsetLeft=-440;DeveloperPanel.OffsetRight=-8;DeveloperPanel.OffsetTop=62;DeveloperPanel.OffsetBottom=350;
         var devScroll=new ScrollContainer {CustomMinimumSize=new(400,260),HorizontalScrollMode=ScrollContainer.ScrollMode.Disabled};DeveloperPanel.AddChild(devScroll);Developer=new VBoxContainer {SizeFlagsHorizontal=Control.SizeFlags.ExpandFill};devScroll.AddChild(Developer);Text(Developer,"DEVELOPMENT CONTROLS",15);
         _help=Panel("ControlsHelp",Root);_help.Visible=false;_help.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.TopLeft);_help.Position=new(8,62);_help.CustomMinimumSize=new(460,0);
@@ -90,15 +95,25 @@ public partial class MobaTacticalHud : CanvasLayer
         HelpButton.Pressed+=ToggleHelp;DeveloperButton.Pressed+=()=>DeveloperPanel.Visible=!DeveloperPanel.Visible;
         Root.Resized+=ResizeHud;ResizeHud();
     }
-    public static Label Text(Node parent,string text,int size=14)
+    public static Label Text(Node parent,string text,int size=MobaHudStyle.Body)
     {var label=new Label {Text=text,MouseFilter=Control.MouseFilterEnum.Ignore};label.AddThemeFontSizeOverride("font_size",size);parent.AddChild(label);return label;}
     private static PanelContainer Panel(string name,Node parent)
     {var panel=new PanelContainer {Name=name};parent.AddChild(panel);return panel;}
     private static PanelContainer Region(string title,Node parent,float minimum,out VBoxContainer body)
-    {var panel=Panel(title.Replace(" / ","_"),parent);panel.CustomMinimumSize=new(minimum,0);body=new VBoxContainer();panel.AddChild(body);var heading=Text(body,title,12);heading.Modulate=new(.79f,.68f,.45f);return panel;}
+    {var panel=Panel(title.Replace(" / ","_"),parent);panel.CustomMinimumSize=new(minimum,0);body=new VBoxContainer();panel.AddChild(body);var heading=Text(body,title,MobaHudStyle.Caption);heading.Modulate=new(.79f,.68f,.45f);return panel;}
     public static Button Command(Node parent,string text)
     {var b=new Button {Text=text,FocusMode=Control.FocusModeEnum.None,SizeFlagsHorizontal=Control.SizeFlags.ExpandFill};parent.AddChild(b);return b;}
+    public static void BindCommand(Button button,Action action)=>button.Pressed+=()=>{if(!button.Disabled)action();};
+    public static void ApplyCommandState(Button button,MobaCommandVisual state)
+    {button.Disabled=!state.Enabled;button.ToggleMode=true;button.SetPressedNoSignal(state.Active);}
     public void ToggleHelp()=>_help.Visible=!_help.Visible;
+    public void RetainPortraitResources(System.Collections.Generic.IEnumerable<StaticTacticalCharacter> fixtures)
+    {
+        // Keep imported resource wrappers alive across repeated selection and native/managed GC.
+        // Only the selected visual is instantiated; the source mesh/material resources stay shared.
+        foreach(var path in fixtures.Select(f=>f.AuthoredModelPath!).Distinct(StringComparer.Ordinal))
+            _portraitScenes.TryAdd(path,GD.Load<PackedScene>(path));
+    }
     private void ResizeHud()
     {
         var size=Root.Size;if(size.X<1||size.Y<1)return;
@@ -109,7 +124,7 @@ public partial class MobaTacticalHud : CanvasLayer
     }
     public void Refresh(MobaHotseatSession session,StaticTacticalCharacter? selected)
     {
-        var p=MobaHudPresentation.Capture(session);NameText.Text=p.Name;_identity.Text=p.Team+"\n"+p.Readiness;HealthText.Text=p.Health;_health.Value=p.HealthFraction;StatsText.Text=p.Stats;EffectsText.Text=p.Effects;EffectsText.TooltipText=p.Effects;InventoryText.Text=p.Inventory;
+        var p=MobaHudPresentation.Capture(session);NameText.Text=p.Name;_identity.Text=p.Team+"\n"+p.Readiness;HealthText.Text=p.Health;_health.Value=p.HealthFraction;StatsText.Text=p.Stats;EffectsText.Text=p.Effects;EffectsText.TooltipText=p.Effects;InventoryText.Text=p.Inventory;Message.TooltipText=Message.Text;
         _identity.Modulate=session.SelectedCharacter?.TeamId==1?new(.4f,.78f,1):session.SelectedCharacter?.TeamId==2?new(1,.45f,.48f):Colors.LightGray;
         RefreshPortrait(selected);
     }
@@ -118,11 +133,12 @@ public partial class MobaTacticalHud : CanvasLayer
         if(_portraitId==selected?.CharacterId)return;
         _portraitId=selected?.CharacterId;
         if(_portraitModel is not null){_portraitRoot.RemoveChild(_portraitModel);_portraitModel.QueueFree();_portraitModel=null;}
-        _emptyPortrait.Visible=selected is null;_portrait.RenderTargetUpdateMode=selected is null?SubViewport.UpdateMode.Disabled:SubViewport.UpdateMode.Once;
+        // Render the empty world once on deselection too, so the previous portrait cannot linger.
+        _emptyPortrait.Visible=selected is null;_portrait.RenderTargetUpdateMode=SubViewport.UpdateMode.Once;
         if(selected is null)return;
         // One presentation-only instance; mesh/material resources remain shared with the original import.
         var source=selected.GetNode<Node3D>(selected.ModelNodePath);
-        _portraitModel=GD.Load<PackedScene>(selected.AuthoredModelPath!).Instantiate<Node3D>();_portraitRoot.AddChild(_portraitModel);_portraitModel.Transform=source.Transform;
+        _portraitModel=_portraitScenes[selected.AuthoredModelPath!].Instantiate<Node3D>();_portraitRoot.AddChild(_portraitModel);_portraitModel.Transform=source.Transform;
         var points=new List<Vector3>();
         void Inspect(Node n)
         {
@@ -133,7 +149,7 @@ public partial class MobaTacticalHud : CanvasLayer
         }
         Inspect(_portraitModel);if(points.Count==0)return;
         float min=points.Min(p=>p.Y),max=points.Max(p=>p.Y),height=max-min;
-        var focus=new Vector3((points.Min(p=>p.X)+points.Max(p=>p.X))/2,min+height*.83f,(points.Min(p=>p.Z)+points.Max(p=>p.Z))/2);
-        _portraitCamera.Size=height*.5f;_portraitCamera.Position=focus+new Vector3(0,.015f,4);_portraitCamera.LookAt(focus);
+        var focus=new Vector3((points.Min(p=>p.X)+points.Max(p=>p.X))/2,min+height*.86f,(points.Min(p=>p.Z)+points.Max(p=>p.Z))/2);
+        _portraitCamera.Size=height*.36f;_portraitCamera.Position=focus+new Vector3(0,.015f,4);_portraitCamera.LookAt(focus);
     }
 }

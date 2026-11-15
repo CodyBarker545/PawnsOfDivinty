@@ -8,7 +8,7 @@ using PawnsOfDivinity.Gameplay.Levels;
 public partial class MobaBetaBattlefield
 {
     [Export] public BetaScoringSettings DevelopmentScoring {get;set;}=new();
-    private Label _vp=null!,_territoryNotice=null!,_winnerText=null!;
+    private Label _vp=null!,_territoryNotice=null!,_winnerText=null!,_scoreDebug=null!;
     private PanelContainer _victoryPanel=null!;
     private Button _transfer=null!,_confirmTransfer=null!;
     private OptionButton _transferChoices=null!;
@@ -18,13 +18,14 @@ public partial class MobaBetaBattlefield
     private long _transferSequence;
     private bool _captureObjectives;
 
-    private void BuildTerritoryHud(CanvasLayer canvas,VBoxContainer top,VBoxContainer bottom,HBoxContainer buttons)
+    private void BuildTerritoryHud()
     {
-        _vp=new Label();top.AddChild(_vp);
-        _territoryNotice=new Label {AutowrapMode=TextServer.AutowrapMode.WordSmart};_territoryNotice.AddThemeFontSizeOverride("font_size",14);bottom.AddChild(_territoryNotice);
-        _transfer=new Button {Text="Castle Transfer",FocusMode=Control.FocusModeEnum.None};buttons.AddChild(_transfer);_transfer.Pressed+=ToggleTransfer;
-        _transferChoices=new OptionButton {CustomMinimumSize=new(170,0),FocusMode=Control.FocusModeEnum.None};buttons.AddChild(_transferChoices);
-        _confirmTransfer=new Button {Text="Confirm Transfer",FocusMode=Control.FocusModeEnum.None};buttons.AddChild(_confirmTransfer);_confirmTransfer.Pressed+=ConfirmTransfer;
+        _vp=MobaTacticalHud.Text(_hud.TopRight,"",14);_hud.TopRight.MoveChild(_vp,0);
+        _scoreDebug=MobaTacticalHud.Text(_hud.Developer,"",12);_scoreDebug.AutowrapMode=TextServer.AutowrapMode.WordSmart;
+        _territoryNotice=new Label {AutowrapMode=TextServer.AutowrapMode.WordSmart};_territoryNotice.AddThemeFontSizeOverride("font_size",14);_hud.Developer.AddChild(_territoryNotice);
+        _transfer=new Button {Text="Castle Transfer",FocusMode=Control.FocusModeEnum.None};_hud.Commands.AddChild(_transfer);MobaTacticalHud.BindCommand(_transfer,ToggleTransfer);
+        _transferChoices=new OptionButton {CustomMinimumSize=new(170,0),FocusMode=Control.FocusModeEnum.None};_hud.Details.AddChild(_transferChoices);
+        _confirmTransfer=new Button {Text="Confirm Transfer",FocusMode=Control.FocusModeEnum.None};_hud.Commands.AddChild(_confirmTransfer);MobaTacticalHud.BindCommand(_confirmTransfer,ConfirmTransfer);
         _transferChoices.ItemSelected+=_=>_confirmTransfer.Disabled=!_transferMode||_transferChoices.Selected<0;
         foreach(var zone in Session.Control.AllZones())
         {
@@ -34,10 +35,10 @@ public partial class MobaBetaBattlefield
             var banner=castle is null?center+new Vector3(0,.6f,(float)Layout.Board.CellSize*2)
                 :new Vector3(center.X,1.3f,CellPosition(new(0,castle.Footprint.Max(p=>p.Y))).Z);
             var marker=new Label3D {Name="RuntimeControl_"+zone.Id,Position=banner,Billboard=BaseMaterial3D.BillboardModeEnum.Enabled,
-                NoDepthTest=true,FontSize=30,PixelSize=.009f,OutlineSize=8};AddChild(marker);_zoneMarkers.Add(zone.Id,marker);
+                NoDepthTest=true,FontSize=20,PixelSize=.006f,OutlineSize=4};AddChild(marker);_zoneMarkers.Add(zone.Id,marker);
         }
-        foreach(var label in GetNode("Objectives").FindChildren("*","Label3D",true,false).OfType<Label3D>())
-            if(label.Text.Contains("INACTIVE",StringComparison.OrdinalIgnoreCase))label.Visible=false;
+        foreach(var container in new[]{"Objectives","Castles"})
+            foreach(var label in GetNode(container).FindChildren("*","Label3D",true,false).OfType<Label3D>())label.Visible=false;
         var victoryCanvas=new CanvasLayer {Layer=20};AddChild(victoryCanvas);
         _victoryPanel=new PanelContainer {Visible=false,AnchorLeft=.5f,AnchorRight=.5f,AnchorTop=.5f,AnchorBottom=.5f,OffsetLeft=-240,OffsetRight=240,OffsetTop=-100,OffsetBottom=100};victoryCanvas.AddChild(_victoryPanel);
         var column=new VBoxContainer();_victoryPanel.AddChild(column);_winnerText=new Label {HorizontalAlignment=HorizontalAlignment.Center};_winnerText.AddThemeFontSizeOverride("font_size",24);column.AddChild(_winnerText);
@@ -46,12 +47,13 @@ public partial class MobaBetaBattlefield
     private void RefreshTerritoryHud()
     {
         var v=Session.Victory;var p=v.Profile;
-        _vp.Text=$"BLUE {v.BlueVP}/15 VP (+{v.Pending(1)} pending) · RED {v.RedVP}/15 VP (+{v.Pending(2)} pending) · DEV K{p.DefeatPoints}/C{p.CastleCapturePoints}/F{p.ForwardCastleHoldPoints}/O{p.CentralHoldPoints} · round-end awards";
+        _vp.Text=$"BLUE {v.BlueVP}/15 VP · RED {v.RedVP}/15 VP";
+        _scoreDebug.Text=$"Pending Blue +{v.Pending(1)}, Red +{v.Pending(2)} · DEV K{p.DefeatPoints}/C{p.CastleCapturePoints}/F{p.ForwardCastleHoldPoints}/O{p.CentralHoldPoints} · round-end awards";
         _vp.TooltipText=p.Label+". Central control requires living uncontested occupation (development policy).";
         foreach(var zone in Session.Control.AllZones())
         {
             string owner=zone.OwnerTeamId==1?"BLUE":zone.OwnerTeamId==2?"RED":"NEUTRAL";
-            _zoneMarkers[zone.Id].Text=$"{zone.Id}\n{owner}{(zone.IsHome?" HOME (fixed)":"")}{(zone.Contested?" · CONTESTED":"")}";
+            _zoneMarkers[zone.Id].Text=$"{(zone.IsHome?"HOME":zone.Id=="central_objective"?"RUINS":"FORT")} · {owner}{(zone.Contested?" · CONTESTED":"")}";
             _zoneMarkers[zone.Id].Modulate=zone.Contested?Colors.Orange:zone.OwnerTeamId==1?new(.3f,.8f,1):zone.OwnerTeamId==2?new(1,.4f,.4f):Colors.White;
         }
         _territoryNotice.Text=Session.TerritoryHistory.Count>0?string.Join(" · ",Session.TerritoryHistory.TakeLast(2)):"Capture: finish movement in an uncontested forward zone. DEV objective/occupied fort VP settle at round end.";
@@ -97,7 +99,9 @@ public partial class MobaBetaBattlefield
     }
     private void StageObjectiveVictoryDemonstration()
     {
-        ResetMatch();RunCommand(()=>Session.Select("gentle_guardian"));MoveAt(new(8,11));AdvanceMovementViews(20);RefreshMatchHud();_endActivation.EmitSignal(Button.SignalName.Pressed);
+        ResetMatch();Session.Characters["gentle_guardian"].SetTacticalPosition(new(8,12));
+        _fixtures.Single(f=>f.CharacterId=="gentle_guardian").ReconcileToRuntime(Layout.Board);
+        RunCommand(()=>Session.Select("gentle_guardian"));MoveAt(new(8,11));AdvanceMovementViews(20);RefreshMatchHud();_endActivation.EmitSignal(Button.SignalName.Pressed);
         RunCommand(()=>Session.Select(Session.Characters.Values.First(c=>Session.CanSelect(c.Id)).Id));_endActivation.EmitSignal(Button.SignalName.Pressed);
         Session.Characters["hooded_assassin"].SetTacticalPosition(new(14,9));_fixtures.Single(f=>f.CharacterId=="hooded_assassin").ReconcileToRuntime(Layout.Board);
         RunCommand(()=>Session.Select("hooded_assassin"));MoveAt(new(14,10));AdvanceMovementViews(20);RefreshMatchHud();_endActivation.EmitSignal(Button.SignalName.Pressed);
@@ -122,9 +126,9 @@ public partial class MobaBetaBattlefield
         void Check(bool ok,string why){if(!ok)throw new InvalidOperationException(why);}
         StageCastleTransferDemonstration();Check(Session.Control.Castle("red_forward").OwnerTeamId==1&&_zoneMarkers["red_forward"].Text.Contains("BLUE"),"Movement captures castle and updates owner marker");
         Check(_territoryNotice.Text.Contains("captured red_forward"),"Capture notification");
-        ToggleTransfer();int index=_transferPlans.FindIndex(p=>p.DestinationCastleId=="blue_home"&&p.DeploymentCell==new PawnsOfDivinity.Core.Abilities.GridPosition(1,12));
+        ToggleTransfer();int index=_transferPlans.FindIndex(p=>p.DestinationCastleId=="blue_forward"&&p.DeploymentCell==new PawnsOfDivinity.Core.Abilities.GridPosition(7,12));
         Check(index>=0,"Friendly castle transfer offers unoccupied authored deployment choices");_transferChoices.Select(index);_confirmTransfer.EmitSignal(Button.SignalName.Pressed);
-        Check(Session.Characters["hooded_assassin"].TacticalPosition==new PawnsOfDivinity.Core.Abilities.GridPosition(1,12)&&_fixtures.Single(f=>f.CharacterId=="hooded_assassin").GlobalPosition==CellPosition(new(1,12)),"Transfer synchronizes authoritative position and visual");
+        Check(Session.Characters["hooded_assassin"].TacticalPosition==new PawnsOfDivinity.Core.Abilities.GridPosition(7,12)&&_fixtures.Single(f=>f.CharacterId=="hooded_assassin").GlobalPosition==CellPosition(new(7,12)),"Transfer synchronizes authoritative position and visual");
         Check(Session.CurrentPlayer==2&&Session.Characters["hooded_assassin"].HasActedThisRound,"Transfer consumes Main Action and ends activation");
         StageContestedCaptureDemonstration();Check(_zoneMarkers["red_forward"].Text.Contains("CONTESTED")&&_transfer.Disabled&&Session.Control.Castle("red_forward").OwnerTeamId==2,"Contested feedback blocks transfer without changing owner");
         CompleteContestedCaptureDemonstration();Check(Session.Control.Castle("red_forward").OwnerTeamId==1&&!Session.Control.Castle("red_forward").Contested&&_territoryNotice.Text.Contains("captured red_forward"),"Final defender defeat immediately captures and notifies");

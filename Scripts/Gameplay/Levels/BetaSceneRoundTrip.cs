@@ -45,6 +45,7 @@ public static class BetaSceneRoundTrip
                 Check(clone.DevelopmentScoring.Snapshot()==restored.DevelopmentScoring.Snapshot(),"Development scoring resource must survive native save/reload unchanged.");
                 Check(clone.DevelopmentTimer.Snapshot()==restored.DevelopmentTimer.Snapshot(),"Development timer resource must survive native save/reload unchanged.");
                 Check(clone.DevelopmentAssassin.Snapshot()==restored.DevelopmentAssassin.Snapshot(),"Development Assassin inputs must survive native save/reload unchanged.");
+                Check(clone.FreeTesting==restored.FreeTesting,"Free testing scene switch must survive save/reload.");
             }
             finally{restored.Free();}
         }

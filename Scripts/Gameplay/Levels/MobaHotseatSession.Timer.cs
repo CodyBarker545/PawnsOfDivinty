@@ -22,6 +22,7 @@ public sealed partial class MobaHotseatSession
     /// <summary>Synchronous polling: at most one timeout per pulse; no frame/callback can spend a later turn.</summary>
     public bool UpdateActivationTimer()
     {
+        if(FreeTesting)return false;
         PulseClock();
         if(_processingTimeout||_commandDepth>0||!ActivationTimer.Expired)return false;
         _processingTimeout=true;
@@ -55,12 +56,14 @@ public sealed partial class MobaHotseatSession
     private TimedCommand BeginTimedCommand()=>new(this);
     public BattlefieldCommandResult SetDevelopmentTimerPaused(bool paused)
     {
+        if(FreeTesting)return new(BattlefieldOutcome.Rejected,"Timer is disconnected in free testing.");
         if(Victory.IsFinished||_commandDepth>0||_processingTimeout)return new(BattlefieldOutcome.Rejected,"Timer controls are unavailable during a command or after victory.");
         UpdateActivationTimer();ActivationTimer.DevelopmentPaused=paused;PulseClock();
         return new(BattlefieldOutcome.Completed,paused?"DEV activation clock paused.":"DEV activation clock resumed.");
     }
     public BattlefieldCommandResult SetDevelopmentTimerEnabled(bool enabled)
     {
+        if(FreeTesting)return new(BattlefieldOutcome.Rejected,"Timer is disconnected in free testing.");
         if(Victory.IsFinished||_commandDepth>0||_processingTimeout)return new(BattlefieldOutcome.Rejected,"Timer controls are unavailable during a command or after victory.");
         UpdateActivationTimer();ActivationTimer.Enabled=enabled;PulseClock();
         return new(BattlefieldOutcome.Completed,enabled?"DEV timer enabled; same activation allowance resumes.":"DEV untimed hotseat mode enabled.");

@@ -15,16 +15,18 @@ public partial class MobaBetaBattlefield
     private sealed class SmokeTime : IActivationTimeSource {public double NowSeconds {get;set;}}
     private SmokeTime? _captureTime;
     private bool _captureTimer;
-    private void BuildTimerHud(HBoxContainer row)
+    private void BuildTimerHud()
     {
-        _timerLabel=new Label();row.AddChild(_timerLabel);
-        _timerEnabled=new CheckBox {Text="Timer (DEV)",FocusMode=Control.FocusModeEnum.None};row.AddChild(_timerEnabled);
+        _timerLabel=_hud.Timer;
+        _timerEnabled=new CheckBox {Text="Activation timer (DEV)",FocusMode=Control.FocusModeEnum.None};_hud.Developer.AddChild(_timerEnabled);
         _timerEnabled.Toggled+=enabled=>{_message.Text=Session.SetDevelopmentTimerEnabled(enabled).Reason;RefreshMatchHud();UpdateMovementOverlay(null);};
-        _timerPause=new Button {Text="Pause (DEV)",FocusMode=Control.FocusModeEnum.None};row.AddChild(_timerPause);
+        _timerPause=MobaTacticalHud.Command(_hud.Developer,"Pause (DEV)");
         _timerPause.Pressed+=()=>{_message.Text=Session.SetDevelopmentTimerPaused(!Session.ActivationTimer.DevelopmentPaused).Reason;RefreshMatchHud();UpdateMovementOverlay(null);};
     }
     private void RefreshTimerHud()
     {
+        _timerLabel.Visible=!Session.FreeTesting;_timerEnabled.Visible=!Session.FreeTesting;_timerPause.Visible=!Session.FreeTesting;
+        if(Session.FreeTesting){_timerEnabled.Disabled=true;_timerPause.Disabled=true;return;}
         if(_seenTimeout!=Session.TimeoutCount)
         {
             _seenTimeout=Session.TimeoutCount;_pendingSelection=null;_attackMode=false;_attackTargetId=null;_transferMode=false;_hoverPlan=null;
@@ -32,8 +34,8 @@ public partial class MobaBetaBattlefield
             _message.Text=Session.LastTimeoutMessage;
         }
         var timer=Session.ActivationTimer;
-        string state=timer.Stopped?"STOPPED":!timer.Enabled?"UNTIMED":$"{System.Math.Ceiling(timer.RemainingSeconds):0}s"+(timer.Pause!=ActivationTimerPause.None?$" [PAUSED {timer.Pause}]":"");
-        _timerLabel.Text=$" · {(timer.PlayerId is { } p?$"P{p}":"—")} {state}";
+        string state=timer.Stopped?"STOPPED":!timer.Enabled?"UNTIMED":$"{(int)System.Math.Ceiling(timer.RemainingSeconds)/60}:{(int)System.Math.Ceiling(timer.RemainingSeconds)%60:00}"+(timer.Pause!=ActivationTimerPause.None?" · PAUSED":"");
+        _timerLabel.Text=state;
         _timerLabel.TooltipText=$"DEV activation clock: {timer.RemainingSeconds:F2}/{timer.Configuration.DurationSeconds:0.##} seconds. Selection and targeting consume the same allowance. {Session.LastTimeoutMessage}";
         _timerLabel.Modulate=timer.IsUrgent?Colors.OrangeRed:timer.Pause!=ActivationTimerPause.None?Colors.LightGray:Colors.White;
         _timerEnabled.SetPressedNoSignal(timer.Enabled);_timerEnabled.Disabled=timer.Stopped;
@@ -70,9 +72,9 @@ public partial class MobaBetaBattlefield
         foreach(var id in new[]{"hooded_assassin","nigel"})_fixtures.Single(f=>f.CharacterId==id).ReconcileToRuntime(Layout.Board);
         RunCommand(()=>Session.Select("hooded_assassin"));ToggleAttackMode();_attackTargetId="nigel";RefreshMatchHud();int hp=Session.Characters["nigel"].CurrentHealth;
         Step(duration);Check(!_attackMode&&_attackTargetId is null&&Session.Characters["nigel"].CurrentHealth==hp,"Timeout cancels unconfirmed attack without damage");
-        Session.Characters["time_weaver"].SetTacticalPosition(new(20,10));_fixtures.Single(f=>f.CharacterId=="time_weaver").ReconcileToRuntime(Layout.Board);
-        RunCommand(()=>Session.Select("time_weaver"));ToggleTransfer();Check(_transferMode&&_transferPlans.Count>0,"Transfer preview setup");
-        Step(duration);Check(!_transferMode&&_transferPlans.Count==0&&Session.Characters["time_weaver"].TacticalPosition==new PawnsOfDivinity.Core.Abilities.GridPosition(20,10),"Timeout cancels transfer preview and keeps committed position");
+        Session.Characters["time_weaver"].SetTacticalPosition(new(7,10));_fixtures.Single(f=>f.CharacterId=="time_weaver").ReconcileToRuntime(Layout.Board);
+        RunCommand(()=>Session.Select("time_weaver"));MoveAt(new(8,10));AdvanceMovementViews(20);RefreshMatchHud();ToggleTransfer();Check(_transferMode&&_transferPlans.Count>0,"Transfer preview setup");
+        Step(duration);Check(!_transferMode&&_transferPlans.Count==0&&Session.Characters["time_weaver"].TacticalPosition==new PawnsOfDivinity.Core.Abilities.GridPosition(8,10),"Timeout cancels transfer preview and keeps committed position");
         ResetMatch();Session.SetDevelopmentTimerEnabled(true);StageAttackDemonstration();ConfirmBasicAttack();before=Session.ActivationTimer.RemainingSeconds;Step(100);
         Check(Session.ActivationTimer.Pause==ActivationTimerPause.CombatPresentation&&Session.ActivationTimer.RemainingSeconds==before,"Floating combat playback pauses next player's clock");
         _combatHud._Process(100);AdvanceActivationClock();RefreshMatchHud();Check(Session.PendingCombatClockPresentation is null,"Playback acknowledgment releases pause");

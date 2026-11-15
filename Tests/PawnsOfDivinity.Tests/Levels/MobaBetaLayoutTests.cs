@@ -34,7 +34,7 @@ public class MobaBetaLayoutTests
         Assert.Throws<ArgumentOutOfRangeException>(()=>_map.Board.WorldToCell(double.NaN,0));
         Assert.Throws<ArgumentOutOfRangeException>(()=>_map.Board.WorldToCell(0,double.PositiveInfinity));
     }
-    [Theory] [InlineData("blue_home","red_home")] [InlineData("blue_forward","red_forward")]
+    [Theory] [InlineData("blue_forward","red_forward")]
     public void CastleDataAndEntrancesAreMirrored(string blueId,string redId)
     {
         var a=_map.Castles.Single(c=>c.Id==blueId);var b=_map.Castles.Single(c=>c.Id==redId);
@@ -50,8 +50,6 @@ public class MobaBetaLayoutTests
         }
     }
     [Theory]
-    [InlineData("blue_home",0,3,9,14,1,2,1,2)]
-    [InlineData("red_home",26,29,9,14,27,28,27,28)]
     [InlineData("blue_forward",6,11,8,14,8,9,7,9)]
     [InlineData("red_forward",18,23,8,14,20,21,20,22)]
     public void ExactApprovedCastleRegions(string id,int x0,int x1,int y0,int y1,int cx0,int cx1,int dx0,int dx1)
@@ -77,8 +75,9 @@ public class MobaBetaLayoutTests
             .Concat(_map.Camps.SelectMany(c=>c.Cells)).Concat(_map.Objective).ToArray();
         Assert.Equal(cells.Length,cells.Distinct().Count());
         Assert.True(_map.Objective.SetEquals(MobaBetaLayout.Rectangle(14,15,10,11)));
-        Assert.True(_map.Camps[0].Cells.SetEquals(MobaBetaLayout.Rectangle(8,10,3,5)));
-        Assert.True(_map.Camps[1].Cells.SetEquals(MobaBetaLayout.Rectangle(19,21,3,5)));
+        Assert.Empty(_map.Camps);
+        Assert.Equal(2,_map.Castles.Count);
+        Assert.Equal(2,_map.SpawnZones.Count);
     }
     [Fact] public void AllWalkableCellsAndFixturesConnectToBothBases()
     {
@@ -86,7 +85,7 @@ public class MobaBetaLayoutTests
         Assert.True(reachable.SetEquals(_map.Board.Cells.Where(_map.Walkable)));
         Assert.Equal(10,_map.Fixtures.Select(f=>f.Cell).Distinct().Count());
         Assert.All(_map.Fixtures,f=>Assert.Contains(f.Cell,reachable));
-        Assert.Equal(new GridPosition(20,12),_map.Fixtures.Single(f=>f.CharacterId=="gravebound_colossus").Cell);
+        Assert.Equal(new GridPosition(27,10),_map.Fixtures.Single(f=>f.CharacterId=="gravebound_colossus").Cell);
     }
     [Fact] public void MainLaneAndSouthernFlankConnectWithinTheirOwnBands()
     {
@@ -96,10 +95,10 @@ public class MobaBetaLayoutTests
         foreach(int x in new[]{5,12,17,24})
             Assert.All(MobaBetaLayout.Rectangle(x,x,13,17),p=>Assert.True(_map.Walkable(p)));
     }
-    [Fact] public void CampsAndNorthernCastleGatesConnectThroughJungle()
+    [Fact] public void NorthernRouteConnectsBothEdgesAndCastleGates()
     {
         var north=_map.Reachable(new(8,4),_map.Jungle);
-        Assert.All(_map.Camps.SelectMany(c=>c.Cells),p=>Assert.Contains(p,north));
+        Assert.Contains(new GridPosition(0,4),north);Assert.Contains(new GridPosition(29,4),north);
         foreach(int x in new[]{8,9,20,21}) Assert.Contains(new GridPosition(x,7),north);
         Assert.True(_map.NatureObstacles.SetEquals(_map.NatureObstacles.Select(_map.Board.Mirror)));
     }

@@ -14,6 +14,7 @@ public partial class MobaBetaBattlefield : Node3D
     [Export] public BetaBoardDefinition BoardDefinition { get; set; } = null!;
     [Export(PropertyHint.Range,"1,2,1")] public int StartingPlayer { get; set; } = 1;
     [Export] public bool DevelopmentOpenTargeting { get; set; } = true;
+    [Export] public bool FreeTesting {get;set;}=false;
     [ExportToolButton("Validate authored level")]
     public Callable ValidateLevel => Callable.From(ValidateAuthoring);
     public MobaBetaLayout Layout { get; private set; } = null!;
@@ -28,11 +29,15 @@ public partial class MobaBetaBattlefield : Node3D
     private Button _attack=null!,_confirmAttack=null!;
     private Button _resetMatch=null!;
     private MobaCombatHud _combatHud=null!;
+    private MobaTacticalHud _hud=null!;
+    private Button _moveButton=null!;
     private Label _attackPreview=null!;
     private bool _attackMode;
     private string? _attackTargetId;
     private long _attackSequence;
     private readonly Dictionary<string,MeshInstance3D> _attackRings=new();
+    private readonly StandardMaterial3D _hostileTargetMaterial=new() {AlbedoColor=new(1,.35f,.12f),ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded};
+    private readonly StandardMaterial3D _friendlyTargetMaterial=new() {AlbedoColor=new(.4f,1,.65f),ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded};
     private Vector2? _pendingSelection;
     private readonly Dictionary<Cell,MeshInstance3D> _movementTiles=new();
     private IReadOnlyDictionary<Cell,TacticalRoute> _reachable=new Dictionary<Cell,TacticalRoute>();
@@ -53,26 +58,29 @@ public partial class MobaBetaBattlefield : Node3D
         try
         {
             Layout=BetaSceneReader.Extract(this);
-            Session=new MobaHotseatSession(Layout,StartingPlayer,developmentOpenTargeting:DevelopmentOpenTargeting,scoringProfile:DevelopmentScoring.Snapshot(),timerConfiguration:DevelopmentTimer.Snapshot(),assassinProfile:DevelopmentAssassin.Snapshot());
+            var launchArgs=OS.GetCmdlineUserArgs();
+            // Existing regression/capture scenarios explicitly exercise the retained normal match.
+            bool normalVerification=launchArgs.Any(a=>a=="--beta-smoke-test"||a.StartsWith("--export-beta-layout=")||(a.StartsWith("--capture-")&&a!="--capture-free-testing"));
+            Session=new MobaHotseatSession(Layout,StartingPlayer,developmentOpenTargeting:DevelopmentOpenTargeting,scoringProfile:DevelopmentScoring.Snapshot(),timerConfiguration:DevelopmentTimer.Snapshot(),assassinProfile:DevelopmentAssassin.Snapshot(),freeTesting:FreeTesting&&!normalVerification);
             _camera=GetNode<Camera3D>("Camera3D");_grid=GetNode<Node3D>("GridOverlay");
             foreach(var view in GetNode("CharacterFixtures").GetChildren().OfType<StaticTacticalCharacter>())
             {
                 view.Bind(Layout.Fixtures.Single(f=>f.CharacterId==view.CharacterId));
                 view.BindRuntime(Session.Characters[view.CharacterId]);_fixtures.Add(view);
                 var ring=new MeshInstance3D {Name="RuntimeAttackTarget",Position=new(0,.075f,0),Visible=false,
-                    Mesh=new TorusMesh {InnerRadius=.55f,OuterRadius=.65f},
-                    MaterialOverride=new StandardMaterial3D {AlbedoColor=new(1,.12f,.12f),ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded}};
+                    Mesh=new TorusMesh {InnerRadius=.64f,OuterRadius=.72f,Rings=24,RingSegments=8},
+                    MaterialOverride=_hostileTargetMaterial};
                 view.AddChild(ring);_attackRings.Add(view.CharacterId,ring);
             }
             _hover=new MeshInstance3D {Name="RuntimeHover",Visible=false,
                 Mesh=new BoxMesh {Size=new((float)Layout.Board.CellSize,.012f,(float)Layout.Board.CellSize)},
-                MaterialOverride=new StandardMaterial3D {AlbedoColor=new(1,1,1,.3f),Transparency=BaseMaterial3D.TransparencyEnum.Alpha,
+                MaterialOverride=new StandardMaterial3D {AlbedoColor=new(.4f,.95f,1,.18f),Transparency=BaseMaterial3D.TransparencyEnum.Alpha,
                     ShadingMode=BaseMaterial3D.ShadingModeEnum.Unshaded}};
             AddChild(_hover);ResetCamera();BuildHud();RefreshMatchHud();
             _neutralHoverMaterial=(StandardMaterial3D)_hover.MaterialOverride;
-            _reachableMaterial=Overlay(new(.22f,1,.08f,.8f));
-            _pathMaterial=Overlay(new(1,1,1,.9f));
-            _invalidMaterial=Overlay(new(1,.15f,.2f,.4f));
+            _reachableMaterial=Overlay(new(.25f,.7f,.59f,.36f));
+            _pathMaterial=Overlay(new(.65f,1,.96f,.85f));
+            _invalidMaterial=Overlay(new(1,.15f,.2f,.24f));
             var args=OS.GetCmdlineUserArgs();
             _captureHotseat=args.Contains("--capture-hotseat");
             _captureMovement=args.Contains("--capture-movement");
@@ -82,7 +90,10 @@ public partial class MobaBetaBattlefield : Node3D
             _captureObjectives=args.Contains("--capture-objectives");
             _captureTimer=args.Contains("--capture-timer");
             _captureAssassin=args.Contains("--capture-assassin");
-            _capture=args.Contains("--capture-beta")||_captureHotseat||_captureMovement||_captureAttack||_captureFeedback||_captureFive||_captureObjectives||_captureTimer||_captureAssassin;
+            _captureHud=args.Contains("--capture-hud");
+            _capturePolish=args.Contains("--capture-polish");
+            _captureFreeTesting=args.Contains("--capture-free-testing");
+            _capture=args.Contains("--capture-beta")||_captureHotseat||_captureMovement||_captureAttack||_captureFeedback||_captureFive||_captureObjectives||_captureTimer||_captureAssassin||_captureHud||_capturePolish||_captureFreeTesting;
             if(_captureHotseat)
             {
                 Session.Select(Session.Characters.Values.First(c=>Session.CanSelect(c.Id)).Id);
@@ -93,7 +104,7 @@ public partial class MobaBetaBattlefield : Node3D
                 if(Session.CurrentPlayer!=Session.Characters["nigel"].TeamId)
                 {Session.Select(Session.Characters.Values.First(c=>Session.CanSelect(c.Id)).Id);Session.EndSelectedActivation();}
                 Session.Select("nigel");RefreshMatchHud();
-                Session.Characters["nigel"].SetTacticalPosition(new(27,10));_fixtures.Single(f=>f.CharacterId=="nigel").ReconcileToRuntime(Layout.Board);
+                Session.Characters["nigel"].SetTacticalPosition(new(26,10));_fixtures.Single(f=>f.CharacterId=="nigel").ReconcileToRuntime(Layout.Board);
             }
             if(_captureAttack){StageAttackDemonstration();_focus=CellPosition(new(14,10));_camera.Size=17;UpdateCamera();}
             if(_captureFeedback)
@@ -104,9 +115,12 @@ public partial class MobaBetaBattlefield : Node3D
             if(_captureObjectives)StageContestedCaptureDemonstration();
             if(_captureTimer)_captureTime=UseTimerSmokeClock();
             if(_captureAssassin)StageSmokePreview();
+            if(_capturePolish){RunCommand(()=>Session.Select("hooded_assassin"));_focus=CellPosition(new(12,10));_camera.Size=27;UpdateCamera();}
+            if(_captureFreeTesting){RunCommand(()=>Session.Select("nigel"));MoveAt(new(25,12));}
             _snapshotPath=args.FirstOrDefault(a=>a.StartsWith("--export-beta-layout="))?.Split('=',2)[1];
             _smoke=args.Contains("--beta-smoke-test")||_snapshotPath is not null;
             GD.Print($"MOBA AUTHORED BETA READY: {Layout.Board.Width}x{Layout.Board.Height}; {Layout.Obstacles.Count} blocked; {Layout.Terrain.Count-Layout.Obstacles.Count} walkable; {_fixtures.Count} original fixtures.");
+            if(Session.FreeTesting)FrameFreeTestLaunch();
         }
         catch(Exception error)
         {GD.PushError(error.ToString());SetProcess(false);SetProcessUnhandledInput(false);GetTree().Quit(1);}
@@ -126,30 +140,35 @@ public partial class MobaBetaBattlefield : Node3D
     {var p=Layout.Board.CellCenter(cell);return new((float)p.X,height,(float)p.Z);}
     private void BuildHud()
     {
-        var canvas=new CanvasLayer();AddChild(canvas);
-        var panel=new PanelContainer {Position=new(14,10)};canvas.AddChild(panel);
-        var column=new VBoxContainer();panel.AddChild(column);
-        column.AddChild(new Label {Text=$"PAWNS OF DIVINITY · ONE-LANE BETA · {Layout.Board.Width} × {Layout.Board.Height}"});
-        column.AddChild(new Label {Text="WASD pan · Q/E / middle drag rotate · wheel zoom · Home recenter · G grid · click select · right click clear"});
-        _turn=new Label();column.AddChild(_turn);
-        var readinessRow=new HBoxContainer();column.AddChild(readinessRow);_readiness=new Label();readinessRow.AddChild(_readiness);BuildTimerHud(readinessRow);
-        _status=new Label {Text="Hover a tile to inspect its coordinates and authored walkability."};column.AddChild(_status);
-        var bottom=new PanelContainer {AnchorTop=1,AnchorBottom=1,AnchorRight=1,
-            OffsetLeft=14,OffsetRight=-14,OffsetTop=-184,OffsetBottom=-10};canvas.AddChild(bottom);
-        var info=new VBoxContainer();bottom.AddChild(info);
-        _details=new Label();info.AddChild(_details);
-        _endActivation=new Button {Name="EndActivation",Text="End Activation (skip remaining actions)",FocusMode=Control.FocusModeEnum.None};
-        var buttons=new HBoxContainer();info.AddChild(buttons);
-        _endActivation.Pressed+=()=>RunCommand(()=>Session.EndSelectedActivation());buttons.AddChild(_endActivation);
-        _attack=new Button {Name="Attack",Text="Attack",FocusMode=Control.FocusModeEnum.None};_attack.Pressed+=ToggleAttackMode;buttons.AddChild(_attack);
-        _confirmAttack=new Button {Name="ConfirmAttack",Text="Confirm Attack",FocusMode=Control.FocusModeEnum.None};_confirmAttack.Pressed+=ConfirmBasicAttack;buttons.AddChild(_confirmAttack);
-        _resetMatch=new Button {Name="ResetMatch",Text="Reset Match (DEV)",FocusMode=Control.FocusModeEnum.None};_resetMatch.Pressed+=ResetMatch;buttons.AddChild(_resetMatch);
-        _attackPreview=new Label();_attackPreview.AddThemeFontSizeOverride("font_size",14);info.AddChild(_attackPreview);
-        _message=new Label {Text="Lime outlines are reachable movement; cyan/gold/purple floors are authored zones."};
-        _message.AutowrapMode=TextServer.AutowrapMode.WordSmart;_message.AddThemeFontSizeOverride("font_size",14);info.AddChild(_message);
-        _combatHud=new MobaCombatHud();AddChild(_combatHud);_combatHud.Initialize(_fixtures,_camera);
-        BuildTerritoryHud(canvas,column,info,buttons);
-        BuildAssassinHud(readinessRow,canvas);
+        _hud=new MobaTacticalHud();AddChild(_hud);_hud.Initialize(GetWorld3D(),_camera);_hud.RetainPortraitResources(_fixtures);
+        _turn=MobaTacticalHud.Text(_hud.TopLeft,"",MobaHudStyle.Heading);_readiness=MobaTacticalHud.Text(_hud.TopLeft,"",MobaHudStyle.Caption);
+        _status=MobaTacticalHud.Text(_hud.Developer,"",12);_status.AutowrapMode=TextServer.AutowrapMode.WordSmart;
+        _details=MobaTacticalHud.Text(_hud.Developer,"",12);_details.AutowrapMode=TextServer.AutowrapMode.WordSmart;
+        _message=_hud.Message;_attackPreview=_hud.Context;
+        _moveButton=MobaTacticalHud.Command(_hud.Commands,"Move");MobaTacticalHud.BindCommand(_moveButton,()=>{CancelAbilityUi();_attackMode=false;_transferMode=false;_attackTargetId=null;RefreshMatchHud();UpdateMovementOverlay(null);_message.Text="Choose a mint-outlined destination; hover to inspect actual MOV cost.";});
+        _attack=MobaTacticalHud.Command(_hud.Commands,"Attack");MobaTacticalHud.BindCommand(_attack,ToggleAttackMode);
+        _confirmAttack=MobaTacticalHud.Command(_hud.Commands,"Confirm Attack");MobaTacticalHud.BindCommand(_confirmAttack,ConfirmBasicAttack);
+        _endActivation=MobaTacticalHud.Command(_hud.Commands,"End Activation");MobaTacticalHud.BindCommand(_endActivation,()=>RunCommand(()=>Session.EndSelectedActivation()));
+        _resetMatch=MobaTacticalHud.Command(_hud.Developer,"Reset Match (DEV)");MobaTacticalHud.BindCommand(_resetMatch,ResetMatch);
+        BuildTimerHud();
+        _combatHud=new MobaCombatHud();AddChild(_combatHud);_combatHud.Initialize(_fixtures,_camera,_hud);
+        BuildTerritoryHud();
+        BuildAssassinHud();
+        _hud.Commands.MoveChild(_abilitiesButton,2);_hud.Commands.MoveChild(_transfer,3);_hud.Commands.MoveChild(_endActivation,4);
+        _hud.LayoutChanged+=()=>{_pendingSelection=null;FitCameraToBoard();};
+        FitCameraToBoard();
+    }
+    private Vector2 WorldToScreen(Vector3 position)=>_camera.UnprojectPosition(position)+(_hud?.BattlefieldRect.Position??Vector2.Zero);
+    private Vector2 GameplayPoint(Vector2 screen)=>screen-(_hud?.BattlefieldRect.Position??Vector2.Zero);
+    private bool IsBattlefieldPoint(Vector2 screen)=>_hud is null||(_hud.BattlefieldRect.HasPoint(screen)&&!_hud.CoversBattlefieldPoint(screen)&&(_combatHud is null||!_combatHud.CoversBattlefieldPoint(screen)));
+    private void FitCameraToBoard()
+    {
+        if(_hud is null)return;
+        var size=_hud.WorldView.Size;if(size.X<2||size.Y<2)return;
+        var points=new[]{new Cell(0,0),new Cell(Layout.Board.Width-1,0),new Cell(0,Layout.Board.Height-1),new Cell(Layout.Board.Width-1,Layout.Board.Height-1)}
+            .SelectMany(c=>new[]{WorldToScreen(CellPosition(c)),WorldToScreen(CellPosition(c,2))}).ToArray();
+        float width=points.Max(p=>p.X)-points.Min(p=>p.X),height=points.Max(p=>p.Y)-points.Min(p=>p.Y);
+        _camera.Size=Mathf.Max(12,_camera.Size*Mathf.Max(width/(size.X*.91f),height/(size.Y*.88f)));
     }
     private void RunCommand(Func<PawnsOfDivinity.Gameplay.BattlefieldCommandResult> command)
     {
@@ -162,12 +181,10 @@ public partial class MobaBetaBattlefield : Node3D
     {
         RefreshTimerHud();
         var player=Session.CurrentPlayer;
-        int blue=Session.Characters.Values.Count(c=>c.TeamId==1),red=Session.Characters.Count-blue;
-        int slots=MobaHotseatSession.MaxRosterSlotsPerPlayer;
-        _turn.Text=$"Round {Session.Round} · "+(player is { } p?
-            (Session.Activations.ActiveCharacter is { } active?$"PLAYER {p} · ACTIVE {active.Name}":$"PLAYER {p} TO SELECT"):"No eligible living units")+
-            $" · P1 {blue}/{slots} slots · P2 {red}/{slots} slots · "+
-            (blue==slots&&red==slots?"5v5":$"{blue}v{red} development slice; competitive target 5v5");
+        _turn.Text=$"ROUND {Session.Round} · "+(player==1?"BLUE TEAM":player==2?"RED TEAM":"NO ACTIVE TEAM");
+        if(Session.FreeTesting)_turn.Text="FREE TESTING · SELECT EITHER TEAM";
+        _readiness.Visible=!Session.FreeTesting;_endActivation.Visible=!Session.FreeTesting;
+        _turn.TooltipText=Session.FreeTesting?"Timer and team order disconnected; normal MOV, path costs and one movement action remain. Deselect/reselect for a fresh test activation. Rounds/cooldowns paused. Disable Free Testing and restart to restore the full match loop.":"";
         _readiness.Text=Session.Readiness(1).Text+"     "+Session.Readiness(2).Text;
         _turn.Modulate=player==1?new(.4f,.8f,1):player==2?new(1,.5f,.55f):Colors.Gray;
         if(Session.Victory.IsFinished)_turn.Text=$"Round {Session.Round} · MATCH FINISHED · "+(Session.Victory.WinnerTeamId is { } winner?$"PLAYER {winner} WINS":"DRAW (DEV tie policy)");
@@ -181,17 +198,45 @@ public partial class MobaBetaBattlefield : Node3D
                 $"Position {position} · Movement available {Session.RemainingMovement}{(Session.IsPresentationBusy?" · TRAVELLING":"")}";
             if(state.Statuses.Count>0)_details.Text+=$" · {string.Join(", ",state.Statuses)}";
         }
-        else _details.Text="No unit selected. Left click a friendly model or its tile; right click to deselect.\nLime outlines: reachable · White: path · Red: unavailable · Cyan/gold/purple floors are authored zones.";
-        _endActivation.Disabled=Session.SelectedFixtureId is not { } id||!Session.CanSelect(id);
+        else _details.Text="No unit selected. Left click a friendly model or its tile; right click to deselect.\nMint outlines: reachable · Pale cyan: path · Red: unavailable · Cyan/gold/purple floors are authored zones.";
+        _endActivation.Disabled=!MobaCommandPresentation.CanEndActivation(Session);
         foreach(var view in _fixtures)
         {
+            if(!GodotObject.IsInstanceValid(view)||!view.IsInsideTree()||view.IsQueuedForDeletion()||!Session.Characters.ContainsKey(view.CharacterId))continue;
             var visibility=Session.Visibility(view.CharacterId);
             view.RefreshRuntime(view.CharacterId==Session.SelectedFixtureId,Session.CanSelect(view.CharacterId),Session.IsVisibleToPlayer(view.CharacterId),visibility.IsInvisible?"INVISIBLE":visibility.IsInSmoke?"IN SMOKE":"");
         }
         RefreshAttackHud();
-        _resetMatch.Disabled=!Session.CanResetMatch;_combatHud.Refresh(Session);
+        _resetMatch.Disabled=!Session.CanResetMatch;
         RefreshTerritoryHud();
         RefreshAssassinHud();
+        // Refresh after targeting modes have reconciled completion/cancellation/timeout.
+        string? healthTarget=_abilityMode&&_abilityTarget is { } abilityTarget&&Session.PreviewAssassinAbility(_abilityDestination,abilityTarget).CanExecute?abilityTarget:
+            _attackMode&&_attackTargetId is { } attackTarget&&Session.PreviewAttack(attackTarget).CanExecute?attackTarget:null;
+        _combatHud.Refresh(Session,healthTarget);
+        foreach(var view in _fixtures)
+        {
+            if(!GodotObject.IsInstanceValid(view))continue;
+            var ring=_attackRings[view.CharacterId];
+            ring.Visible=view.IsInsideTree()&&!view.IsQueuedForDeletion()&&view.CharacterId==healthTarget&&view.CharacterId!=Session.SelectedFixtureId
+                &&view.VisibleToObserver&&view.Presentation?.Defeated==false;
+            if(ring.Visible)ring.MaterialOverride=view.TeamId==Session.SelectedCharacter?.TeamId?_friendlyTargetMaterial:_hostileTargetMaterial;
+        }
+        _hud.Refresh(Session,_fixtures.FirstOrDefault(f=>GodotObject.IsInstanceValid(f)&&f.IsInsideTree()&&!f.IsQueuedForDeletion()&&f.CharacterId==Session.SelectedFixtureId));
+        _hud.Details.Visible=!_abilitiesOpen;
+        _moveButton.Disabled=Session.RemainingMovement<=0;_moveButton.Text=Session.PendingVisualMovement is not null?"Moving…":"Move";
+        _moveButton.TooltipText=_moveButton.Disabled?"Select a ready friendly unit with movement available; wait for committed playback.":"Show legal destinations. Hover previews shortest path and actual MOV cost.";
+        _endActivation.TooltipText=_endActivation.Disabled?"Requires the current player's eligible living unit. Taunt may require its validated attack/fallback.":"End this activation and skip any remaining actions.";
+        _attack.TooltipText=_attack.Disabled?"Requires an eligible selected unit and available Main Action.":_attackMode?"Attack mode active. Click again to cancel targeting.":"Preview a legal enemy, then Confirm Attack.";
+        _confirmAttack.Visible=_attackMode;_confirmAttack.TooltipText=_confirmAttack.Disabled?"Choose a legal enemy target first.":"Commit the production combat exchange and end activation.";
+        _confirmTransfer.Visible=_transferMode;_transferChoices.Visible=_transferMode;
+        _transfer.TooltipText=_transfer.Disabled?"Requires a friendly, uncontested origin capture zone and a legal friendly destination.":"Choose an unoccupied friendly castle deployment tile, then confirm.";
+        _confirmTransfer.TooltipText=_confirmTransfer.Disabled?"Choose a valid friendly deployment destination.":"Transfer costs the Main Action and ends activation.";
+        var mode=MobaCommandPresentation.Mode(Session.SelectedCharacter is not null,_attackMode,_abilitiesOpen,_transferMode,Session.RemainingMovement>0);
+        MobaTacticalHud.ApplyCommandState(_moveButton,MobaCommandPresentation.State(!_moveButton.Disabled,mode,MobaCommandMode.Move));
+        MobaTacticalHud.ApplyCommandState(_attack,MobaCommandPresentation.State(!_attack.Disabled,mode,MobaCommandMode.Attack));
+        MobaTacticalHud.ApplyCommandState(_abilitiesButton,MobaCommandPresentation.State(!_abilitiesButton.Disabled,mode,MobaCommandMode.Abilities));
+        MobaTacticalHud.ApplyCommandState(_transfer,MobaCommandPresentation.State(!_transfer.Disabled,mode,MobaCommandMode.Transfer));
     }
     private void ToggleAttackMode()
     {
@@ -208,14 +253,12 @@ public partial class MobaBetaBattlefield : Node3D
     private void RefreshAttackHud()
     {
         if(_attackMode&&!Session.CanAttack){_attackMode=false;_attackTargetId=null;}
-        _attack.Disabled=!Session.CanAttack;_attack.Text=_attackMode?"Cancel targeting":"Attack";
-        foreach(var entry in _attackRings)
-            entry.Value.Visible=_attackMode&&Session.PreviewAttack(entry.Key).CanExecute;
+        _attack.Disabled=!Session.CanAttack;_attack.Text="Attack";
         var preview=_attackTargetId is { } id&&_attackMode?Session.PreviewAttack(id):null;
         _confirmAttack.Disabled=preview?.CanExecute!=true;
         _attackPreview.Text=preview?.CanExecute==true
             ?$"{Session.Characters[preview!.TargetId].Name}: distance {preview.Distance} / range {preview.MinimumRange}–{preview.MaximumRange} · {preview.HitChance}% hit · ESTIMATE {preview.EstimatedOpeningDamage} opening damage on hit; shields/counters/follow-ups apply."
-            :_attackMode?"Select a red-ringed enemy. Preview does not roll or deal damage.":"Basic attacks: DEV loadouts / open targeting (LOS unresolved). A completed Main Action ends activation.";
+            :_attackMode?"Choose an enemy to preview; only the chosen target has a warm ring. No roll until confirmation.":"Move: click a reachable tile · Main Action ends activation.";
     }
     private void ConfirmBasicAttack()
     {
@@ -231,6 +274,7 @@ public partial class MobaBetaBattlefield : Node3D
         var fresh=Session.CreateResetSession();
         Session=fresh;_pendingSelection=null;_attackMode=false;_attackTargetId=null;_attackSequence=0;_transferMode=false;_transferSequence=0;
         _combatHud.Clear();_combatClockToken=null;_seenTimeout=0;
+        _hud.DeveloperPanel.Visible=false;if(_hud.HelpVisible)_hud.ToggleHelp();
         CancelAbilityUi();_abilityRequest=0;
         foreach(var view in _fixtures){view.BindRuntime(fresh.Characters[view.CharacterId]);view.ReconcileToRuntime(Layout.Board);}
         _hover.Visible=false;_status.Text="Match reset to the loaded authored layout.";
@@ -239,15 +283,16 @@ public partial class MobaBetaBattlefield : Node3D
     }
     private void SelectAt(Vector2 screen)
     {
-        if(Session.IsPresentationBusy||Session.Victory.IsFinished)return;
-        var from=_camera.ProjectRayOrigin(screen);var direction=_camera.ProjectRayNormal(screen);
+        if(Session.IsPresentationBusy||Session.Victory.IsFinished||!IsBattlefieldPoint(screen))return;
+        var local=GameplayPoint(screen);var from=_camera.ProjectRayOrigin(local);var direction=_camera.ProjectRayNormal(local);
         string? id=null;
         Cell? floor=null;
-        var candidates=new List<(string Id,float Score)>();
+        var candidates=new List<MobaModelHit>();
+        string? floorOccupant=null;
         var query=PhysicsRayQueryParameters3D.Create(from,from+direction*200,2);
         var excluded=new Godot.Collections.Array<Rid>();
-        // Crowded formations can project several picking boxes onto one point. Resolve the
-        // nearest visible model anchor or occupied floor anchor rather than always the front box.
+        // Resolve overlapping model proxies by projected model center. A model hit always wins
+        // over the unrelated floor tile behind its head/torso in the isometric projection.
         for(int i=0;i<_fixtures.Count;i++)
         {
             query.Exclude=excluded;var hit=GetWorld3D().DirectSpaceState.IntersectRay(query);if(hit.Count==0)break;
@@ -255,15 +300,20 @@ public partial class MobaBetaBattlefield : Node3D
             excluded.Add(body.GetRid());
             if(!body.HasMeta("fixture_id"))continue;
             string fixtureId=body.GetMeta("fixture_id").AsString();var view=_fixtures.Single(f=>f.CharacterId==fixtureId);
-            candidates.Add((fixtureId,screen.DistanceSquaredTo(_camera.UnprojectPosition(view.GlobalPosition+new Vector3(0,.85f,0)))));
+            if(!view.VisibleToObserver||view.RuntimeCharacter?.IsDefeated!=false)continue;
+            candidates.Add(new(fixtureId,screen.DistanceSquaredTo(WorldToScreen(view.PickingAnchor))));
         }
         if(Pick(screen,out var cell))
         {
             floor=cell;
             var occupant=Session.Characters.Values.FirstOrDefault(c=>!c.IsDefeated&&c.TacticalPosition==cell);
-            if(occupant is not null&&Session.IsVisibleToPlayer(occupant.Id))candidates.Add((occupant.Id,screen.DistanceSquaredTo(_camera.UnprojectPosition(CellPosition(cell)))));
+            if(occupant is not null&&Session.IsVisibleToPlayer(occupant.Id))floorOccupant=occupant.Id;
         }
-        if(candidates.Count>0)id=candidates.OrderBy(c=>c.Score).ThenBy(c=>c.Id,StringComparer.Ordinal).First().Id;
+        // Preserve ordinary crowded-unit tile selection. In a unit-targeting command, a model
+        // hit is authoritative for picking; a different floor occupant must not steal it.
+        if(!_attackMode&&!_abilityMode&&floorOccupant is not null&&floor is { } occupiedCell)
+            candidates.Add(new(floorOccupant,screen.DistanceSquaredTo(WorldToScreen(CellPosition(occupiedCell)))));
+        id=MobaUnitPicking.Choose(candidates,floorOccupant);
         if(_abilityMode)
         {
             if(Session.TargetedAbilityId==HoodedAssassin.SmokeBombId)_abilityDestination=floor??(Pick(screen,out var tile)?tile:null);
@@ -295,7 +345,10 @@ public partial class MobaBetaBattlefield : Node3D
         if(Session.PendingVisualMovement is { } move)
         {
             var view=_fixtures.Single(f=>f.CharacterId==move.ActorId);
-            try{view.PresentMovement(move,Layout.Board);}
+            try
+            {
+                view.PresentMovement(move,Layout.Board);
+            }
             catch(Exception error)
             {view.ReconcileToRuntime(Layout.Board);Session.AcknowledgeVisualMovement(move.RequestId,view.Cell);GD.PushWarning($"View reconciled after playback failure: {error.Message}");}
         }
@@ -322,19 +375,20 @@ public partial class MobaBetaBattlefield : Node3D
                     tile=new MeshInstance3D {Name=$"Reachable_{cell.X}_{cell.Y}",Position=CellPosition(cell,.035f),Mesh=edge.Commit()};
                     AddChild(tile);_movementTiles.Add(cell,tile);
                 }
-                tile.Visible=true;
+                tile.Visible=!_attackMode&&!_transferMode&&!_abilitiesOpen;
             }
         }
-        _hoverPlan=!_attackMode&&!_transferMode&&!_abilityMode&&hover is { } destination?_movementPreview.PlanFor(destination):null;
+        _hoverPlan=!_attackMode&&!_transferMode&&!_abilitiesOpen&&hover is { } destination?_movementPreview.PlanFor(destination):null;
         var path=_hoverPlan?.Path.ToHashSet();
         foreach(var entry in _movementTiles.Where(e=>e.Value.Visible))
             entry.Value.MaterialOverride=path?.Contains(entry.Key)==true?_pathMaterial:_reachableMaterial;
         _hover.MaterialOverride=_neutralHoverMaterial;
-        if(_attackMode||_transferMode||_abilityMode){_hover.Visible=false;if(_abilityMode)foreach(var tile in _movementTiles.Values)tile.Visible=false;return;}
+        if(_attackMode||_transferMode||_abilitiesOpen){_hover.Visible=false;return;}
         if(hover is { } h&&Session.SelectedCharacter is not null)
         {
-            _hover.MaterialOverride=_reachable.ContainsKey(h)?_pathMaterial:_invalidMaterial;
+            _hover.MaterialOverride=_reachable.ContainsKey(h)?_neutralHoverMaterial:_invalidMaterial;
             _status.Text+=$" · {(_hoverPlan is { } p?$"Shortest path: {p.Cost}/{_movementPreview.Allowance} MOV · {p.Path.Count-1} steps":"No available legal movement to this tile")}";
+            if(_hoverPlan is { } route)_attackPreview.Text=$"Move · {route.Cost}/{_movementPreview.Allowance} MOV · {route.Path.Count-1} steps. Click to confirm movement.";
         }
     }
     private string DescribeTile(Cell cell)
@@ -367,13 +421,13 @@ public partial class MobaBetaBattlefield : Node3D
     // Adapted directly from Battlefield's existing free tactical camera controls/equations.
     // Kept local because that script also owns the production 14x14 encounter and is dirty.
     private void ResetCamera()
-    { _focus=new((float)Layout.Board.CenterX,0,(float)Layout.Board.CenterZ);_yaw=0;_camera.Size=(float)(Layout.Board.Width*Layout.Board.CellSize*1.16);UpdateCamera(); }
+    { _focus=new((float)Layout.Board.CenterX,0,(float)Layout.Board.CenterZ);_yaw=0;_camera.Size=(float)(Layout.Board.Width*Layout.Board.CellSize*1.16);UpdateCamera();FitCameraToBoard(); }
     private void UpdateCamera()
     { _camera.Position=_focus+new Vector3(0,24,32).Rotated(Vector3.Up,_yaw);_camera.LookAt(_focus,Vector3.Up); }
     public bool Pick(Vector2 screen,out Cell cell)
     {
-        var origin=_camera.ProjectRayOrigin(screen);var direction=_camera.ProjectRayNormal(screen);
-        cell=default;if(Mathf.Abs(direction.Y)<.00001f) return false;
+        var local=GameplayPoint(screen);var origin=_camera.ProjectRayOrigin(local);var direction=_camera.ProjectRayNormal(local);
+        cell=default;if(!IsBattlefieldPoint(screen)||Mathf.Abs(direction.Y)<.00001f) return false;
         float t=-origin.Y/direction.Y;if(t<0)return false;
         var point=origin+direction*t;cell=Layout.Board.WorldToCell(point.X,point.Z);return Layout.Board.Contains(cell);
     }
@@ -383,11 +437,12 @@ public partial class MobaBetaBattlefield : Node3D
         if(input is InputEventKey key && key.Pressed && !key.Echo)
         {
             var code=key.PhysicalKeycode!=Key.None ? key.PhysicalKeycode : key.Keycode;
+            if(code==Key.F1){_hud.ToggleHelp();GetViewport().SetInputAsHandled();return;}
             if(code==Key.G)_grid.Visible=!_grid.Visible;if(code==Key.Home)ResetCamera();
         }
         if(input is InputEventMouseMotion motion && (motion.ButtonMask&MouseButtonMask.Middle)!=0)
         {_yaw-=motion.Relative.X*.008f;UpdateCamera();}
-        if(input is not InputEventMouseButton mouse || !mouse.Pressed)return;
+        if(input is not InputEventMouseButton mouse || !mouse.Pressed||!IsBattlefieldPoint(mouse.Position))return;
         if(mouse.ButtonIndex==MouseButton.WheelUp)_camera.Size=Mathf.Max(12,_camera.Size-1.5f);
         if(mouse.ButtonIndex==MouseButton.WheelDown)_camera.Size=Mathf.Min((float)(Layout.Board.Width*Layout.Board.CellSize*1.8),_camera.Size+1.5f);
         if(Session.IsPresentationBusy)return;
@@ -420,11 +475,19 @@ public partial class MobaBetaBattlefield : Node3D
         if(_captureMovement&&_captureStep==0)
         {hovered=new(23,10);_hover.Visible=true;_hover.Position=CellPosition(hovered.Value,.025f);_status.Text="Preview destination (23,10) · Red castle's open eastern gate";}
         UpdateMovementOverlay(hovered);
+        if(_capturePolish&&(_captureStep==0||_captureStep==3)&&_reachable.Count>0)
+        {
+            var destination=_reachable.OrderByDescending(e=>e.Value.Cost).ThenBy(e=>e.Key.X).ThenBy(e=>e.Key.Y).First().Key;
+            UpdateMovementOverlay(destination);_hover.Visible=true;_hover.Position=CellPosition(destination,.025f);
+        }
         _elapsed+=delta;
-        if(_smoke && _elapsed>1) {SmokeTest();return;}
+        if(_smoke && _elapsed>1) {_smoke=false;SmokeTest();return;}
         if(_capture && _elapsed>(_captureFeedback?(_captureStep==0?2.1:1.1):_captureMovement&&_captureStep==1?.4:2))
         {
             _elapsed=0;
+            if(_captureFreeTesting){GetViewport().GetTexture().GetImage().SavePng("res://artifacts/moba_free_testing.png");GetTree().Quit();return;}
+            if(_capturePolish){CapturePolish();return;}
+            if(_captureHud){CaptureTacticalHud();return;}
             if(_captureAssassin)
             {
                 string[] names={"preview","smoke","shadow_preview","shadow_result","reset"};string file=$"res://artifacts/moba_assassin_{names[_captureStep]}.png";
@@ -517,7 +580,7 @@ public partial class MobaBetaBattlefield : Node3D
         foreach(var id in new[]{"hooded_assassin","nigel"})_fixtures.Single(f=>f.CharacterId==id).ReconcileToRuntime(Layout.Board);
         RunCommand(()=>Session.Select("hooded_assassin"));ToggleAttackMode();_attackTargetId="nigel";RefreshMatchHud();
     }
-    private void SmokeTest()
+    private async void SmokeTest()
     {
         try
         {
@@ -530,21 +593,21 @@ public partial class MobaBetaBattlefield : Node3D
             GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();
             foreach(var yaw in new[]{0f,.8f,-1.3f})
             {
-                _yaw=yaw;UpdateCamera();
+                _yaw=yaw;UpdateCamera();FitCameraToBoard();
                 foreach(var cell in Layout.Board.Cells)
-                    Check(Pick(_camera.UnprojectPosition(CellPosition(cell)),out var picked)&&picked==cell,$"Picking {cell} at yaw {yaw}");
+                    Check(Pick(WorldToScreen(CellPosition(cell)),out var picked)&&picked==cell,$"Picking {cell} at yaw {yaw}");
             }
             Check(_fixtures.Count(f=>!f.UsedFallback)==Layout.Fixtures.Count,"Expected all original imported models");
             foreach(var f in _fixtures) {f.Select(true);f.Select(false);}
             ResetCamera();
             Check(_endActivation.Disabled,"End Activation must require selection");
             var friendly=_fixtures.Single(f=>f.CharacterId==Session.Characters.Values.First(c=>c.TeamId==Session.CurrentPlayer).Id);
-            var torso=_camera.UnprojectPosition(friendly.GlobalPosition+new Vector3(0,.8f,0));
+            var torso=WorldToScreen(friendly.GlobalPosition+new Vector3(0,.8f,0));
             _UnhandledInput(new InputEventMouseButton {ButtonIndex=MouseButton.Left,Pressed=true,Position=torso});
             _PhysicsProcess(0);
             Check(Session.SelectedFixtureId==friendly.CharacterId&&!_endActivation.Disabled,"Model click must select runtime fixture");
             Check(_details.Text.Contains($"HP {friendly.RuntimeCharacter!.CurrentHealth}/{friendly.RuntimeCharacter.BaseStats.MaxHealth}"),"Runtime HP HUD");
-            _UnhandledInput(new InputEventMouseButton {ButtonIndex=MouseButton.Right,Pressed=true});
+            _UnhandledInput(new InputEventMouseButton {ButtonIndex=MouseButton.Right,Pressed=true,Position=_hud.BattlefieldRect.GetCenter()});
             Check(Session.SelectedFixtureId is null&&_endActivation.Disabled,"Right-click deselection");
             int initialRound=Session.Round;var completed=new HashSet<string>();
             while(Session.Round==initialRound)
@@ -552,10 +615,10 @@ public partial class MobaBetaBattlefield : Node3D
                 var actor=Session.Characters.Values.First(c=>Session.CanSelect(c.Id));
                 int player=actor.TeamId;
                 var actorView=_fixtures.Single(f=>f.CharacterId==actor.Id);
-                SelectAt(_camera.UnprojectPosition(actorView.GlobalPosition+new Vector3(0,.85f,0)));
+                SelectAt(WorldToScreen(actorView.GlobalPosition+new Vector3(0,.85f,0)));
                 Check(Session.SelectedFixtureId==actor.Id,$"Crowded model selection: {actor.Id}");
                 RunCommand(()=>Session.Select(null));
-                SelectAt(_camera.UnprojectPosition(CellPosition(actor.TacticalPosition!.Value)));
+                SelectAt(WorldToScreen(CellPosition(actor.TacticalPosition!.Value)));
                 Check(Session.SelectedFixtureId==actor.Id,"Tile selection");
                 // Emit the real button signal, following the exact UI-to-domain path.
                 _endActivation.EmitSignal(Button.SignalName.Pressed);
@@ -569,41 +632,41 @@ public partial class MobaBetaBattlefield : Node3D
             var nigel=_fixtures.Single(f=>f.CharacterId=="nigel");
             var authoredNigelCell=Layout.Fixtures.Single(f=>f.CharacterId=="nigel").Cell;
             // Historical movement smoke starts outside the fort; the authored 5v5 spawn is retained.
-            Session.Characters["nigel"].SetTacticalPosition(new(27,10));nigel.ReconcileToRuntime(Layout.Board);
+            Session.Characters["nigel"].SetTacticalPosition(new(27,12));nigel.ReconcileToRuntime(Layout.Board);
             if(Session.CurrentPlayer!=Session.Characters["nigel"].TeamId)
             {
                 RunCommand(()=>Session.Select(Session.Characters.Values.First(c=>Session.CanSelect(c.Id)).Id));
                 _endActivation.EmitSignal(Button.SignalName.Pressed);
             }
             // Staged transforms have not reached a physics tick; use the authoritative occupied tile.
-            SelectAt(_camera.UnprojectPosition(nigel.Position));
+            SelectAt(WorldToScreen(nigel.Position));
             Check(Session.SelectedFixtureId=="nigel"&&Session.RemainingMovement==4,"Nigel MOV 4 selection");
-            UpdateMovementOverlay(new(26,9));
+            UpdateMovementOverlay(new(23,12));
             Check(_hoverPlan is null&&_hover.MaterialOverride==_invalidMaterial,"Blocked destination presentation");
-            Check(Session.MoveTo(new(26,9)).Outcome==MovementOutcome.Rejected&&Session.Activations.ActiveCharacter is null,"Invalid move consumes nothing");
-            UpdateMovementOverlay(new(25,10));
-            Check(_hoverPlan?.Cost==2&&_movementTiles[new(25,10)].Visible,"Reachable highlight and shortest-path preview");
+            Check(Session.MoveTo(new(23,12)).Outcome==MovementOutcome.Rejected&&Session.Activations.ActiveCharacter is null,"Invalid move consumes nothing");
+            UpdateMovementOverlay(new(25,12));
+            Check(_hoverPlan?.Cost==2&&_movementTiles[new(25,12)].Visible,"Reachable highlight and shortest-path preview");
             Check(_status.Text.Contains("2/4 MOV"),"Actual path cost / movement budget label");
             RunCommand(()=>Session.Select(null));
             Check(_hoverPlan is null&&_movementTiles.Values.All(v=>!v.Visible)&&_hover.MaterialOverride==_neutralHoverMaterial,"Deselection clears cached path/highlights immediately");
-            RunCommand(()=>Session.Select("nigel"));UpdateMovementOverlay(new(25,10));
+            RunCommand(()=>Session.Select("nigel"));UpdateMovementOverlay(new(25,12));
             Check(_movementTiles.Where(e=>e.Value.Visible).Select(e=>e.Key).ToHashSet().SetEquals(Session.ReachableDestinations().Keys),"Visible movement destinations equal authoritative routes");
             Check(_reachableMaterial.AlbedoColor!=_pathMaterial.AlbedoColor,"Reachable and path colors differ");
             var visualStart=nigel.Position;
-            SelectAt(_camera.UnprojectPosition(CellPosition(new(25,10))));
-            Check(Session.Characters["nigel"].TacticalPosition==new Cell(25,10),"Production position commit");
+            SelectAt(WorldToScreen(CellPosition(new(25,12))));
+            Check(Session.Characters["nigel"].TacticalPosition==new Cell(25,12),"Production position commit");
             Check(Session.IsPresentationBusy&&nigel.Moving&&_endActivation.Disabled,"Animation input lock");
             Check(nigel.Position==visualStart,"Visual starts at actual traversed origin");
-            Check(Session.MoveTo(new(24,10)).Outcome==MovementOutcome.Rejected,"Duplicate movement blocked");
+            Check(Session.MoveTo(new(24,12)).Outcome==MovementOutcome.Rejected,"Duplicate movement blocked");
             _endActivation.EmitSignal(Button.SignalName.Pressed);
             Check(!Session.Characters["nigel"].HasActedThisRound,"End blocked during animation");
             AdvanceMovementViews(.1);
             Check(nigel.Position.DistanceTo(visualStart)>0&&nigel.Position.DistanceTo(visualStart)<1,"Smooth intermediate position");
             AdvanceMovementViews(20);RefreshMatchHud();
-            Check(!Session.IsPresentationBusy&&!nigel.Moving&&nigel.Position==CellPosition(new(25,10)),"Visual/domain reconciliation");
+            Check(!Session.IsPresentationBusy&&!nigel.Moving&&nigel.Position==CellPosition(new(25,12)),"Visual/domain reconciliation");
             Check(Session.Activations.CanUseMainAction&&!Session.Characters["nigel"].HasActedThisRound,"Move retains activation/Main Action");
-            Check(_details.Text.Contains("Position (25, 10)"),"Runtime coordinate HUD");
-            Check(Session.RemainingMovement==0&&Session.MoveTo(new(24,10)).Outcome==MovementOutcome.Rejected,"Unsplit movement opportunity");
+            Check(_details.Text.Contains("Position (25, 12)"),"Runtime coordinate HUD");
+            Check(Session.RemainingMovement==0&&Session.MoveTo(new(24,12)).Outcome==MovementOutcome.Rejected,"Unsplit movement opportunity");
             Check(Layout.Fixtures.Single(f=>f.CharacterId=="nigel").Cell==authoredNigelCell,"Authored spawn remains unchanged");
             _endActivation.EmitSignal(Button.SignalName.Pressed);
             Check(Session.CurrentPlayer==1,"End after movement passes control");
@@ -613,13 +676,13 @@ public partial class MobaBetaBattlefield : Node3D
                 RunCommand(()=>Session.Select(Session.Characters.Values.First(c=>Session.CanSelect(c.Id)).Id));
                 _endActivation.EmitSignal(Button.SignalName.Pressed);
             }
-            Check(!Session.Activations.MovementUsed&&Session.Characters["nigel"].TacticalPosition==new Cell(25,10),"Round reset preserves moved positions");
+            Check(!Session.Activations.MovementUsed&&Session.Characters["nigel"].TacticalPosition==new Cell(25,12),"Round reset preserves moved positions");
             StageAttackDemonstration();
             Check(_attackMode&&!_confirmAttack.Disabled&&_attackRings["nigel"].Visible,"Attack button enables legal target and confirmation");
             Check(!_attackRings["gentle_guardian"].Visible&&_attackPreview.Text.Contains("100% hit"),"No allied targets; production chance preview");
             int hpBefore=Session.Characters["nigel"].CurrentHealth;
             // Exercise the real target-click handler using the target's occupied floor cell.
-            SelectAt(_camera.UnprojectPosition(CellPosition(new(15,10))));
+            SelectAt(WorldToScreen(CellPosition(new(15,10))));
             Check(_attackTargetId=="nigel"&&Session.Characters["nigel"].CurrentHealth==hpBefore,"Target click previews without damage");
             _confirmAttack.EmitSignal(Button.SignalName.Pressed);
             Check(Session.Characters["nigel"].CurrentHealth<hpBefore&&_message.Text.Contains("HIT"),"Production attack updates actual HP and feedback");
@@ -642,7 +705,7 @@ public partial class MobaBetaBattlefield : Node3D
                     var c=Session.Characters[fixture.CharacterId];
                     Check(ReferenceEquals(c,fixture.RuntimeCharacter)&&c.TacticalPosition==fixture.Fixture.Cell&&fixture.GlobalPosition==CellPosition(fixture.Fixture.Cell),"Reset rebinds initial domain positions and visual transforms");
                     Check(c.CurrentHealth==c.BaseStats.MaxHealth&&c.ShieldHP==0&&!c.IsDefeated&&!c.HasActedThisRound,"Reset restores HP/shields/life/readiness");
-                    Check(fixture.GetChildren().OfType<StaticBody3D>().Count()==1&&_combatHud.HealthVisible(c.Id),"Repeated reset reuses picking body and restores health bar");
+                    Check(fixture.GetChildren().OfType<StaticBody3D>().Count()==1&&!_combatHud.HealthVisible(c.Id),"Repeated reset reuses picking body and leaves unselected health bars hidden");
                 }
                 StageAttackDemonstration();var target=Session.Characters["nigel"];target.SetShieldHP(0);target.TakeDamage(target.CurrentHealth-1);
                 _confirmAttack.EmitSignal(Button.SignalName.Pressed);
@@ -675,10 +738,15 @@ public partial class MobaBetaBattlefield : Node3D
             VerifyObjectiveSmoke();
             VerifyTimerSmoke();
             VerifyAssassinSmoke();
+            await VerifyHudSmoke();
+            VerifyHealthBarSmoke();
+            VerifyPolishSmoke();
+            await VerifyModelPickingSmoke();
+            VerifyFreeTestingSmoke();
             float size=_camera.Size;
-            _UnhandledInput(new InputEventMouseButton {ButtonIndex=MouseButton.WheelUp,Pressed=true});
+            _UnhandledInput(new InputEventMouseButton {ButtonIndex=MouseButton.WheelUp,Pressed=true,Position=_hud.BattlefieldRect.GetCenter()});
             Check(_camera.Size<size,"Wheel zoom in");
-            _UnhandledInput(new InputEventMouseButton {ButtonIndex=MouseButton.WheelDown,Pressed=true});
+            _UnhandledInput(new InputEventMouseButton {ButtonIndex=MouseButton.WheelDown,Pressed=true,Position=_hud.BattlefieldRect.GetCenter()});
             Check(Mathf.IsEqualApprox(size,_camera.Size),"Wheel zoom out");
             float yawBefore=_yaw;
             _UnhandledInput(new InputEventMouseMotion {ButtonMask=MouseButtonMask.Middle,Relative=new(40,0)});

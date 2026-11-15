@@ -35,7 +35,7 @@ public class MobaMovementTests
         Assert.Equal(before,s.SelectedCharacter.TacticalPosition);Assert.Null(s.Activations.ActiveCharacter);
         Assert.False(s.Activations.MovementUsed);Assert.Equal(2,s.CurrentPlayer);
     }
-    [Theory] [InlineData(26,9)] [InlineData(28,12)] [InlineData(26,12)] [InlineData(30,10)] [InlineData(27,20)] [InlineData(-1,10)] [InlineData(14,10)]
+    [Theory] [InlineData(27,6)] [InlineData(28,12)] [InlineData(26,12)] [InlineData(30,10)] [InlineData(27,20)] [InlineData(-1,10)] [InlineData(14,10)]
     public void BlockedOccupiedOutsideAndDistantDestinationsAreRejectedWithoutSpending(int x,int y)
     {
         var s=Nigel();var origin=s.SelectedCharacter!.TacticalPosition;

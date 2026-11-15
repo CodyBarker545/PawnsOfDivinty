@@ -1,0 +1,344 @@
+PAWNS OF DIVINITY
+CHARACTER ART, ANIMATION & ABILITY PRODUCTION ROADMAP
+Version 1.0 | 2026-11-14
+
+======================================================================
+1. GOAL AND PRODUCTION STRATEGY
+======================================================================
+
+Turn the six existing static prototype character models into textured,
+rigged, animated and playable Godot 4.7 (.NET/C#) combat units.
+
+IMPORTANT PRODUCTION ORDER:
+  1. Audit and prepare ALL SIX models.
+  2. Texture and rig ALL SIX to a consistent baseline.
+  3. Implement the SAME CORE ANIMATION SET for ALL SIX.
+  4. Integrate and test core animation states for ALL SIX in Godot.
+  5. Expand each character individually with its unique weapon attacks,
+     skill animations, visual effects, audio and polish.
+  6. Validate the complete roster in 5v5 battlefield scenarios.
+
+No character should be fully polished while others still lack basic idle,
+movement, attack, hit and death presentation. The common foundation comes
+first. Unique anatomy can require a custom skeleton and animation retargeting;
+shared means shared standards, states and coverage, not necessarily identical
+motion files.
+
+Keep core gameplay/combat logic authoritative in C#. Animations and VFX
+represent gameplay outcomes and should not independently determine damage,
+health, tile occupancy or status effects.
+
+======================================================================
+2. SIX-CHARACTER ROSTER
+======================================================================
+
+1. Hooded Assassin          - Stealth / physical melee
+2. Gentle Guardian          - Healer / support
+3. Time Weaver              - Intelligence / magic
+4. Nigel                    - Axe / physical bruiser
+5. Gravebound Colossus      - Tank / heavy weapon; unusual anatomy
+6. Beothuk Spirit Guardian  - Ice / terrain control
+
+Existing ability design to preserve:
+- Hooded Assassin: Smoke Bomb, smoke-based teleport/invisibility,
+  Shadow Strike, passive Smoke Veil.
+- Gentle Guardian: Healing Light and passive Gentle Blessing.
+- Beothuk Spirit Guardian: ice terrain creation.
+- Other exact active skills should be read from current game definitions or
+  finalized with the designer before creating bespoke animations.
+
+======================================================================
+3. PHASE A: AUDIT, MODEL READINESS AND SHARED STANDARDS
+======================================================================
+
+Stage A1 - Asset audit (all six)
+[ ] Locate current source models, Godot imports and animation files.
+[ ] Check scales, orientation, forward axes and ground alignment.
+[ ] Record polygon counts, UV coverage, materials and existing skeletons.
+[ ] Identify mesh defects, intersections and deformation concerns.
+[ ] Identify distinct moving parts: cloth, armor, weapons, attachments.
+[ ] Decide which characters can share a humanoid rig and which need custom rigs.
+[ ] Record current readiness in a per-character checklist.
+
+Deliverable: six asset audit sheets and prioritized repair tasks.
+Gate: all six have a documented path to texturing and rigging.
+
+Stage A2 - Asset and animation conventions
+[ ] Define a consistent character scale and orientation in Godot.
+[ ] Establish naming rules for meshes, rigs, bones, clips and exports.
+[ ] Choose a shared baseline animation state list and event vocabulary.
+[ ] Define sockets: main hand, off hand, head, projectile/effect origins.
+[ ] Decide on in-place movement first, driven by the tactical grid system.
+[ ] Define source/working vs Godot/runtime asset separation.
+[ ] Set polygon, texture and material budgets appropriate to 5v5 gameplay.
+
+Deliverable: Character Asset & Animation Contract (versioned specification).
+Gate: one sample model exports, reimports and respects conventions.
+
+======================================================================
+4. PHASE B: BASE MODEL, TEXTURE AND RIG PASS FOR ALL SIX
+======================================================================
+
+Stage B1 - Model cleanup (each of six)
+[ ] Fix damaged geometry and obvious clipping in the rest pose.
+[ ] Separate weapons/rigid pieces when useful, without unnecessary splits.
+[ ] Optimize mesh density without losing silhouette.
+[ ] Verify origin, pivot, unit scale and floor contact.
+[ ] Export a test GLB and inspect in Godot.
+
+Stage B2 - UV and base texture pass (each of six)
+[ ] Create or repair UVs and adequate island padding.
+[ ] Assign readable base-color materials and roughness/metallic as needed.
+[ ] Create normal maps where justified, not automatically for every asset.
+[ ] Keep color and material language cohesive across the roster.
+[ ] Test readability at actual tactical camera distances.
+
+Stage B3 - Rig and weight pass (each of six)
+[ ] Rig humanoids to a compatible standard when practical.
+[ ] Create a custom skeleton for nonstandard anatomy as needed.
+[ ] Weight-paint deforming parts; rigid-bind appropriate armor/components.
+[ ] Add weapon and VFX attachment sockets.
+[ ] Test shoulders, hips, elbows, knees, hands and accessories.
+[ ] Export a skinned GLB and inspect import/skeleton in Godot.
+
+Suggested processing order for this foundational pass:
+  Hooded Assassin -> Gentle Guardian -> Time Weaver -> Nigel ->
+  Beothuk Spirit Guardian -> Gravebound Colossus.
+This is an asset-production order, not character ability priority.
+
+Deliverable: six clean, textured, rigged baseline models in Godot.
+Gate: all six deform acceptably under test poses and are visually readable.
+
+======================================================================
+5. PHASE C: COMMON BASE ANIMATIONS FOR ALL SIX (PRIORITY)
+======================================================================
+
+Create the animation system with one representative character, then apply
+or adapt each animation to every other character before moving to advanced
+individual skills. Sharing animation intent and state names is mandatory;
+sharing raw motion clips is optional and anatomy-dependent.
+
+BASE ANIMATION CONTRACT (required for every character):
+
+  Idle              - looping neutral/combat idle
+  Move              - looping traversal/walk animation
+  BasicAttack       - generic first-pass attack/cast action
+  HitReact          - short damage reaction
+  Death             - non-looping defeat animation
+
+Recommended additional common animations when supported by gameplay:
+  TurnInPlace       - if tactical facing changes need presentation
+  Select/Inspect    - subtle unit-selection acknowledgment
+  Defend/Block      - only if an actual defense action requires it
+  Victory           - optional polish, not a phase gate
+
+Stage C1 - Base clips on reference character
+[ ] Import/create Idle, Move, BasicAttack, HitReact and Death.
+[ ] Fix foot sliding, weapon placement and mesh intersections.
+[ ] Check animation length, loop flags and consistent facing.
+[ ] Specify an event frame or timestamp for attack contact/cast release.
+
+Stage C2 - Roll out common clips to all six
+[ ] Hooded Assassin: all five required clips.
+[ ] Gentle Guardian: all five required clips; magic basic attack if applicable.
+[ ] Time Weaver: all five required clips; magic basic attack if applicable.
+[ ] Nigel: all five required clips with appropriate axe weight.
+[ ] Gravebound Colossus: all five required clips, custom heavy locomotion.
+[ ] Beothuk Spirit Guardian: all five required clips.
+[ ] Validate per-character clip names and state transitions.
+
+Stage C3 - Godot common animation controller
+[ ] Implement reusable scene/controller boundary for visual animation.
+[ ] Connect core states: Idle <-> Move, BasicAttack, HitReact, Death.
+[ ] Preserve grid position and facing as gameplay-owned properties.
+[ ] Trigger gameplay timing explicitly; do not rely on visual-only guesswork.
+[ ] Handle overlapping commands and interruption/death priorities.
+[ ] Ensure animations survive character replacement/reimport.
+[ ] Test all six in a shared animation showcase/test battlefield.
+
+BASE ANIMATION COMPLETION GATE:
+Every character can idle, move tile-to-tile, execute a basic attack animation,
+react to damage and die correctly within Godot. ALL SIX must pass before the
+character-specific production phase begins.
+
+======================================================================
+6. PHASE D: CHARACTER-BY-CHARACTER EXPANSION
+======================================================================
+
+Work one character at a time from unique animation to complete Godot
+integration. Use a repeatable workflow for each character:
+
+  D1. Confirm actual C# ability definition and expected gameplay behavior.
+  D2. Design animation beats: anticipation -> activation -> recovery.
+  D3. Produce skill-specific clips and weapon handling where needed.
+  D4. Mark precise release, hit and effect timing.
+  D5. Produce VFX, persistent world effects and SFX.
+  D6. Integrate with combat targeting, ability execution and UI.
+  D7. Test successful casts, failures, interrupts, death and edge cases.
+  D8. Lock the character pass and update its production checklist.
+
+CHARACTER 1: HOODED ASSASSIN
+[ ] Polish sword/melee BasicAttack beyond common prototype.
+[ ] Smoke Bomb deployment animation and smoke spawning effects.
+[ ] Smoke-based teleport: vanish, move, reappear presentation.
+[ ] Shadow Strike attack animation and impact effect.
+[ ] Visual treatment for invisible state and Smoke Veil.
+[ ] Ensure visibility and targeting rules are enforced by gameplay code.
+
+CHARACTER 2: GENTLE GUARDIAN
+[ ] Polish default attack/cast animation.
+[ ] Healing Light cast animation, target effect and timing.
+[ ] Gentle Blessing visual indicator for buff application.
+[ ] Ensure healing strength is based on Wisdom (WIS) in gameplay code.
+[ ] Ensure passive buffs use combat status logic, not animation state alone.
+
+CHARACTER 3: TIME WEAVER
+[ ] Polish spellcasting posture and basic magic attack.
+[ ] Confirm exact final unique skills from character definitions.
+[ ] Create animations for each confirmed time ability.
+[ ] Implement time-themed VFX and clear targeting feedback.
+[ ] Test effects in turn/activation systems, including interruption.
+
+CHARACTER 4: NIGEL
+[ ] Polish axe BasicAttack with convincing weight and follow-through.
+[ ] Confirm exact final unique skills from character definitions.
+[ ] Create bespoke windups, impacts and recovery clips as appropriate.
+[ ] Add readable strike impact effects and sound.
+[ ] Verify attack timing corresponds to weapon/gameplay rules.
+
+CHARACTER 5: GRAVEBOUND COLOSSUS
+[ ] Polish heavy movement/idle and check cathedral-back structure.
+[ ] Polish large sword and shield behavior, attachment and collisions.
+[ ] Confirm exact final unique skills from character definitions.
+[ ] Create specialized heavy-action animations and impacts.
+[ ] Verify shield/armor mesh clipping in all animation states.
+[ ] Optimize large model and effects for battlefield performance.
+
+CHARACTER 6: BEOTHUK SPIRIT GUARDIAN
+[ ] Polish physical/basic attack animation.
+[ ] Animate ice creation and any confirmed spirit-based skill actions.
+[ ] Add ice formation, duration and removal visual effects.
+[ ] Hook terrain changes into existing movement/LOS gameplay systems.
+[ ] Confirm additional active abilities before animating them.
+
+ORDER NOTE: This ordering is recommended but adjustable based on model
+readiness and current gameplay priorities. Do not invent unfinalized skills.
+
+======================================================================
+7. PHASE E: SHARED VFX, AUDIO, UI AND PRESENTATION
+======================================================================
+
+[ ] Reusable hit sparks, impact decals, damage indicators and cast origins.
+[ ] Reusable effect lifecycle: spawn -> update -> cleanup.
+[ ] Tile-targeting telegraphs and clear valid/invalid target feedback.
+[ ] Persistent smoke/ice world-state visuals match gameplay duration.
+[ ] Character selection visuals, tactical portraits and status indicators.
+[ ] Connect selected-unit UI to actual combat stats and equipped items.
+[ ] Add sounds to base actions and unique skill events.
+[ ] Test legibility at battlefield zoom and under different lighting.
+[ ] Keep character portraits/UI content separate from world-scale meshes.
+
+======================================================================
+8. PHASE F: PLAYTEST, REGRESSION AND PERFORMANCE
+======================================================================
+
+[ ] All six characters pass the five required base action checks.
+[ ] All implemented unique abilities animate and resolve correctly.
+[ ] Test 5v5 with multiple units acting sequentially and overlapping FX.
+[ ] Confirm camera movement/rotation/zoom does not break presentation.
+[ ] Confirm deaths, respawns/buybacks and redeployments reset visuals.
+[ ] Confirm ability and status restrictions remain gameplay authoritative.
+[ ] Confirm no unexpected rig/weapon clipping at practical camera views.
+[ ] Profile triangle counts, materials, texture memory and VFX load.
+[ ] Keep or add xUnit tests for pure C# orchestration/event decisions.
+[ ] Use Godot integration tests or manual scene validation for visual cases.
+
+FINAL ACCEPTANCE:
+Six readable textured characters, each with a functioning baseline
+animation set, character-specific skills and associated effects, integrated
+into the real Pawns of Divinity battlefield without breaking gameplay logic.
+
+======================================================================
+9. TRACKING MATRIX
+======================================================================
+
+Legend: [ ] Not verified/complete   [x] Verified complete
+
+Character                  Model Texture Rig  Base5 Skills VFX Godot QA
+-------------------------  ----- ------- ---  ----- ------ --- ----- --
+Hooded Assassin             [ ]    [ ]   [ ]  [ ]    [ ]  [ ] [ ]  [ ]
+Gentle Guardian             [ ]    [ ]   [ ]  [ ]    [ ]  [ ] [ ]  [ ]
+Time Weaver                 [ ]    [ ]   [ ]  [ ]    [ ]  [ ] [ ]  [ ]
+Nigel                       [ ]    [ ]   [ ]  [ ]    [ ]  [ ] [ ]  [ ]
+Gravebound Colossus         [ ]    [ ]   [ ]  [ ]    [ ]  [ ] [ ]  [ ]
+Beothuk Spirit Guardian     [ ]    [ ]   [ ]  [ ]    [ ]  [ ] [ ]  [ ]
+
+Tracking rules:
+- Check a cell only after the corresponding acceptance gate is tested.
+- Base5 means all five required base clips work in Godot, not merely exist.
+- Skills means all currently finalized/implemented skill animations covered.
+- Re-audit when source models or gameplay ability definitions change.
+
+======================================================================
+10. WORKFLOW, FILE CONVENTIONS AND CODEX STAGES
+======================================================================
+
+Suggested structure; reconcile with the existing repository before changes:
+
+SourceAssets/Characters/<CharacterId>/
+  Blender/
+  Textures/
+  AnimationSources/
+  Exports/
+
+Assets/Characters/<CharacterId>/
+  Model/
+  Materials/
+  Animations/
+  Effects/
+
+Scenes/Characters/
+Scripts/Presentation/Characters/
+Scripts/Presentation/Animation/
+Scripts/Presentation/Effects/
+Tests/ (existing solution test conventions)
+
+Proposed Codex work packages:
+  CP-00: Inspect repo and six character assets; report without rewriting.
+  CP-01: Establish asset/animation conventions and validation checklist.
+  CP-02: Import and verify six baseline models/rigs.
+  CP-03: Create/configure shared animation controller and test scene.
+  CP-04: Implement/test Idle + Move on all six.
+  CP-05: Implement/test BasicAttack on all six.
+  CP-06: Implement/test HitReact + Death on all six.
+  CP-07: Verify base-animation completion gate for all six.
+  CP-08: Hooded Assassin unique skill animations/effects.
+  CP-09: Gentle Guardian unique skill animations/effects.
+  CP-10: Time Weaver unique skill animations/effects.
+  CP-11: Nigel unique skill animations/effects.
+  CP-12: Gravebound Colossus unique skill animations/effects.
+  CP-13: Beothuk Spirit Guardian unique skill animations/effects.
+  CP-14: Full-roster integration, UI, automated tests and polish.
+
+Codex should inspect the actual project before modifying files. Maintain
+existing naming conventions and avoid destroying hand-authored Blender work.
+For each stage: explain each class, function and integration decision;
+implement a limited change; run relevant .NET/xUnit tests; document what
+requires visual inspection in Godot; stop at the stage gate.
+
+======================================================================
+11. IMMEDIATE NEXT ACTION
+======================================================================
+
+START WITH CP-00: ASSET AUDIT.
+
+Inspect all six current prototype characters, their import scenes and the
+existing gameplay/animation systems. Produce a report classifying each as:
+  Ready for base animations / Needs UVs or textures / Needs rig repairs /
+  Needs mesh repairs / Needs custom animation setup.
+
+Then establish the required five base animations (Idle, Move, BasicAttack,
+HitReact, Death) for ALL SIX before making any unique skills. This is the
+primary production priority of this roadmap.
+
+END OF ROADMAP

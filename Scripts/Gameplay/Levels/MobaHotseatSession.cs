@@ -25,11 +25,12 @@ public sealed partial class MobaHotseatSession
         return new(teamId,team.Count(c=>c.CanAct),team.Length,team.Count(c=>!c.IsDefeated));
     }
     public IReadOnlyDictionary<string, Character> Characters { get; }
-    public ActivationManager Activations { get; }
-    public RoundLifecycleManager Lifecycle { get; } = new();
+    public ActivationManager Activations { get; private set; }
+    public RoundLifecycleManager Lifecycle { get; private set; } = new();
     public MobaMovementMap MovementMap { get; }
     private readonly MobaBetaLayout _layout;
-    private readonly MovementActionExecutor _movement;
+    private MovementActionExecutor _movement;
+    private readonly Func<ActivationManager,MovementActionExecutor> _movementFactory;
     private readonly RoundCleanupCoordinator _cleanup;
     private readonly DelayedAttackScheduler _delayed = new();
     private long _moveSequence;
@@ -38,16 +39,17 @@ public sealed partial class MobaHotseatSession
     public bool RequiresManualRecovery { get; private set; }
     public int StartingPlayer { get; }
     public int Round => Activations.CurrentRound;
-    public int? CurrentPlayer => Activations.ActiveCharacter?.TeamId ?? Activations.NextTeamId;
+    public int? CurrentPlayer => FreeTesting?SelectedCharacter?.TeamId:Activations.ActiveCharacter?.TeamId ?? Activations.NextTeamId;
     public string? SelectedFixtureId { get; private set; }
     public Character? SelectedCharacter => SelectedFixtureId is { } id ? Characters[id] : null;
 
     public MobaHotseatSession(MobaBetaLayout layout, int startingPlayer = 1,
         IRandomRollProvider? random = null,bool developmentOpenTargeting = true,DevelopmentScoringProfile? scoringProfile=null,
-        ActivationTimerConfiguration? timerConfiguration=null,IActivationTimeSource? timeSource=null,AssassinDevelopmentProfile? assassinProfile=null)
+        ActivationTimerConfiguration? timerConfiguration=null,IActivationTimeSource? timeSource=null,AssassinDevelopmentProfile? assassinProfile=null,bool freeTesting=false)
     {
         ArgumentNullException.ThrowIfNull(layout);
         _layout=layout;
+        FreeTesting=freeTesting;
         if(startingPlayer is not (1 or 2))throw new ArgumentOutOfRangeException(nameof(startingPlayer));
         var roster=new Dictionary<string,Character>(StringComparer.Ordinal);
         foreach(var fixture in layout.Fixtures)
@@ -77,13 +79,14 @@ public sealed partial class MobaHotseatSession
         InitializeCombat(combat,developmentOpenTargeting);
         InitializeAssassin(combat,assassinProfile??new());
         _movement=new(Activations,Lifecycle,MovementMap,walls,ice,sentinel,combat,new NoCombatInputs());
+        _movementFactory=manager=>new(manager,Lifecycle,MovementMap,walls,ice,new ImpalingSentinelTracker(manager,Lifecycle),combat,new NoCombatInputs());
         PrepareCurrentRound();
-        InitializeTimer(timerConfiguration??new(),timeSource);
+        var timer=timerConfiguration??new();InitializeTimer(FreeTesting?timer with {Enabled=false}:timer,timeSource);
     }
 
     public bool CanSelect(string fixtureId) => Characters.TryGetValue(fixtureId,out var c)
         && !Victory.IsFinished&&!RequiresManualRecovery&&!IsPresentationBusy&&Lifecycle.CurrentPhase==RoundPhase.AlternatingActivations
-        && c.CanAct && (Activations.ActiveCharacter is { } active ? ReferenceEquals(c,active) : c.TeamId==Activations.NextTeamId);
+        && (FreeTesting?!c.IsDefeated:c.CanAct && (Activations.ActiveCharacter is { } active ? ReferenceEquals(c,active) : c.TeamId==Activations.NextTeamId));
 
     /// <summary>Inspection/selection costs nothing. Commands use the production action economy.</summary>
     public BattlefieldCommandResult Select(string? fixtureId)
@@ -92,12 +95,14 @@ public sealed partial class MobaHotseatSession
         if(Victory.IsFinished||IsPresentationBusy||RequiresManualRecovery)return new(BattlefieldOutcome.Rejected,"Match finished, movement presenting, or recovery required.");
         if(fixtureId is null){CancelAssassinTargeting();SelectedFixtureId=null;return new(BattlefieldOutcome.Completed,"Selection cleared.");}
         if(!CanSelect(fixtureId))return new(BattlefieldOutcome.Rejected,"Choose a ready, living unit belonging to the current player.");
+        if(FreeTesting&&SelectedFixtureId!=fixtureId)PrepareFreeTestActor(Characters[fixtureId]);
         if(SelectedFixtureId!=fixtureId)CancelAssassinTargeting();SelectedFixtureId=fixtureId;
         return new(BattlefieldOutcome.Completed,$"Selected {Characters[fixtureId].Name}.");
     }
 
     public BattlefieldCommandResult EndSelectedActivation()
     {
+        if(FreeTesting)return new(BattlefieldOutcome.Rejected,"DEV free testing: turn order is disconnected.");
         using var timing=BeginTimedCommand();if(!timing.Accepted)return new(BattlefieldOutcome.Rejected,"Activation already ended by timeout.");
         if(SelectedFixtureId is not { } id || !CanSelect(id))
             return new(BattlefieldOutcome.Rejected,"Select an eligible friendly unit before ending its activation.");
@@ -114,6 +119,8 @@ public sealed partial class MobaHotseatSession
     {
         _activationSerial++;
         CancelAssassinTargeting();_approaches.Clear();
+        if(FreeTesting)
+        {foreach(var c in Characters.Values)c.ResetActivation();return new(BattlefieldOutcome.Completed," Free testing: choose either team; no turn handoff.");}
         if(Victory.IsFinished)return new(BattlefieldOutcome.Completed," Match finished.");
         if(Activations.IsRoundComplete && Characters.Values.Any(c=>!c.IsDefeated))
         {
@@ -158,7 +165,7 @@ public sealed partial class MobaHotseatSession
     {
         if(SelectedCharacter is not {TacticalPosition:{ } origin} actor||!CanSelect(actor.Id)
             ||(Activations.IsActivationActive&&!Activations.CanMove))return new Dictionary<GridPosition,TacticalRoute>();
-        return GridPathfinder.Reachable(origin,_layout.Board.Width,_layout.Board.Height,actor.EffectiveMovement,
+        return GridPathfinder.Reachable(origin,_layout.Board.Width,_layout.Board.Height,RemainingMovement,
             p=>MovementMap.IsValidPosition(p)==true&&(p==origin||!MovementMap.IsOccupied(p)),
             (from,to)=>MovementMap.GetStepCost(actor,from,to)).Where(e=>e.Value.Cost>0).ToDictionary(e=>e.Key,e=>e.Value);
     }
