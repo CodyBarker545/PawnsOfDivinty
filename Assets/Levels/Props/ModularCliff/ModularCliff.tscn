@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Props/ModularCliff/ModularCliffFace.tscn" id="Face"]
+[ext_resource type="PackedScene" path="res://Assets/Levels/Props/ModularCliff/ModularCliffEdgeCap.tscn" id="Cap"]
+
+[node name="ModularCliff" type="Node3D"]
+
+[node name="Face" parent="." instance=ExtResource("Face")]
+
+[node name="EdgeCap" parent="." instance=ExtResource("Cap")]

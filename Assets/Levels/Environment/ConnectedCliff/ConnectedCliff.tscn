@@ -1,0 +1,198 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ConnectedCliff/BroadFaceA.tscn" id="BroadFaceA"]
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ConnectedCliff/BroadFaceB.tscn" id="BroadFaceB"]
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ConnectedCliff/LayeredOverhang.tscn" id="LayeredOverhang"]
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ConnectedCliff/FractureRib.tscn" id="FractureRib"]
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ConnectedCliff/SeamBoulder.tscn" id="SeamBoulder"]
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ConnectedCliff/CliffTransitions.tscn" id="ground"]
+
+[node name="ConnectedCliffEnvironment" type="Node3D"]
+metadata/stage = "3.0C"
+
+[node name="TerrainTransitions" parent="." instance=ExtResource("ground")]
+
+[node name="Cliff_001" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(-1.594, -1.9, 22.88)
+rotation = Vector3(0, -0.12183, 0)
+scale = Vector3(2.06912, 2.19025, 0.73802)
+
+[node name="Cliff_002" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(-1.53712, -0.18, 22.93)
+rotation = Vector3(0, -0.06776, 0)
+scale = Vector3(1.47288, 0.34561, 0.66)
+
+[node name="Cliff_003" parent="." instance=ExtResource("FractureRib" )]
+position = Vector3(-0.85416, -1.88, 23.15)
+rotation = Vector3(0, 0.01716, 0)
+scale = Vector3(0.34, 1.77682, 0.49)
+
+[node name="Cliff_004" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(-1.61067, -1.84, 23.48)
+rotation = Vector3(0, -0.15461, 0)
+scale = Vector3(1.0126, 0.15746, 0.36)
+
+[node name="Cliff_005" parent="." instance=ExtResource("BroadFaceB" )]
+position = Vector3(-0.344, -1.9, 22.88)
+rotation = Vector3(0, -0.08686, 0)
+scale = Vector3(0.14268, 2.12508, 0.9168)
+
+[node name="Cliff_006" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(-0.48175, -1.84, 23.48)
+rotation = Vector3(0, 0.0331, 0)
+scale = Vector3(0.45032, 0.16224, 0.15926)
+
+[node name="Cliff_007" parent="." instance=ExtResource("BroadFaceB" )]
+position = Vector3(8.95509, -1.9, 22.88)
+rotation = Vector3(0, 0.03571, 0)
+scale = Vector3(3.3837, 1.95871, 0.96774)
+
+[node name="Cliff_008" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(8.9003, -0.18, 22.93)
+rotation = Vector3(0, -0.03299, 0)
+scale = Vector3(1.52408, 0.39013, 0.66)
+
+[node name="Cliff_009" parent="." instance=ExtResource("FractureRib" )]
+position = Vector3(10.04634, -1.88, 23.15)
+rotation = Vector3(0, 0.03879, 0)
+scale = Vector3(0.34, 1.74697, 0.49)
+
+[node name="Cliff_010" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(9.10379, -1.84, 23.48)
+rotation = Vector3(0, -0.21928, 0)
+scale = Vector3(0.92856, 0.16936, 0.36)
+
+[node name="Cliff_011" parent="." instance=ExtResource("BroadFaceA" )]
+position = Vector3(12.07158, -1.9, 22.88)
+rotation = Vector3(0, 0.09998, 0)
+scale = Vector3(3.22283, 2.10957, 0.77217)
+
+[node name="Cliff_012" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(12.25044, -1.84, 23.48)
+rotation = Vector3(0, 0.29886, 0)
+scale = Vector3(1.09898, 0.16485, 0.36)
+
+[node name="Cliff_013" parent="." instance=ExtResource("BroadFaceB" )]
+position = Vector3(14.98957, -1.9, 22.88)
+rotation = Vector3(0, 0.07304, 0)
+scale = Vector3(3.41314, 1.97699, 0.84319)
+
+[node name="Cliff_014" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(15.00586, -0.18, 22.93)
+rotation = Vector3(0, -0.01097, 0)
+scale = Vector3(1.76658, 0.44525, 0.66)
+
+[node name="Cliff_015" parent="." instance=ExtResource("FractureRib" )]
+position = Vector3(15.95377, -1.88, 23.15)
+rotation = Vector3(0, -0.05959, 0)
+scale = Vector3(0.34, 1.90374, 0.49)
+
+[node name="Cliff_016" parent="." instance=ExtResource("BroadFaceA" )]
+position = Vector3(17.99805, -1.9, 22.88)
+rotation = Vector3(0, 0.08144, 0)
+scale = Vector3(3.40383, 1.98157, 0.81581)
+
+[node name="Cliff_017" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(18.05489, -0.18, 22.93)
+rotation = Vector3(0, 0.05044, 0)
+scale = Vector3(1.19248, 0.39611, 0.66)
+
+[node name="Cliff_018" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(18.00844, -1.84, 23.48)
+rotation = Vector3(0, -0.04336, 0)
+scale = Vector3(0.57234, 0.22061, 0.36)
+
+[node name="Cliff_019" parent="." instance=ExtResource("BroadFaceB" )]
+position = Vector3(20.54221, -1.9, 22.88)
+rotation = Vector3(0, 0.05789, 0)
+scale = Vector3(2.48449, 1.94049, 0.94785)
+
+[node name="Cliff_020" parent="." instance=ExtResource("FractureRib" )]
+position = Vector3(21.20925, -1.88, 23.15)
+rotation = Vector3(0, -0.06448, 0)
+scale = Vector3(0.34, 1.77378, 0.49)
+
+[node name="Cliff_021" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(20.43275, -1.84, 23.48)
+rotation = Vector3(0, 0.18206, 0)
+scale = Vector3(0.9678, 0.18218, 0.36)
+
+[node name="Cliff_022" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(22.81717, -1.9, 22.88)
+rotation = Vector3(0, -0.06599, 0)
+scale = Vector3(2.86544, 2.19114, 0.903)
+
+[node name="Cliff_023" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(22.65907, -0.18, 22.93)
+rotation = Vector3(0, 0.04248, 0)
+scale = Vector3(1.18092, 0.43474, 0.66)
+
+[node name="Cliff_024" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(25.64995, -1.9, 22.88)
+rotation = Vector3(0, 0.12953, 0)
+scale = Vector3(3.18011, 2.00468, 0.68496)
+
+[node name="Cliff_025" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(25.45781, -0.18, 22.93)
+rotation = Vector3(0, 0.04233, 0)
+scale = Vector3(1.23585, 0.37642, 0.66)
+
+[node name="Cliff_026" parent="." instance=ExtResource("FractureRib" )]
+position = Vector3(26.67398, -1.88, 23.15)
+rotation = Vector3(0, -0.0298, 0)
+scale = Vector3(0.34, 1.79368, 0.49)
+
+[node name="Cliff_027" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(25.48323, -1.84, 23.48)
+rotation = Vector3(0, -0.07114, 0)
+scale = Vector3(0.8881, 0.15413, 0.36)
+
+[node name="Cliff_028" parent="." instance=ExtResource("BroadFaceB" )]
+position = Vector3(31.39538, -1.9, 22.88)
+rotation = Vector3(0, 0.11548, 0)
+scale = Vector3(3.26827, 1.97529, 0.71737)
+
+[node name="Cliff_029" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(31.3386, -0.18, 22.93)
+rotation = Vector3(0, 0.03551, 0)
+scale = Vector3(1.2211, 0.43648, 0.66)
+
+[node name="Cliff_030" parent="." instance=ExtResource("FractureRib" )]
+position = Vector3(32.44842, -1.88, 23.15)
+rotation = Vector3(0, 0.00691, 0)
+scale = Vector3(0.34, 1.90485, 0.49)
+
+[node name="Cliff_031" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(31.45609, -1.84, 23.48)
+rotation = Vector3(0, 0.27593, 0)
+scale = Vector3(0.42265, 0.17438, 0.36)
+
+[node name="Cliff_032" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(33.89538, -1.9, 22.88)
+rotation = Vector3(0, -0.02508, 0)
+scale = Vector3(1.68925, 1.95523, 1.04798)
+
+[node name="Cliff_033" parent="." instance=ExtResource("SeamBoulder" )]
+position = Vector3(34.03738, -1.84, 23.48)
+rotation = Vector3(0, 0.27043, 0)
+scale = Vector3(0.4796, 0.19592, 0.36)
+
+[node name="Cliff_034" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(10.3, -1.12, 23.03)
+rotation = Vector3(0, -0.07, 0)
+scale = Vector3(1.9, 0.48, 0.76)
+
+[node name="Cliff_035" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(15.8, -0.78, 23.03)
+rotation = Vector3(0, 0.045, 0)
+scale = Vector3(2.2, 0.48, 0.76)
+
+[node name="Cliff_036" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(20.1, -1.29, 23.03)
+rotation = Vector3(0, -0.055, 0)
+scale = Vector3(1.7, 0.48, 0.76)
+
+[node name="Cliff_037" parent="." instance=ExtResource("LayeredOverhang" )]
+position = Vector3(25.6, -0.93, 23.03)
+rotation = Vector3(0, 0.08, 0)
+scale = Vector3(1.8, 0.48, 0.76)

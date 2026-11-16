@@ -1,0 +1,37 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ForwardCastleStairs/CastleCliffJunction.glb" id="junction"]
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/EasternStair/EasternStair.tscn" id="stairs"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial2.tres" id="CliffRock"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial0.tres" id="AdjacentGround"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial1.tres" id="Understory"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/LowerTerrace/Ground.tres" id="LowerGround"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial3.tres" id="CastleMasonry"]
+
+[node name="ForwardCastleStairs" type="Node3D"]
+metadata/stage = "3.0D.2C"
+
+[node name="Junction" parent="." instance=ExtResource("junction")]
+
+[node name="AdjacentGround" parent="Junction" index=0]
+material_override = ExtResource("AdjacentGround")
+
+[node name="CastleMasonry" parent="Junction" index=1]
+material_override = ExtResource("CastleMasonry")
+
+[node name="CliffRock" parent="Junction" index=2]
+material_override = ExtResource("CliffRock")
+
+[node name="LowerGround" parent="Junction" index=3]
+material_override = ExtResource("LowerGround")
+
+[node name="Understory" parent="Junction" index=4]
+material_override = ExtResource("Understory")
+
+[node name="WestCastleDescent" parent="." instance=ExtResource("stairs")]
+position = Vector3(-20, 0, 0)
+
+[node name="EastCastleDescent" parent="." instance=ExtResource("stairs")]
+position = Vector3(-5, 0, 0)
+
+[editable path="Junction"]

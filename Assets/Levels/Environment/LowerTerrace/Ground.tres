@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Levels/Environment/LowerTerrace/LowerTerrainColor.png" id="color"]
+[ext_resource type="Texture2D" path="res://Assets/Levels/Environment/LowerTerrace/LowerTerrainNormal.png" id="normal"]
+
+[resource]
+resource_name = "Unique blended lower landscape"
+albedo_texture = ExtResource("color")
+roughness = 0.94
+normal_enabled = true
+normal_scale = 0.16
+normal_texture = ExtResource("normal")
+texture_filter = 3

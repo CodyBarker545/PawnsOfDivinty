@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/WesternStairSlice/WesternStairSlice.glb" id="1"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial0.tres" id="m0"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial1.tres" id="m1"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial2.tres" id="m2"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial3.tres" id="m3"]
+
+[node name="WesternStairEnvironment" type="Node3D"]
+metadata/stage = "3.0B"
+metadata/purpose = "Decorative connected western staircase; no gameplay or collision"
+
+[node name="Landscape" parent="." instance=ExtResource("1")]
+
+[node name="Blended moss earth and grass" parent="Landscape" index=0]
+material_override = ExtResource("m0")
+
+[node name="Desaturated understory" parent="Landscape" index=1]
+material_override = ExtResource("m1")
+
+[node name="Weathered charcoal escarpment" parent="Landscape" index=2]
+material_override = ExtResource("m2")
+
+[node name="Worn slate steps and masonry" parent="Landscape" index=3]
+material_override = ExtResource("m3")
+
+[editable path="Landscape"]

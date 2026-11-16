@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" path="res://Scenes/Battlefields/CliffsideArena/red_forward.tscn" id="8_rdu7r"]
 [ext_resource type="PackedScene" path="res://Scenes/Battlefields/MobaBeta/Elements/Objective.tscn" id="11_ounru"]
 [ext_resource type="PackedScene" path="res://Scenes/Battlefields/CliffsideArena/ForestTree.tscn" id="12_s1m7f"]
+[ext_resource type="PackedScene" path="res://Assets/Levels/Props/ModularCliff/ModularCliff.tscn" id="ModularCliff"]
 [ext_resource type="PackedScene" path="res://Scenes/Battlefields/MobaBeta/Elements/Ruin.tscn" id="13_5be0p"]
 [ext_resource type="Script" path="res://Scripts/Gameplay/Levels/StaticTacticalCharacter.cs" id="14_20w2p"]
 [ext_resource type="PackedScene" path="res://Assets/Characters/MobaBeta/AssassinTextured.glb" id="15_xs1h6"]
@@ -20,6 +21,19 @@
 [ext_resource type="Script" path="res://Scripts/Gameplay/Levels/BetaScoringSettings.cs" id="21_scoring"]
 [ext_resource type="Script" path="res://Scripts/Gameplay/Levels/BetaActivationTimerSettings.cs" id="22_timer"]
 [ext_resource type="Script" path="res://Scripts/Gameplay/Levels/BetaAssassinSettings.cs" id="23_assassin"]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/WesternStairSlice/WesternStairSlice.tscn" id="WesternStairSlice"]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ConnectedCliff/ConnectedCliff.tscn" id="ConnectedCliff"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/ConnectedCliff/EasternStepSlate.tres" id="EasternStepSlate"]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/LowerTerrace/LowerTerrace.tscn" id="LowerTerrace"]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/EasternStair/EasternStair.tscn" id="EasternStair"]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/FortStairIntegration/FortStairIntegration.tscn" id="FortStairIntegration"]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ForwardCastleStairs/ForwardCastleStairs.tscn" id="ForwardCastleStairs"]
 
 [sub_resource type="StandardMaterial3D" id="ShrubLeaves"]
 albedo_color = Color(0.105, 0.25, 0.145, 1)
@@ -230,6 +244,7 @@ DevelopmentScoring = SubResource("Resource_dev_scoring")
 DevelopmentTimer = SubResource("Resource_dev_timer")
 DevelopmentAssassin = SubResource("Resource_dev_assassin")
 FreeTesting = false
+TacticalGridInitiallyVisible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1639207859]
 environment = SubResource("Environment")
@@ -927,15 +942,17 @@ Elevation = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.875, 0, 22.875)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_4_15"
-TerrainTag = "stairs"
-Elevation = -1
+TerrainTag = "cliff"
+Elevation = 0
+BlocksMovement = true
 
 [node name="tile_4_16" type="Node3D" parent="Terrain" unique_id=2002833230]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.875, 0, 24.125)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_4_16"
-TerrainTag = "stairs"
-Elevation = -2
+TerrainTag = "flank"
+Elevation = -3
+BlocksMovement = false
 
 [node name="tile_4_17" type="Node3D" parent="Terrain" unique_id=1027851501]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.875, 0, 25.375)
@@ -1068,15 +1085,17 @@ Elevation = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.125, 0, 22.875)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_5_15"
-TerrainTag = "stairs"
-Elevation = -1
+TerrainTag = "cliff"
+Elevation = 0
+BlocksMovement = true
 
 [node name="tile_5_16" type="Node3D" parent="Terrain" unique_id=1917023259]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.125, 0, 24.125)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_5_16"
-TerrainTag = "stairs"
-Elevation = -2
+TerrainTag = "flank"
+Elevation = -3
+BlocksMovement = false
 
 [node name="tile_5_17" type="Node3D" parent="Terrain" unique_id=606407328]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.125, 0, 25.375)
@@ -1493,16 +1512,17 @@ Elevation = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.875, 0, 22.875)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_8_15"
-TerrainTag = "cliff"
-Elevation = 0
-BlocksMovement = true
+TerrainTag = "stairs"
+Elevation = -1
+BlocksMovement = false
 
 [node name="tile_8_16" type="Node3D" parent="Terrain" unique_id=822462104]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.875, 0, 24.125)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_8_16"
-TerrainTag = "flank"
-Elevation = -3
+TerrainTag = "stairs"
+Elevation = -2
+BlocksMovement = false
 
 [node name="tile_8_17" type="Node3D" parent="Terrain" unique_id=1971493848]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.875, 0, 25.375)
@@ -1634,16 +1654,17 @@ Elevation = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.125, 0, 22.875)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_9_15"
-TerrainTag = "cliff"
-Elevation = 0
-BlocksMovement = true
+TerrainTag = "stairs"
+Elevation = -1
+BlocksMovement = false
 
 [node name="tile_9_16" type="Node3D" parent="Terrain" unique_id=1713928467]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.125, 0, 24.125)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_9_16"
-TerrainTag = "flank"
-Elevation = -3
+TerrainTag = "stairs"
+Elevation = -2
+BlocksMovement = false
 
 [node name="tile_9_17" type="Node3D" parent="Terrain" unique_id=210145704]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.125, 0, 25.375)
@@ -3195,16 +3216,17 @@ Elevation = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.875, 0, 22.875)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_20_15"
-TerrainTag = "cliff"
-Elevation = 0
-BlocksMovement = true
+TerrainTag = "stairs"
+Elevation = -1
+BlocksMovement = false
 
 [node name="tile_20_16" type="Node3D" parent="Terrain" unique_id=1870345919]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.875, 0, 24.125)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_20_16"
-TerrainTag = "flank"
-Elevation = -3
+TerrainTag = "stairs"
+Elevation = -2
+BlocksMovement = false
 
 [node name="tile_20_17" type="Node3D" parent="Terrain" unique_id=1865243985]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.875, 0, 25.375)
@@ -3336,16 +3358,17 @@ Elevation = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.125, 0, 22.875)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_21_15"
-TerrainTag = "cliff"
-Elevation = 0
-BlocksMovement = true
+TerrainTag = "stairs"
+Elevation = -1
+BlocksMovement = false
 
 [node name="tile_21_16" type="Node3D" parent="Terrain" unique_id=958193982]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.125, 0, 24.125)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_21_16"
-TerrainTag = "flank"
-Elevation = -3
+TerrainTag = "stairs"
+Elevation = -2
+BlocksMovement = false
 
 [node name="tile_21_17" type="Node3D" parent="Terrain" unique_id=2000590532]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.125, 0, 25.375)
@@ -3763,15 +3786,17 @@ Elevation = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.875, 0, 22.875)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_24_15"
-TerrainTag = "stairs"
-Elevation = -1
+TerrainTag = "cliff"
+Elevation = 0
+BlocksMovement = true
 
 [node name="tile_24_16" type="Node3D" parent="Terrain" unique_id=744280044]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.875, 0, 24.125)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_24_16"
-TerrainTag = "stairs"
-Elevation = -2
+TerrainTag = "flank"
+Elevation = -3
+BlocksMovement = false
 
 [node name="tile_24_17" type="Node3D" parent="Terrain" unique_id=649130048]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.875, 0, 25.375)
@@ -3904,15 +3929,17 @@ Elevation = 0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.125, 0, 22.875)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_25_15"
-TerrainTag = "stairs"
-Elevation = -1
+TerrainTag = "cliff"
+Elevation = 0
+BlocksMovement = true
 
 [node name="tile_25_16" type="Node3D" parent="Terrain" unique_id=1983735204]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.125, 0, 24.125)
 script = ExtResource("4_8ymnr")
 ElementId = "tile_25_16"
-TerrainTag = "stairs"
-Elevation = -2
+TerrainTag = "flank"
+Elevation = -3
+BlocksMovement = false
 
 [node name="tile_25_17" type="Node3D" parent="Terrain" unique_id=1020444804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.125, 0, 25.375)
@@ -5336,21 +5363,74 @@ ElementId = "east_lane_jungle"
 Kind = 9
 CellOffsets = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 2)])
 
-[node name="west_outer_flank" type="Node3D" parent="Connections" unique_id=1110540363]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.125, 0, 20.375)
+[node name="west_forward_castle_jungle" type="Node3D" parent="Connections" unique_id=1110540363]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.875, 0, 20.375)
 script = ExtResource("4_8ymnr")
-ElementId = "west_outer_flank"
+ElementId = "west_forward_castle_jungle"
 Kind = 9
-CellOffsets = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(0, 3), Vector2i(0, 4)])
+CellOffsets = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(0, 3), Vector2i(0, 4), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 4)])
 
-[node name="east_outer_flank" type="Node3D" parent="Connections" unique_id=1104736691]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.875, 0, 20.375)
+[node name="east_forward_castle_jungle" type="Node3D" parent="Connections" unique_id=1104736691]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.875, 0, 20.375)
 script = ExtResource("4_8ymnr")
-ElementId = "east_outer_flank"
+ElementId = "east_forward_castle_jungle"
 Kind = 9
-CellOffsets = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(0, 3), Vector2i(0, 4)])
+CellOffsets = Array[Vector2i]([Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2), Vector2i(0, 3), Vector2i(0, 4), Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, 2), Vector2i(1, 3), Vector2i(1, 4)])
 
 [node name="GridOverlay" type="Node3D" parent="." unique_id=1331390754]
+visible = false
+
+[node name="LegacyLines" type="Node3D" parent="GridOverlay"]
+visible = false
+
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_4_15"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_4_16"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_5_15"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_5_16"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_8_15"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_8_16"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_9_15"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_9_16"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_20_15"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_20_16"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_21_15"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_21_16"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_24_15"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_24_16"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_25_15"]
+visible = false
+
+[node name="LegacyVisuals" type="Node3D" parent="Terrain/tile_25_16"]
+visible = false
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_0_0"]
 position = Vector3(0.00000, -0.92500, 0.00000)
@@ -5437,36 +5517,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_0_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_0_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_0_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_0_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_0_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_0_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -5557,36 +5643,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_1_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_1_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_1_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_1_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_1_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_1_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -5671,42 +5763,55 @@ mesh = SubResource("Block")
 material_override = SubResource("Teal")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_2_13"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
+
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_2_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_2_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_2_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_2_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_2_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_2_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -5791,42 +5896,55 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_3_13"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
+
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_3_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_3_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_3_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_3_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_3_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_3_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -5911,90 +6029,119 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_4_13"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_4_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grass")
 
-[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_4_15"]
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_4_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -0.98500, -0.50000)
 scale = Vector3(1.25000, 1.73000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_4_15"]
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_4_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.10500, -0.25000)
 scale = Vector3(1.25000, 1.49000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_4_15"]
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_4_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.22500, 0.00000)
 scale = Vector3(1.25000, 1.25000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_4_15"]
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_4_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.29500, 0.25000)
 scale = Vector3(1.25000, 1.11000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_4_15"]
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_4_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.35500, 0.50000)
 scale = Vector3(1.25000, 0.99000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_4_16"]
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_4_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.70500, -0.50000)
 scale = Vector3(1.25, 1.49000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_4_16"]
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_4_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.76500, -0.25000)
 scale = Vector3(1.25, 1.37000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_4_16"]
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_4_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.82500, 0.00000)
 scale = Vector3(1.25, 1.25000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_4_16"]
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_4_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.94500, 0.25000)
 scale = Vector3(1.25, 1.01000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_4_16"]
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_4_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -2.06500, 0.50000)
 scale = Vector3(1.25, 0.77000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_4_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_4_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_4_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -6079,90 +6226,119 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_5_13"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_5_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grass")
 
-[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_5_15"]
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_5_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -0.98500, -0.50000)
 scale = Vector3(1.25000, 1.73000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_5_15"]
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_5_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.10500, -0.25000)
 scale = Vector3(1.25000, 1.49000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_5_15"]
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_5_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.22500, 0.00000)
 scale = Vector3(1.25000, 1.25000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_5_15"]
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_5_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.29500, 0.25000)
 scale = Vector3(1.25000, 1.11000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_5_15"]
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_5_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.35500, 0.50000)
 scale = Vector3(1.25000, 0.99000, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_5_16"]
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_5_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.70500, -0.50000)
 scale = Vector3(1.25, 1.49000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_5_16"]
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_5_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.76500, -0.25000)
 scale = Vector3(1.25, 1.37000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_5_16"]
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_5_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.82500, 0.00000)
 scale = Vector3(1.25, 1.25000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_5_16"]
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_5_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.94500, 0.25000)
 scale = Vector3(1.25, 1.01000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_5_16"]
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_5_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -2.06500, 0.50000)
 scale = Vector3(1.25, 0.77000, 0.25)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_5_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_5_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_5_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -6247,42 +6423,55 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_6_13"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
+
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_6_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_6_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_6_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_6_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_6_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_6_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -6367,42 +6556,55 @@ mesh = SubResource("Block")
 material_override = SubResource("Teal")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_7_13"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Teal")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_7_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_7_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_7_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_7_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_7_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_7_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -6493,36 +6695,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Teal")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_8_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_8_15"]
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_8_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
-[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_8_16"]
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_8_16/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_8_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Glyph")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_8_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Glyph")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_8_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -6613,36 +6821,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Teal")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_9_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_9_15"]
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_9_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
-[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_9_16"]
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_9_16/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_9_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Glyph")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_9_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Glyph")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_9_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -6733,36 +6947,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_10_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_10_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_10_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_10_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_10_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_10_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -6853,36 +7073,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_11_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_11_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_11_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_11_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_11_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_11_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -6973,36 +7199,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_12_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Meadow")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_12_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_12_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_12_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_12_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_12_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -7093,36 +7325,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_13_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Meadow")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_13_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_13_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_13_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_13_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_13_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -7213,36 +7451,45 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_14_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Meadow")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_14_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
+[node name="ModularCliff" parent="Terrain/tile_14_15" instance=ExtResource("ModularCliff")]
+visible = false
+
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_14_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_14_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_14_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_14_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -7333,36 +7580,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_15_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grass")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_15_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_15_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_15_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_15_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_15_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -7453,36 +7706,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_16_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grass")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_16_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_16_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_16_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_16_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_16_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -7573,36 +7832,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_17_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grass")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_17_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_17_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_17_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_17_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_17_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -7693,36 +7958,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_18_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_18_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_18_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_18_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_18_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_18_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -7813,36 +8084,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_19_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_19_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_19_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_19_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_19_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_19_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -7933,36 +8210,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Copper")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_20_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_20_15"]
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_20_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
-[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_20_16"]
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_20_16/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_20_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Glyph")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_20_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Glyph")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_20_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -8053,36 +8336,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Copper")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_21_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
-[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_21_15"]
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_21_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
-[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_21_16"]
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_21_16/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_21_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Glyph")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_21_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Glyph")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_21_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -8173,36 +8462,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Copper")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_22_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_22_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_22_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_22_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_22_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_22_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -8293,36 +8588,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_23_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Limestone")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_23_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_23_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_23_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_23_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_23_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -8413,84 +8714,98 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_24_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Meadow")
 
-[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_24_15"]
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_24_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -0.98500, -0.50000)
 scale = Vector3(1.25000, 1.73000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_24_15"]
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_24_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.10500, -0.25000)
 scale = Vector3(1.25000, 1.49000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_24_15"]
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_24_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.22500, 0.00000)
 scale = Vector3(1.25000, 1.25000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_24_15"]
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_24_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.29500, 0.25000)
 scale = Vector3(1.25000, 1.11000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_24_15"]
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_24_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.35500, 0.50000)
 scale = Vector3(1.25000, 0.99000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_24_16"]
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_24_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.70500, -0.50000)
 scale = Vector3(1.25, 1.49000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_24_16"]
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_24_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.76500, -0.25000)
 scale = Vector3(1.25, 1.37000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_24_16"]
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_24_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.82500, 0.00000)
 scale = Vector3(1.25, 1.25000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_24_16"]
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_24_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.94500, 0.25000)
 scale = Vector3(1.25, 1.01000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_24_16"]
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_24_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -2.06500, 0.50000)
 scale = Vector3(1.25, 0.77000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_24_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_24_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_24_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -8581,84 +8896,98 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_25_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Meadow")
 
-[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_25_15"]
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_25_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -0.98500, -0.50000)
 scale = Vector3(1.25000, 1.73000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_25_15"]
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_25_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.10500, -0.25000)
 scale = Vector3(1.25000, 1.49000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_25_15"]
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_25_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.22500, 0.00000)
 scale = Vector3(1.25000, 1.25000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_25_15"]
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_25_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.29500, 0.25000)
 scale = Vector3(1.25000, 1.11000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_25_15"]
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_25_15/LegacyVisuals"]
+visible = false
 position = Vector3(0.00000, -1.35500, 0.50000)
 scale = Vector3(1.25000, 0.99000, 0.25000)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_25_16"]
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_25_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.70500, -0.50000)
 scale = Vector3(1.25, 1.49000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_25_16"]
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_25_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.76500, -0.25000)
 scale = Vector3(1.25, 1.37000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_25_16"]
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_25_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.82500, 0.00000)
 scale = Vector3(1.25, 1.25000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_25_16"]
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_25_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -1.94500, 0.25000)
 scale = Vector3(1.25, 1.01000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
-[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_25_16"]
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_25_16/LegacyVisuals"]
+visible = false
 position = Vector3(0, -2.06500, 0.50000)
 scale = Vector3(1.25, 0.77000, 0.25)
 mesh = SubResource("Block")
-material_override = SubResource("Limestone")
+material_override = ExtResource("EasternStepSlate")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_25_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_25_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_25_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -8749,36 +9078,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_26_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_26_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_26_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_26_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_26_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_26_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -8869,36 +9204,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_27_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_27_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_27_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_27_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_27_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_27_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -8989,36 +9330,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_28_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_28_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_28_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_28_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_28_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_28_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -9109,36 +9456,42 @@ mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_29_14"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_29_15"]
+visible = false
 position = Vector3(0.00000, -0.92500, 0.00000)
 scale = Vector3(1.25000, 1.85000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Rock")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_29_16"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_29_17"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Trail")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_29_18"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Farm")
 
 [node name="Surface" type="MeshInstance3D" parent="Terrain/tile_29_19"]
+visible = false
 position = Vector3(0.00000, -2.12500, 0.00000)
 scale = Vector3(1.25000, 0.65000, 1.25000)
 mesh = SubResource("Block")
@@ -9395,6 +9748,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Limestone")
 
 [node name="Cliff_0_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(-2.12500, -1.10500, 23.38500)
 scale = Vector3(1.28000, 2.01000, 0.56000)
 mesh = SubResource("Crag")
@@ -9407,6 +9761,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Shale")
 
 [node name="Cliff_1_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(-0.87500, -1.07512, 23.38500)
 scale = Vector3(1.28000, 1.95024, 0.56000)
 mesh = SubResource("Crag")
@@ -9419,10 +9774,12 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_2_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(0.37500, -1.01295, 23.38500)
 scale = Vector3(1.28000, 1.82590, 0.56000)
 mesh = SubResource("Crag")
 material_override = SubResource("Rock")
+
 
 [node name="Cliff_2_19" type="MeshInstance3D" parent="Terrain"]
 position = Vector3(0.37500, -3.24295, 28.38500)
@@ -9431,10 +9788,12 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_3_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(1.62500, -0.97565, 23.38500)
 scale = Vector3(1.28000, 1.75130, 0.56000)
 mesh = SubResource("Crag")
 material_override = SubResource("Shale")
+
 
 [node name="Cliff_3_19" type="MeshInstance3D" parent="Terrain"]
 position = Vector3(1.62500, -3.20565, 28.38500)
@@ -9455,10 +9814,12 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_6_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(5.37500, -1.10241, 23.38500)
 scale = Vector3(1.28000, 2.00482, 0.56000)
 mesh = SubResource("Crag")
 material_override = SubResource("Shale")
+
 
 [node name="Cliff_6_19" type="MeshInstance3D" parent="Terrain"]
 position = Vector3(5.37500, -3.33241, 28.38500)
@@ -9467,10 +9828,12 @@ mesh = SubResource("Crag")
 material_override = SubResource("Shale")
 
 [node name="Cliff_7_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(6.62500, -1.08900, 23.38500)
 scale = Vector3(1.28000, 1.97801, 0.56000)
 mesh = SubResource("Crag")
 material_override = SubResource("Rock")
+
 
 [node name="Cliff_7_19" type="MeshInstance3D" parent="Terrain"]
 position = Vector3(6.62500, -3.31900, 28.38500)
@@ -9479,6 +9842,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_8_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(7.87500, -1.03054, 23.38500)
 scale = Vector3(1.28000, 1.86108, 0.56000)
 mesh = SubResource("Crag")
@@ -9491,6 +9855,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_9_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(9.12500, -0.98078, 23.38500)
 scale = Vector3(1.28000, 1.76155, 0.56000)
 mesh = SubResource("Crag")
@@ -9503,6 +9868,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Shale")
 
 [node name="Cliff_10_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(10.37500, -0.98546, 23.38500)
 scale = Vector3(1.28000, 1.77092, 0.56000)
 mesh = SubResource("Crag")
@@ -9515,6 +9881,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_11_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(11.62500, -1.04029, 23.38500)
 scale = Vector3(1.28000, 1.88058, 0.56000)
 mesh = SubResource("Crag")
@@ -9527,6 +9894,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_12_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(12.87500, -1.09485, 23.38500)
 scale = Vector3(1.28000, 1.98970, 0.56000)
 mesh = SubResource("Crag")
@@ -9539,6 +9907,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Shale")
 
 [node name="Cliff_13_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(14.12500, -1.09898, 23.38500)
 scale = Vector3(1.28000, 1.99797, 0.56000)
 mesh = SubResource("Crag")
@@ -9551,6 +9920,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_14_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(15.37500, -1.04889, 23.38500)
 scale = Vector3(1.28000, 1.89778, 0.56000)
 mesh = SubResource("Crag")
@@ -9563,6 +9933,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_15_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(16.62500, -0.99062, 23.38500)
 scale = Vector3(1.28000, 1.78124, 0.56000)
 mesh = SubResource("Crag")
@@ -9575,6 +9946,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Shale")
 
 [node name="Cliff_16_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(17.87500, -0.97775, 23.38500)
 scale = Vector3(1.28000, 1.75550, 0.56000)
 mesh = SubResource("Crag")
@@ -9587,6 +9959,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_17_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(19.12500, -1.02211, 23.38500)
 scale = Vector3(1.28000, 1.84423, 0.56000)
 mesh = SubResource("Crag")
@@ -9599,6 +9972,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_18_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(20.37500, -1.08292, 23.38500)
 scale = Vector3(1.28000, 1.96584, 0.56000)
 mesh = SubResource("Crag")
@@ -9611,6 +9985,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Shale")
 
 [node name="Cliff_19_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(21.62500, -1.10427, 23.38500)
 scale = Vector3(1.28000, 2.00853, 0.56000)
 mesh = SubResource("Crag")
@@ -9623,6 +9998,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_20_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(22.87500, -1.06653, 23.38500)
 scale = Vector3(1.28000, 1.93305, 0.56000)
 mesh = SubResource("Crag")
@@ -9635,6 +10011,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_21_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(24.12500, -1.00440, 23.38500)
 scale = Vector3(1.28000, 1.80880, 0.56000)
 mesh = SubResource("Crag")
@@ -9647,6 +10024,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Shale")
 
 [node name="Cliff_22_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(25.37500, -0.97500, 23.38500)
 scale = Vector3(1.28000, 1.75001, 0.56000)
 mesh = SubResource("Crag")
@@ -9659,6 +10037,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_23_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(26.62500, -1.00537, 23.38500)
 scale = Vector3(1.28000, 1.81073, 0.56000)
 mesh = SubResource("Crag")
@@ -9683,6 +10062,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_26_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(30.37500, -1.08205, 23.38500)
 scale = Vector3(1.28000, 1.96410, 0.56000)
 mesh = SubResource("Crag")
@@ -9695,6 +10075,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_27_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(31.62500, -1.02101, 23.38500)
 scale = Vector3(1.28000, 1.84202, 0.56000)
 mesh = SubResource("Crag")
@@ -9707,6 +10088,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Shale")
 
 [node name="Cliff_28_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(32.87500, -0.97743, 23.38500)
 scale = Vector3(1.28000, 1.75486, 0.56000)
 mesh = SubResource("Crag")
@@ -9719,6 +10101,7 @@ mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
 [node name="Cliff_29_15" type="MeshInstance3D" parent="Terrain"]
+visible = false
 position = Vector3(34.12500, -0.99138, 23.38500)
 scale = Vector3(1.28000, 1.78275, 0.56000)
 mesh = SubResource("Crag")
@@ -9730,847 +10113,847 @@ scale = Vector3(1.28000, 2.70275, 0.56000)
 mesh = SubResource("Crag")
 material_override = SubResource("Rock")
 
-[node name="Row_0_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 3.51500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_1" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_1" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 4.76500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_2" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_2" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 6.01500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_3" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_3" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 7.26500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_4" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_4" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 8.51500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_5" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_5" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 9.76500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_6" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_6" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 11.01500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_7" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_7" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 12.26500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_8" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_8" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 13.51500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_9" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_9" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 14.76500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_10" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_10" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 16.01500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_11" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_11" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 17.26500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_12" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_12" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 18.51500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_13" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_13" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 19.76500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_14" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_14" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 21.01500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-0.25000, 0.01300, 22.26500)
 scale = Vector3(5.00000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_4_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_4_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50000, -0.58700, 22.26500)
 scale = Vector3(2.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_6_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_6_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, 0.01300, 22.26500)
 scale = Vector3(22.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_24_15" type="MeshInstance3D" parent="GridOverlay"]
-position = Vector3(28.50000, -0.58700, 22.26500)
+[node name="Row_24_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(28.50000, -0.10700, 22.26500)
 scale = Vector3(2.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_26_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_26_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(32.25000, 0.01300, 22.26500)
 scale = Vector3(5.00000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-0.25000, -1.78700, 23.51500)
 scale = Vector3(5.00000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_4_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_4_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50000, -0.94700, 23.51500)
 scale = Vector3(2.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_6_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_6_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, -1.78700, 23.51500)
 scale = Vector3(22.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_24_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_24_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(28.50000, -0.94700, 23.51500)
 scale = Vector3(2.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_26_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_26_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(32.25000, -1.78700, 23.51500)
 scale = Vector3(5.00000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_17" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_17" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, -1.78700, 24.76500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_18" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_18" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, -1.78700, 26.01500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Row_0_19" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Row_0_19" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00000, -1.78700, 27.26500)
 scale = Vector3(37.50000, 0.01200, 0.03500)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_0_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_0_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-2.74300, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_0_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_0_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-2.74300, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_0_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_0_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-2.74300, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_1_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_1_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-1.49300, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_1_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_1_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-1.49300, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_1_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_1_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-1.49300, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_2_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_2_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-0.24300, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_2_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_2_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-0.24300, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_2_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_2_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(-0.24300, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_3_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_3_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(1.00700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_3_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_3_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(1.00700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_3_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_3_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(1.00700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_4_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_4_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(2.25700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_4_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_4_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(2.25700, -0.58700, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_4_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_4_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(2.25700, -1.78700, 26.62500)
 scale = Vector3(0.03500, 0.01200, 3.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_4_16_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_4_16_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(2.25700, -0.94700, 23.62500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_4_16_1" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_4_16_1" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(2.25700, -1.06700, 23.87500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_4_16_2" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_4_16_2" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(2.25700, -1.18700, 24.12500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_4_16_3" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_4_16_3" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(2.25700, -1.42700, 24.37500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_4_16_4" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_4_16_4" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(2.25700, -1.66700, 24.62500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_5_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_5_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_5_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_5_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50700, -0.58700, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_5_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_5_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50700, -1.78700, 26.62500)
 scale = Vector3(0.03500, 0.01200, 3.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_5_16_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_5_16_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50700, -0.94700, 23.62500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_5_16_1" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_5_16_1" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50700, -1.06700, 23.87500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_5_16_2" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_5_16_2" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50700, -1.18700, 24.12500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_5_16_3" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_5_16_3" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50700, -1.42700, 24.37500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_5_16_4" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_5_16_4" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(3.50700, -1.66700, 24.62500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_6_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_6_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(4.75700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_6_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_6_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(4.75700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_6_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_6_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(4.75700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_7_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_7_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(6.00700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_7_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_7_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(6.00700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_7_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_7_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(6.00700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_8_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_8_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(7.25700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_8_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_8_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(7.25700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_8_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_8_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(7.25700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_9_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_9_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(8.50700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_9_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_9_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(8.50700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_9_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_9_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(8.50700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_10_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_10_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(9.75700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_10_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_10_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(9.75700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_10_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_10_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(9.75700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_11_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_11_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(11.00700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_11_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_11_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(11.00700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_11_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_11_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(11.00700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_12_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_12_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(12.25700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_12_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_12_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(12.25700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_12_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_12_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(12.25700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_13_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_13_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(13.50700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_13_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_13_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(13.50700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_13_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_13_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(13.50700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_14_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_14_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(14.75700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_14_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_14_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(14.75700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_14_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_14_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(14.75700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_15_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_15_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_15_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_15_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_15_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_15_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(16.00700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_16_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_16_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(17.25700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_16_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_16_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(17.25700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_16_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_16_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(17.25700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_17_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_17_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(18.50700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_17_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_17_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(18.50700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_17_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_17_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(18.50700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_18_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_18_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(19.75700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_18_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_18_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(19.75700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_18_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_18_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(19.75700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_19_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_19_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(21.00700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_19_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_19_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(21.00700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_19_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_19_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(21.00700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_20_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_20_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(22.25700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_20_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_20_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(22.25700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_20_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_20_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(22.25700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_21_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_21_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(23.50700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_21_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_21_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(23.50700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_21_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_21_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(23.50700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_22_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_22_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(24.75700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_22_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_22_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(24.75700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_22_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_22_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(24.75700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_23_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_23_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(26.00700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_23_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_23_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(26.00700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_23_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_23_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(26.00700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_24_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_24_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(27.25700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_24_15" type="MeshInstance3D" parent="GridOverlay"]
-position = Vector3(27.25700, -0.58700, 22.87500)
-scale = Vector3(0.03500, 0.01200, 1.25000)
+[node name="Column_24_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(27.25700, -0.10700, 22.37500)
+scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_24_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_24_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(27.25700, -1.78700, 26.62500)
 scale = Vector3(0.03500, 0.01200, 3.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_24_16_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_24_16_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(27.25700, -0.94700, 23.62500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_24_16_1" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_24_16_1" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(27.25700, -1.06700, 23.87500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_24_16_2" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_24_16_2" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(27.25700, -1.18700, 24.12500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_24_16_3" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_24_16_3" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(27.25700, -1.42700, 24.37500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_24_16_4" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_24_16_4" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(27.25700, -1.66700, 24.62500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_25_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_25_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(28.50700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_25_15" type="MeshInstance3D" parent="GridOverlay"]
-position = Vector3(28.50700, -0.58700, 22.87500)
-scale = Vector3(0.03500, 0.01200, 1.25000)
+[node name="Column_25_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(28.50700, -0.10700, 22.37500)
+scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_25_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_25_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(28.50700, -1.78700, 26.62500)
 scale = Vector3(0.03500, 0.01200, 3.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_25_16_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_25_16_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(28.50700, -0.94700, 23.62500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_25_16_1" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_25_16_1" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(28.50700, -1.06700, 23.87500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_25_16_2" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_25_16_2" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(28.50700, -1.18700, 24.12500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_25_16_3" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_25_16_3" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(28.50700, -1.42700, 24.37500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="StairGrid_25_16_4" type="MeshInstance3D" parent="GridOverlay"]
+[node name="StairGrid_25_16_4" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(28.50700, -1.66700, 24.62500)
 scale = Vector3(0.03500, 0.01200, 0.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_26_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_26_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(29.75700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_26_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_26_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(29.75700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_26_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_26_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(29.75700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_27_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_27_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(31.00700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_27_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_27_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(31.00700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_27_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_27_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(31.00700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_28_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_28_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(32.25700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_28_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_28_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(32.25700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_28_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_28_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(32.25700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_29_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_29_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(33.50700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_29_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_29_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(33.50700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_29_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_29_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(33.50700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_30_0" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_30_0" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(34.75700, 0.01300, 12.87500)
 scale = Vector3(0.03500, 0.01200, 18.75000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_30_15" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_30_15" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(34.75700, 0.01300, 22.87500)
 scale = Vector3(0.03500, 0.01200, 1.25000)
 mesh = SubResource("Block")
 material_override = SubResource("Grid")
 
-[node name="Column_30_16" type="MeshInstance3D" parent="GridOverlay"]
+[node name="Column_30_16" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
 position = Vector3(34.75700, -1.78700, 26.00000)
 scale = Vector3(0.03500, 0.01200, 5.00000)
 mesh = SubResource("Block")
@@ -11643,3 +12026,1167 @@ position = Vector3(2.5, 0.009, 1.25)
 scale = Vector3(0.26, 0.018, 0.26)
 mesh = SubResource("Crag")
 material_override = SubResource("Limestone")
+
+[node name="WesternStairEnvironment" parent="." instance=ExtResource("WesternStairSlice")]
+visible = false
+
+[node name="ConnectedCliffEnvironment" parent="." instance=ExtResource("ConnectedCliff")]
+visible = false
+
+[node name="LowerTerraceEnvironment" parent="." instance=ExtResource("LowerTerrace")]
+visible = false
+
+[node name="EasternStairEnvironment" parent="." instance=ExtResource("EasternStair")]
+visible = false
+
+[node name="EasternStairGrid_24_15_1" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(27.257, -0.34700, 22.625)
+scale = Vector3(0.035, 0.012, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="EasternStairGrid_24_15_2" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(27.257, -0.58700, 22.875)
+scale = Vector3(0.035, 0.012, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="EasternStairGrid_24_15_3" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(27.257, -0.72700, 23.125)
+scale = Vector3(0.035, 0.012, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="EasternStairGrid_24_15_4" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(27.257, -0.84700, 23.375)
+scale = Vector3(0.035, 0.012, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="EasternStairGrid_25_15_1" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(28.507, -0.34700, 22.625)
+scale = Vector3(0.035, 0.012, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="EasternStairGrid_25_15_2" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(28.507, -0.58700, 22.875)
+scale = Vector3(0.035, 0.012, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="EasternStairGrid_25_15_3" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(28.507, -0.72700, 23.125)
+scale = Vector3(0.035, 0.012, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="EasternStairGrid_25_15_4" type="MeshInstance3D" parent="GridOverlay/LegacyLines"]
+position = Vector3(28.507, -0.84700, 23.375)
+scale = Vector3(0.035, 0.012, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="FortStairIntegration" parent="." instance=ExtResource("FortStairIntegration")]
+visible = false
+
+
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_4_15"]
+visible = false
+position = Vector3(0, -0.035, 0)
+scale = Vector3(1.25, 0.07, 1.25)
+mesh = SubResource("Block")
+material_override = SubResource("Rock")
+
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_4_16"]
+visible = false
+position = Vector3(0, -1.835, 0)
+scale = Vector3(1.25, 0.07, 1.25)
+mesh = SubResource("Block")
+material_override = SubResource("Rock")
+
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_5_15"]
+visible = false
+position = Vector3(0, -0.035, 0)
+scale = Vector3(1.25, 0.07, 1.25)
+mesh = SubResource("Block")
+material_override = SubResource("Rock")
+
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_5_16"]
+visible = false
+position = Vector3(0, -1.835, 0)
+scale = Vector3(1.25, 0.07, 1.25)
+mesh = SubResource("Block")
+material_override = SubResource("Rock")
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_8_15"]
+visible = false
+position = Vector3(0.00000, -0.98500, -0.50000)
+scale = Vector3(1.25000, 1.73000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_8_15"]
+visible = false
+position = Vector3(0.00000, -1.10500, -0.25000)
+scale = Vector3(1.25000, 1.49000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_8_15"]
+visible = false
+position = Vector3(0.00000, -1.22500, 0.00000)
+scale = Vector3(1.25000, 1.25000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_8_15"]
+visible = false
+position = Vector3(0.00000, -1.29500, 0.25000)
+scale = Vector3(1.25000, 1.11000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_8_15"]
+visible = false
+position = Vector3(0.00000, -1.35500, 0.50000)
+scale = Vector3(1.25000, 0.99000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_8_16"]
+visible = false
+position = Vector3(0, -1.70500, -0.50000)
+scale = Vector3(1.25, 1.49000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_8_16"]
+visible = false
+position = Vector3(0, -1.76500, -0.25000)
+scale = Vector3(1.25, 1.37000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_8_16"]
+visible = false
+position = Vector3(0, -1.82500, 0.00000)
+scale = Vector3(1.25, 1.25000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_8_16"]
+visible = false
+position = Vector3(0, -1.94500, 0.25000)
+scale = Vector3(1.25, 1.01000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_8_16"]
+visible = false
+position = Vector3(0, -2.06500, 0.50000)
+scale = Vector3(1.25, 0.77000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_9_15"]
+visible = false
+position = Vector3(0.00000, -0.98500, -0.50000)
+scale = Vector3(1.25000, 1.73000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_9_15"]
+visible = false
+position = Vector3(0.00000, -1.10500, -0.25000)
+scale = Vector3(1.25000, 1.49000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_9_15"]
+visible = false
+position = Vector3(0.00000, -1.22500, 0.00000)
+scale = Vector3(1.25000, 1.25000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_9_15"]
+visible = false
+position = Vector3(0.00000, -1.29500, 0.25000)
+scale = Vector3(1.25000, 1.11000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_9_15"]
+visible = false
+position = Vector3(0.00000, -1.35500, 0.50000)
+scale = Vector3(1.25000, 0.99000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_9_16"]
+visible = false
+position = Vector3(0, -1.70500, -0.50000)
+scale = Vector3(1.25, 1.49000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_9_16"]
+visible = false
+position = Vector3(0, -1.76500, -0.25000)
+scale = Vector3(1.25, 1.37000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_9_16"]
+visible = false
+position = Vector3(0, -1.82500, 0.00000)
+scale = Vector3(1.25, 1.25000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_9_16"]
+visible = false
+position = Vector3(0, -1.94500, 0.25000)
+scale = Vector3(1.25, 1.01000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_9_16"]
+visible = false
+position = Vector3(0, -2.06500, 0.50000)
+scale = Vector3(1.25, 0.77000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_20_15"]
+visible = false
+position = Vector3(0.00000, -0.98500, -0.50000)
+scale = Vector3(1.25000, 1.73000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_20_15"]
+visible = false
+position = Vector3(0.00000, -1.10500, -0.25000)
+scale = Vector3(1.25000, 1.49000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_20_15"]
+visible = false
+position = Vector3(0.00000, -1.22500, 0.00000)
+scale = Vector3(1.25000, 1.25000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_20_15"]
+visible = false
+position = Vector3(0.00000, -1.29500, 0.25000)
+scale = Vector3(1.25000, 1.11000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_20_15"]
+visible = false
+position = Vector3(0.00000, -1.35500, 0.50000)
+scale = Vector3(1.25000, 0.99000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_20_16"]
+visible = false
+position = Vector3(0, -1.70500, -0.50000)
+scale = Vector3(1.25, 1.49000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_20_16"]
+visible = false
+position = Vector3(0, -1.76500, -0.25000)
+scale = Vector3(1.25, 1.37000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_20_16"]
+visible = false
+position = Vector3(0, -1.82500, 0.00000)
+scale = Vector3(1.25, 1.25000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_20_16"]
+visible = false
+position = Vector3(0, -1.94500, 0.25000)
+scale = Vector3(1.25, 1.01000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_20_16"]
+visible = false
+position = Vector3(0, -2.06500, 0.50000)
+scale = Vector3(1.25, 0.77000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_21_15"]
+visible = false
+position = Vector3(0.00000, -0.98500, -0.50000)
+scale = Vector3(1.25000, 1.73000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_21_15"]
+visible = false
+position = Vector3(0.00000, -1.10500, -0.25000)
+scale = Vector3(1.25000, 1.49000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_21_15"]
+visible = false
+position = Vector3(0.00000, -1.22500, 0.00000)
+scale = Vector3(1.25000, 1.25000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_21_15"]
+visible = false
+position = Vector3(0.00000, -1.29500, 0.25000)
+scale = Vector3(1.25000, 1.11000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_21_15"]
+visible = false
+position = Vector3(0.00000, -1.35500, 0.50000)
+scale = Vector3(1.25000, 0.99000, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread0" type="MeshInstance3D" parent="Terrain/tile_21_16"]
+visible = false
+position = Vector3(0, -1.70500, -0.50000)
+scale = Vector3(1.25, 1.49000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread1" type="MeshInstance3D" parent="Terrain/tile_21_16"]
+visible = false
+position = Vector3(0, -1.76500, -0.25000)
+scale = Vector3(1.25, 1.37000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread2" type="MeshInstance3D" parent="Terrain/tile_21_16"]
+visible = false
+position = Vector3(0, -1.82500, 0.00000)
+scale = Vector3(1.25, 1.25000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread3" type="MeshInstance3D" parent="Terrain/tile_21_16"]
+visible = false
+position = Vector3(0, -1.94500, 0.25000)
+scale = Vector3(1.25, 1.01000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Tread4" type="MeshInstance3D" parent="Terrain/tile_21_16"]
+visible = false
+position = Vector3(0, -2.06500, 0.50000)
+scale = Vector3(1.25, 0.77000, 0.25)
+mesh = SubResource("Block")
+material_override = SubResource("Limestone")
+
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_24_15"]
+visible = false
+position = Vector3(0, -0.035, 0)
+scale = Vector3(1.25, 0.07, 1.25)
+mesh = SubResource("Block")
+material_override = SubResource("Rock")
+
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_24_16"]
+visible = false
+position = Vector3(0, -1.835, 0)
+scale = Vector3(1.25, 0.07, 1.25)
+mesh = SubResource("Block")
+material_override = SubResource("Rock")
+
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_25_15"]
+visible = false
+position = Vector3(0, -0.035, 0)
+scale = Vector3(1.25, 0.07, 1.25)
+mesh = SubResource("Block")
+material_override = SubResource("Rock")
+
+[node name="Surface" type="MeshInstance3D" parent="Terrain/tile_25_16"]
+visible = false
+position = Vector3(0, -1.835, 0)
+scale = Vector3(1.25, 0.07, 1.25)
+mesh = SubResource("Block")
+material_override = SubResource("Rock")
+
+[node name="CastleGridColumn_0_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(-2.74300, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_0_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(-2.74300, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_1_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(-1.49300, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_1_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(-1.49300, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_2_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(-0.24300, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_2_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(-0.24300, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_3_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(1.00700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_3_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(1.00700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_4_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(2.25700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_4_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(2.25700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_5_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(3.50700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_5_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(3.50700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_6_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(4.75700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_6_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(4.75700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_7_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(6.00700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_7_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(6.00700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, 0.01300, 12.87500)
+scale = Vector3(0.03500, 0.012, 18.75000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -0.10700, 22.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_2" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -0.34700, 22.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_3" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -0.58700, 22.87500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_4" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -0.72700, 23.12500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_5" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -0.84700, 23.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_6" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -0.94700, 23.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_7" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -1.06700, 23.87500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_8" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -1.18700, 24.12500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_9" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -1.42700, 24.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_10" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -1.66700, 24.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_8_11" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(7.25700, -1.78700, 26.62500)
+scale = Vector3(0.03500, 0.012, 3.75000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, 0.01300, 12.87500)
+scale = Vector3(0.03500, 0.012, 18.75000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -0.10700, 22.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_2" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -0.34700, 22.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_3" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -0.58700, 22.87500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_4" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -0.72700, 23.12500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_5" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -0.84700, 23.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_6" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -0.94700, 23.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_7" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -1.06700, 23.87500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_8" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -1.18700, 24.12500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_9" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -1.42700, 24.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_10" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -1.66700, 24.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_9_11" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50700, -1.78700, 26.62500)
+scale = Vector3(0.03500, 0.012, 3.75000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_10_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(9.75700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_10_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(9.75700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_11_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(11.00700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_11_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(11.00700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_12_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(12.25700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_12_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(12.25700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_13_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(13.50700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_13_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(13.50700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_14_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(14.75700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_14_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(14.75700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_15_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_15_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_16_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(17.25700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_16_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(17.25700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_17_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(18.50700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_17_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(18.50700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_18_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(19.75700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_18_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(19.75700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_19_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(21.00700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_19_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(21.00700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, 0.01300, 12.87500)
+scale = Vector3(0.03500, 0.012, 18.75000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -0.10700, 22.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_2" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -0.34700, 22.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_3" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -0.58700, 22.87500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_4" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -0.72700, 23.12500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_5" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -0.84700, 23.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_6" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -0.94700, 23.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_7" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -1.06700, 23.87500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_8" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -1.18700, 24.12500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_9" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -1.42700, 24.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_10" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -1.66700, 24.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_20_11" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(22.25700, -1.78700, 26.62500)
+scale = Vector3(0.03500, 0.012, 3.75000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, 0.01300, 12.87500)
+scale = Vector3(0.03500, 0.012, 18.75000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -0.10700, 22.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_2" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -0.34700, 22.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_3" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -0.58700, 22.87500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_4" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -0.72700, 23.12500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_5" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -0.84700, 23.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_6" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -0.94700, 23.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_7" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -1.06700, 23.87500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_8" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -1.18700, 24.12500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_9" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -1.42700, 24.37500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_10" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -1.66700, 24.62500)
+scale = Vector3(0.03500, 0.012, 0.25000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_21_11" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50700, -1.78700, 26.62500)
+scale = Vector3(0.03500, 0.012, 3.75000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_22_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(24.75700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_22_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(24.75700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_23_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(26.00700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_23_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(26.00700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_24_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(27.25700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_24_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(27.25700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_25_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(28.50700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_25_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(28.50700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_26_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(29.75700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_26_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(29.75700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_27_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(31.00700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_27_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(31.00700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_28_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(32.25700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_28_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(32.25700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_29_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(33.50700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_29_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(33.50700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_30_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(34.75700, 0.01300, 13.50000)
+scale = Vector3(0.03500, 0.012, 20.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridColumn_30_1" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(34.75700, -1.78700, 26.00000)
+scale = Vector3(0.03500, 0.012, 5.00000)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_0_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 3.51500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_1_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 4.76500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_2_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 6.01500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_3_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 7.26500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_4_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 8.51500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_5_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 9.76500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_6_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 11.01500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_7_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 12.26500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_8_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 13.51500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_9_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 14.76500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_10_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 16.01500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_11_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 17.26500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_12_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 18.51500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_13_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 19.76500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_14_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 21.01500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_15_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, 0.01300, 22.26500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_16_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(2.25000, -1.78700, 23.51500)
+scale = Vector3(10.00000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_16_8" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(8.50000, -0.94700, 23.51500)
+scale = Vector3(2.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_16_10" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, -1.78700, 23.51500)
+scale = Vector3(12.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_16_20" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(23.50000, -0.94700, 23.51500)
+scale = Vector3(2.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_16_22" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(29.75000, -1.78700, 23.51500)
+scale = Vector3(10.00000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_17_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, -1.78700, 24.76500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_18_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, -1.78700, 26.01500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_19_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, -1.78700, 27.26500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="CastleGridRow_20_0" type="MeshInstance3D" parent="GridOverlay"]
+position = Vector3(16.00000, -1.78700, 28.51500)
+scale = Vector3(37.50000, 0.012, 0.03500)
+mesh = SubResource("Block")
+material_override = SubResource("Grid")
+
+[node name="ForwardCastleStairs" parent="." instance=ExtResource("ForwardCastleStairs")]

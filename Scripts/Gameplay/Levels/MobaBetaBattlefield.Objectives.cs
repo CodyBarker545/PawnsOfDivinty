@@ -90,9 +90,23 @@ public partial class MobaBetaBattlefield
         RefreshMatchHud();UpdateMovementOverlay(null);
     }
     // Development-only native checks/captures stage positions in memory; never save the source scene.
-    private void StageCastleTransferDemonstration()
+    private void StageCastleTransferDemonstration(bool captureDestination=false)
     {
-        ResetMatch();Session.Characters["hooded_assassin"].SetTacticalPosition(new(19,10));
+        ResetMatch();
+        if(captureDestination)
+        {
+            // Cliffside starts with neutral forts. Capture the destination through
+            // normal movement, then alternate activations back to the transferring unit.
+            Session.Characters["gentle_guardian"].SetTacticalPosition(new(8,9));
+            _fixtures.Single(f=>f.CharacterId=="gentle_guardian").ReconcileToRuntime(Layout.Board);
+            RunCommand(()=>Session.Select("gentle_guardian"));MoveAt(new(8,10));AdvanceMovementViews(20);RefreshMatchHud();
+            if(Session.Control.Castle("blue_forward").OwnerTeamId!=1)
+                throw new InvalidOperationException("Transfer smoke destination must be captured by movement.");
+            _endActivation.EmitSignal(Button.SignalName.Pressed);
+            RunCommand(()=>Session.Select(Session.Characters.Values.First(c=>Session.CanSelect(c.Id)).Id));
+            _endActivation.EmitSignal(Button.SignalName.Pressed);
+        }
+        Session.Characters["hooded_assassin"].SetTacticalPosition(new(19,10));
         _fixtures.Single(f=>f.CharacterId=="hooded_assassin").ReconcileToRuntime(Layout.Board);
         RunCommand(()=>Session.Select("hooded_assassin"));MoveAt(new(20,10));AdvanceMovementViews(20);RefreshMatchHud();
         _focus=CellPosition(new(20,10));_camera.Size=17;UpdateCamera();
@@ -124,19 +138,21 @@ public partial class MobaBetaBattlefield
     private void VerifyObjectiveSmoke()
     {
         void Check(bool ok,string why){if(!ok)throw new InvalidOperationException(why);}
-        StageCastleTransferDemonstration();Check(Session.Control.Castle("red_forward").OwnerTeamId==1&&_zoneMarkers["red_forward"].Text.Contains("BLUE"),"Movement captures castle and updates owner marker");
+        int? InitialOwner(BetaCastle castle)=>castle.InitialTeamId==0?null:castle.InitialTeamId;
+        StageCastleTransferDemonstration(captureDestination:true);Check(Session.Control.Castle("red_forward").OwnerTeamId==1&&_zoneMarkers["red_forward"].Text.Contains("BLUE"),"Movement captures castle and updates owner marker");
         Check(_territoryNotice.Text.Contains("captured red_forward"),"Capture notification");
         ToggleTransfer();int index=_transferPlans.FindIndex(p=>p.DestinationCastleId=="blue_forward"&&p.DeploymentCell==new PawnsOfDivinity.Core.Abilities.GridPosition(7,12));
         Check(index>=0,"Friendly castle transfer offers unoccupied authored deployment choices");_transferChoices.Select(index);_confirmTransfer.EmitSignal(Button.SignalName.Pressed);
         Check(Session.Characters["hooded_assassin"].TacticalPosition==new PawnsOfDivinity.Core.Abilities.GridPosition(7,12)&&_fixtures.Single(f=>f.CharacterId=="hooded_assassin").GlobalPosition==CellPosition(new(7,12)),"Transfer synchronizes authoritative position and visual");
         Check(Session.CurrentPlayer==2&&Session.Characters["hooded_assassin"].HasActedThisRound,"Transfer consumes Main Action and ends activation");
-        StageContestedCaptureDemonstration();Check(_zoneMarkers["red_forward"].Text.Contains("CONTESTED")&&_transfer.Disabled&&Session.Control.Castle("red_forward").OwnerTeamId==2,"Contested feedback blocks transfer without changing owner");
+        StageContestedCaptureDemonstration();Check(_zoneMarkers["red_forward"].Text.Contains("CONTESTED")&&_transfer.Disabled&&Session.Control.Castle("red_forward").OwnerTeamId==InitialOwner(Layout.Castles.Single(c=>c.Id=="red_forward")),"Contested feedback blocks transfer without changing owner");
         CompleteContestedCaptureDemonstration();Check(Session.Control.Castle("red_forward").OwnerTeamId==1&&!Session.Control.Castle("red_forward").Contested&&_territoryNotice.Text.Contains("captured red_forward"),"Final defender defeat immediately captures and notifies");
         StageObjectiveVictoryDemonstration();Check(Session.Victory.WinnerTeamId==1&&_victoryPanel.Visible&&_winnerText.Text.Contains("WINS"),"End-round objective scoring presents victory overlay");
         Check(_vp.Text.Contains($"BLUE {Session.Victory.BlueVP}/15 VP")&&_endActivation.Disabled&&_attack.Disabled&&_transfer.Disabled,"Final VP HUD and gameplay locks");
         Check(Session.MoveTo(new(14,9)).Outcome==PawnsOfDivinity.MovementOutcome.Rejected,"Movement rejected after victory");
         var pose=(_focus,_yaw,_camera.Size);int markers=_zoneMarkers.Count;_resetMatch.EmitSignal(Button.SignalName.Pressed);
         Check(!Session.Victory.IsFinished&&Session.Victory.BlueVP==0&&Session.Victory.RedVP==0&&!_victoryPanel.Visible,"Reset clears victory and VP");
-        Check(Session.Control.Castle("red_forward").OwnerTeamId==2&&Session.Control.Objective.OwnerTeamId is null&&_zoneMarkers.Count==markers&&(_focus,_yaw,_camera.Size)==pose,"Reset restores ownership/neutral center, preserves camera and reuses marker nodes");
+        Check(Layout.Castles.All(c=>Session.Control.Castle(c.Id).OwnerTeamId==InitialOwner(c))&&Session.Control.Objective.OwnerTeamId is null&&_zoneMarkers.Count==markers&&(_focus,_yaw,_camera.Size)==pose,"Reset restores authored ownership/neutral center, preserves camera and reuses marker nodes");
+        GD.Print("CASTLE TRANSFER SMOKE PASSED: captured friendly destination, Main Action/activation completion, contested restrictions and authored ownership reset.");
     }
 }

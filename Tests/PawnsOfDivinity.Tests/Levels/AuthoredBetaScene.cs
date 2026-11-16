@@ -49,6 +49,7 @@ internal static class AuthoredBetaScene
             if (scenePath.Contains("CliffsideArena"))
             {
                 start.ArgumentList.Add("--verify-stair-preview");
+                start.ArgumentList.Add("--verify-tile-picking");
                 start.ArgumentList.Add("--verify-central-ruins");
             }
             using var process=Process.Start(start)??throw new InvalidOperationException("Godot did not start.");

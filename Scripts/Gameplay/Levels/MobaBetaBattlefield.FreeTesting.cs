@@ -16,7 +16,16 @@ public partial class MobaBetaBattlefield
     private void VerifyFreeTestingSmoke()
     {
         void Check(bool ok,string why){if(!ok)throw new InvalidOperationException("Free testing: "+why);}
-        Check(FreeTesting,"authored beta scene defaults to free testing");
+        // The beta and competitive arena intentionally have different authored defaults.
+        // Verify that default before explicitly entering free mode for the shared checks.
+        Session=new(Layout,StartingPlayer,scoringProfile:DevelopmentScoring.Snapshot(),timerConfiguration:DevelopmentTimer.Snapshot(),assassinProfile:DevelopmentAssassin.Snapshot(),freeTesting:FreeTesting);
+        ResetMatch();
+        Check(Session.FreeTesting==FreeTesting,"reset preserves the authored scene mode");
+        Check(_endActivation.Visible==!FreeTesting&&_timerLabel.Visible==!FreeTesting,"authored mode controls turn/timer visibility");
+        Check(Session.ActivationTimer.Enabled==(!FreeTesting&&DevelopmentTimer.Snapshot().Enabled),"authored mode preserves competitive timer configuration");
+        var opposing=Session.Characters.Values.First(c=>c.TeamId!=StartingPlayer);
+        Check(Session.CanSelect(opposing.Id)==FreeTesting,"authored mode enforces competitive team selection or permits either team");
+        GD.Print($"AUTHORED MODE VERIFIED: {SceneFilePath}; FreeTesting={FreeTesting}; session/timer/turn controls and team selection.");
         Session=new(Layout,StartingPlayer,scoringProfile:DevelopmentScoring.Snapshot(),timerConfiguration:DevelopmentTimer.Snapshot(),assassinProfile:DevelopmentAssassin.Snapshot(),freeTesting:true);
         ResetMatch();RunCommand(()=>Session.Select("nigel"));
         Check(Session.SelectedFixtureId=="nigel"&&!_timerLabel.Visible&&!_endActivation.Visible&&!Session.ActivationTimer.Enabled,"Red selection at launch, no timer/turn controls");
@@ -35,6 +44,8 @@ public partial class MobaBetaBattlefield
         Check(Session.SelectedFixtureId=="hooded_assassin"&&Session.CanAttack,"same unit can act again");
         ResetMatch();Check(Session.FreeTesting&&!Session.ActivationTimer.Enabled,"reset preserves free testing");
         Session=new(Layout,StartingPlayer,scoringProfile:DevelopmentScoring.Snapshot(),timerConfiguration:DevelopmentTimer.Snapshot(),assassinProfile:DevelopmentAssassin.Snapshot());ResetMatch();
+        Check(!Session.FreeTesting&&_endActivation.Visible&&_timerLabel.Visible&&Session.ActivationTimer.Enabled==DevelopmentTimer.Snapshot().Enabled,"explicit competitive smoke mode restored");
+        Check(!Session.CanSelect(opposing.Id),"competitive mode restores alternating-team selection");
         GD.Print("FREE TESTING VERIFIED: either-team selection, normal MOV/path/one-movement restrictions and animation, production combat, no timer/turn/round progression, reset and retained normal mode.");
     }
 }

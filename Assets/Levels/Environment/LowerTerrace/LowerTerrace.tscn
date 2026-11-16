@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/LowerTerrace/LowerTerrace.glb" id="mesh"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/LowerTerrace/Ground.tres" id="earth"]
+[sub_resource type="StandardMaterial3D" id="rubble"]
+albedo_color = Color(0.20, 0.22, 0.21, 1)
+roughness = 0.94
+
+[node name="LowerTerraceEnvironment" type="Node3D"]
+metadata/stage = "3.0D.2A"
+metadata/purpose = "Continuous decorative lower ground; no collision or gameplay"
+
+[node name="Landscape" parent="." instance=ExtResource("mesh")]
+
+[node name="ConnectedGround" parent="Landscape" index=0]
+material_override = ExtResource("earth")
+cast_shadow = 0
+
+[node name="RestrainedEdgeRubble" parent="Landscape" index=1]
+material_override = SubResource("rubble")
+
+[editable path="Landscape"]

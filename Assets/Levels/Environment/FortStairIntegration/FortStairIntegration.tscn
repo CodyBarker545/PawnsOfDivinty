@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/FortStairIntegration/FortStairIntegration.glb" id="mesh"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial3.tres" id="stone"]
+
+[node name="FortStairIntegration" type="Node3D"]
+metadata/purpose = "Visual masonry link from side gates to existing lower stairs; no collision"
+
+[node name="Masonry" parent="." instance=ExtResource("mesh")]
+
+[node name="FortAccessMasonry" parent="Masonry" index=0]
+material_override = ExtResource("stone")
+
+[editable path="Masonry"]

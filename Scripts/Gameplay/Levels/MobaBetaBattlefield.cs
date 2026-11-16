@@ -15,6 +15,7 @@ public partial class MobaBetaBattlefield : Node3D
     [Export(PropertyHint.Range,"1,2,1")] public int StartingPlayer { get; set; } = 1;
     [Export] public bool DevelopmentOpenTargeting { get; set; } = true;
     [Export] public bool FreeTesting {get;set;}=false;
+    [Export] public bool TacticalGridInitiallyVisible {get;set;}=true;
     [ExportToolButton("Validate authored level")]
     public Callable ValidateLevel => Callable.From(ValidateAuthoring);
     public MobaBetaLayout Layout { get; private set; } = null!;
@@ -65,6 +66,7 @@ public partial class MobaBetaBattlefield : Node3D
             bool normalVerification=launchArgs.Any(a=>a=="--beta-smoke-test"||a.StartsWith("--export-beta-layout=")||(a.StartsWith("--capture-")&&a!="--capture-free-testing"));
             Session=new MobaHotseatSession(Layout,StartingPlayer,developmentOpenTargeting:DevelopmentOpenTargeting,scoringProfile:DevelopmentScoring.Snapshot(),timerConfiguration:DevelopmentTimer.Snapshot(),assassinProfile:DevelopmentAssassin.Snapshot(),freeTesting:FreeTesting&&!normalVerification);
             _camera=GetNode<Camera3D>("Camera3D");_grid=GetNode<Node3D>("GridOverlay");
+            InitializeTacticalGrid();
             foreach(var view in GetNode("CharacterFixtures").GetChildren().OfType<StaticTacticalCharacter>())
             {
                 view.SurfaceHeight=Layout.SurfaceHeight;
@@ -394,7 +396,7 @@ public partial class MobaBetaBattlefield : Node3D
                 throw new InvalidOperationException($"Tile {cell} does not match its visible center height.");
         }
         var actor = Session.Characters["blue_gravebound_colossus"];
-        foreach (int x in new[] {4,5,24,25})
+        foreach (int x in Layout.Terrain.Where(p => p.Value == "stairs").Select(p => p.Key.X).Distinct().OrderBy(x => x))
         foreach (int row in new[] {14,17})
         {
             actor.SetTacticalPosition(new(x,row));
@@ -540,6 +542,7 @@ public partial class MobaBetaBattlefield : Node3D
     {
         var local=GameplayPoint(screen);var origin=_camera.ProjectRayOrigin(local);var direction=_camera.ProjectRayNormal(local);
         cell=default;if(!IsBattlefieldPoint(screen)||Mathf.Abs(direction.Y)<.00001f) return false;
+        float closest=float.PositiveInfinity;
         foreach (int level in Layout.PickingLevels)
         {
             float t = (level * MobaBetaLayout.ElevationStep - origin.Y) / direction.Y;
@@ -547,9 +550,36 @@ public partial class MobaBetaBattlefield : Node3D
             var point = origin + direction * t;
             var candidate = Layout.Board.WorldToCell(point.X, point.Z);
             if (Layout.Elevations.TryGetValue(candidate, out int elevation) && elevation == level)
-            { cell = candidate; return true; }
+            {
+                // Elevated tile footprints can overlap on screen. Resolve tactical intent
+                // by the nearest projected center instead of always selecting the upper floor.
+                float distance=local.DistanceSquaredTo(_camera.UnprojectPosition(CellPosition(candidate)));
+                if(distance<closest){closest=distance;cell=candidate;}
+            }
         }
-        return false;
+        return float.IsFinite(closest);
+    }
+
+    private void VerifyTilePicking()
+    {
+        var originalYaw=_yaw;var originalSize=_camera.Size;
+        int checks=0;
+        try
+        {
+            foreach(float yaw in new[]{0f,.8f,-.8f,1.3f,-1.3f,Mathf.Pi,-2.3f,2.3f})
+            {
+                _yaw=yaw;_camera.Size=originalSize;UpdateCamera();FitCameraToBoard();
+                foreach(var cell in Layout.Board.Cells)
+                {
+                    bool hit=Pick(WorldToScreen(CellPosition(cell)),out var picked);
+                    if(!hit||picked!=cell)
+                        throw new InvalidOperationException($"Picking {cell} at yaw {yaw}: hit {hit}, resolved {picked}");
+                    checks++;
+                }
+            }
+        }
+        finally{_yaw=originalYaw;_camera.Size=originalSize;UpdateCamera();}
+        GD.Print($"TILE PICKING PASSED: {checks} tile-center clicks across 8 mirrored camera orientations.");
     }
     public override void _UnhandledInput(InputEvent input)
     {
@@ -558,7 +588,9 @@ public partial class MobaBetaBattlefield : Node3D
         {
             var code=key.PhysicalKeycode!=Key.None ? key.PhysicalKeycode : key.Keycode;
             if(code==Key.F1){_hud.ToggleHelp();GetViewport().SetInputAsHandled();return;}
-            if(code==Key.G)_grid.Visible=!_grid.Visible;if(code==Key.Home)ResetCamera();
+            if(key.IsActionPressed(TacticalGridAction,exactMatch:true) && !TacticalTextInputFocused())
+            {_grid.Visible=!_grid.Visible;GetViewport().SetInputAsHandled();return;}
+            if(code==Key.Home)ResetCamera();
         }
         if(input is InputEventMouseMotion motion && (motion.ButtonMask&MouseButtonMask.Middle)!=0)
         {_yaw-=motion.Relative.X*.008f;UpdateCamera();}
@@ -601,6 +633,8 @@ public partial class MobaBetaBattlefield : Node3D
             UpdateMovementOverlay(destination);_hover.Visible=true;_hover.Position=CellPosition(destination,.025f);
         }
         _elapsed+=delta;
+        if(!_tacticalGridVerificationStarted && OS.GetCmdlineUserArgs().Contains("--verify-tactical-grid") && _elapsed>1)
+        {_tacticalGridVerificationStarted=true;SetProcess(false);VerifyTacticalGrid();return;}
         if (_authoredSnapshotPath is { } snapshotFile && _elapsed > 1)
         {
             _authoredSnapshotPath = null;
@@ -612,6 +646,7 @@ public partial class MobaBetaBattlefield : Node3D
                         throw new InvalidOperationException($"Gameplay camera could not pick tile {tile}.");
                 if (OS.GetCmdlineUserArgs().Contains("--verify-central-ruins")) VerifyCentralRuinFootprints();
                 if (OS.GetCmdlineUserArgs().Contains("--verify-stair-preview")) VerifyStairPreview();
+                if (OS.GetCmdlineUserArgs().Contains("--verify-tile-picking")) VerifyTilePicking();
                 System.IO.File.WriteAllText(snapshotFile,System.Text.Json.JsonSerializer.Serialize(Layout.Source));
                 GetTree().Quit();
             }
@@ -728,12 +763,7 @@ public partial class MobaBetaBattlefield : Node3D
             // Temporary PackedScenes retain native resource wrappers until managed GC runs.
             // Release them before shutting down the development smoke-test process.
             GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();
-            foreach(var yaw in new[]{0f,.8f,-1.3f})
-            {
-                _yaw=yaw;UpdateCamera();FitCameraToBoard();
-                foreach(var cell in Layout.Board.Cells)
-                    Check(Pick(WorldToScreen(CellPosition(cell)),out var picked)&&picked==cell,$"Picking {cell} at yaw {yaw}");
-            }
+            VerifyTilePicking();
             Check(_fixtures.Count(f=>!f.UsedFallback)==Layout.Fixtures.Count,"Expected all original imported models");
             foreach(var f in _fixtures) {f.Select(true);f.Select(false);}
             ResetCamera();

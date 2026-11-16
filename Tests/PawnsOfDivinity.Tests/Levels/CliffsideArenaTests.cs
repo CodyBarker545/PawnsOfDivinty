@@ -209,8 +209,8 @@ public class CliffsideArenaTests
     }
 
     [Theory]
-    [InlineData(4,5)]
-    [InlineData(25,24)]
+    [InlineData(8,9)]
+    [InlineData(21,20)]
     public void OccupiedStairPairCannotBePreviewedOrCrossed(int x,int adjacent)
     {
         var s = new MobaHotseatSession(Map);
@@ -233,7 +233,7 @@ public class CliffsideArenaTests
         var actor = session.Characters.Values.First();
         for (int x = 0; x < map.Board.Width; x++)
         {
-            bool stair = x is 4 or 5 or 24 or 25;
+            bool stair = x is 8 or 9 or 20 or 21;
             for (int y = 14; y < map.Board.Height; y++)
             {
                 GridPosition cell = new(x,y);
@@ -283,14 +283,14 @@ public class CliffsideArenaTests
     }
 
     [Fact]
-    public void CrossingTheCliffRequiresAnEndStairAndForestRotationsAreOpen()
+    public void CrossingTheCliffRequiresAForwardCastleStairAndForestRotationsAreOpen()
     {
         var map = Map;
         var session = new MobaHotseatSession(map);
         var actor = session.Characters.Values.First();
         for (int x=0;x<30;x++)
         {
-            bool stair = x is 4 or 5 or 24 or 25;
+            bool stair = x is 8 or 9 or 20 or 21;
             foreach (int row in new[] {14,15})
             {
                 GridPosition a = new(x,row), b = new(x,row+1);
@@ -347,5 +347,41 @@ public class CliffsideArenaTests
         while (!s.CanSelect("nigel")) Pass();
         Move("nigel",new(1,10));
         Assert.Equal(1,s.Control.Castle("blue_home").OwnerTeamId);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void NeutralOrEnemyForwardFortRejectsTransferFromFriendlyHome(bool enemyCapture)
+    {
+        var s = new MobaHotseatSession(Map,startingPlayer:enemyCapture ? 2 : 1);
+        Assert.Null(s.Control.Castle("blue_forward").OwnerTeamId);
+        Assert.Null(s.Control.Castle("red_forward").OwnerTeamId);
+        Assert.True(s.Control.Castle("blue_home").IsHome);
+        Assert.Equal(1,s.Control.Castle("blue_home").OwnerTeamId);
+        Assert.True(s.Control.Castle("red_home").IsHome);
+        Assert.Equal(2,s.Control.Castle("red_home").OwnerTeamId);
+        if(enemyCapture)
+        {
+            var enemy = s.Characters["red_hooded_assassin"];
+            enemy.SetTacticalPosition(new(8,9));
+            Assert.Equal(BattlefieldOutcome.Completed,s.Select(enemy.Id).Outcome);
+            var move = s.MoveTo(new(8,10));
+            Assert.Equal(MovementOutcome.Completed,move.Outcome);
+            Assert.Equal(BattlefieldOutcome.Completed,s.AcknowledgeVisualMovement(move.RequestId,new(8,10)).Outcome);
+            Assert.Equal(2,s.Control.Castle("blue_forward").OwnerTeamId);
+            s.EndSelectedActivation();
+            Assert.Equal(1,s.CurrentPlayer);
+        }
+        var actor = s.Characters["blue_gravebound_colossus"];
+        actor.SetTacticalPosition(new(1,10));
+        Assert.Equal(BattlefieldOutcome.Completed,s.Select(actor.Id).Outcome);
+        Assert.Equal(BattlefieldOutcome.Completed,s.BeginTransferTargeting().Outcome);
+        var preview = s.PreviewTransfer("blue_forward",new(7,12));
+        Assert.False(preview.CanExecute);
+        Assert.Contains("friendly-controlled",preview.Reason);
+        Assert.False(s.Activations.MainActionUsed);
+        Assert.False(actor.HasActedThisRound);
+        Assert.Equal(new GridPosition(1,10),actor.TacticalPosition);
     }
 }

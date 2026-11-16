@@ -28,6 +28,13 @@ project/assembly_name="PawnsOfDivinity"
 
 enabled=PackedStringArray("res://addons/terrain_3d/plugin.cfg")
 
+[input]
+
+toggle_tactical_grid={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":71)]
+}
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Assets/Levels/Environment/ConnectedCliff/BroadFaceB.glb" id="1"]
+[ext_resource type="Material" path="res://Assets/Levels/Environment/WesternStairSlice/SliceMaterial2.tres" id="2"]
+
+[node name="BroadFaceB" type="Node3D"]
+
+[node name="Geometry" parent="." instance=ExtResource("1")]
+
+[node name="BroadFaceB" parent="Geometry" index=0]
+material_override = ExtResource("2")
+
+[editable path="Geometry"]

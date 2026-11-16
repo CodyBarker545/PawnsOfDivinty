@@ -14,6 +14,14 @@ Godot loaded all ten units on the 30×20 map and reported 86 blocked and 514 wal
 
 ## Fit and placement
 
+### Stage 2.2 follow-up (2026-11-15)
+
+The same mesh, UVs, node transforms, base-center origin, dimensions and (7,8) placement are retained. No additional models were generated and no Meshy credits were spent. Existing source maps, Blender source and runtime GLB were previously recalibrated to cool charcoal limestone; this follow-up verified them without regeneration. Use [Environment_Art_Style_Guide.md](Environment_Art_Style_Guide.md) for the palette, 0.80–0.92 roughness target, metallic 0 and normal strength 0.32. Use [Stage22MaterialVerification.md](Stage22MaterialVerification.md) for imported-map checks, screenshots and final evidence.
+
+Final material verification: Godot import scan exit 0; all maps present; rendered wall review passed. Acceptance follow-ups verified picking (4,800 checks), castle transfer and scene-aware free-testing smoke. The latest build has 0 warnings/errors and 170 focused mode/activation tests pass. Both complete broad smoke runs pass; **Stage 2.2 is accepted**. See the verification report for the separate prior test runs and retained editor shutdown diagnostics. Stage 2.1's historical 3,304-test result is not a new Stage 2.2 full-suite run.
+
+Workflow limitations remain: the generation connector did not itemize Stage 2.1 charges, the live Blender export timed out, and source/runtime binaries are stored locally outside Git. Prefer the saved source and reproducible scripts; do not repeat paid generation or the Stage 2.1 geometry cleanup to verify a material-only change.
+
 The arena has 1.25 × 1.25 world-unit tiles. The current straight wall spans 1.25 along Godot X. Its base is 0.77 deep, its shaft 0.54 deep and its highest point 1.085 above the floor. All ten character fixtures measure 1.65 high using the imported mesh bounds and authored battlefield transforms. The proposed wall fits the same envelope, about 66% of standing character height.
 
 Place the pivot at the base centre. Finish both end faces at X ±0.625 with matching cross-sections. Keep the base within Z ±0.385, bottom at Y 0 and top at Y 1.085. Test two copies 1.25 units apart and repeat after a quarter turn. Target 500–1,500 runtime triangles, one neutral matte material and a 1K runtime texture set.
