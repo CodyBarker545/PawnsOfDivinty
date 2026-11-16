@@ -28,6 +28,7 @@ UpgradeLog.htm
 /SourceAssets/
 /Assets/**
 /artifacts/
+/Tools/
 
 # Blender and 3D models
 *.blend
